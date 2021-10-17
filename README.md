@@ -4,7 +4,7 @@
 
 Course site for Practical Statistics for the Life Sciences 2021 (PSLS 2021)
 
-https://statomics.github.io/PSLS21/
+https://gtpb.github.io/PSLS21/
 
 
 ### Issues
