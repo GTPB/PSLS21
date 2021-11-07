@@ -49,7 +49,7 @@ for (i in 1:50)
 	radius=sample(grid,prob=grid^2*pi/sum(grid^2*pi),size=1)
 	kopvoeter(3+radius*cos(angle1/180*pi),8+radius*sin(angle1/180*pi),angle=angle2)
 }
-text(7.5,8,"Cholestorol in population",col="red",cex=1.2)
+text(7.5,8,"Cholesterol in population",col="red",cex=1.2)
 
 rect(0,0,10,4,border="blue",lwd=2)
 text(.5,2,"sample",srt=90,col="blue",cex=2)
@@ -60,7 +60,7 @@ for (i in 0:2)
 
 	kopvoeter(2.1+j*(3.9-2.1)/4,1.1+i)
 }
-text(7.5,2,"Cholestorol in sample",col="blue",cex=1.2)
+text(7.5,2,"Cholesterol in sample",col="blue",cex=1.2)
 
 arrows(3,5.9,3,4.1,col="black",lwd=3)
 arrows(7,4.1,7,5.9,col="black",lwd=3)
