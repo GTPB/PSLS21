@@ -446,10 +446,7 @@ div.tocify {
       <a href="02-concepts.html">2. Concepts</a>
     </li>
     <li>
-      <a href="03-experimentalDesign.html">3.1. Experimental Design I</a>
-    </li>
-    <li>
-      <a href="03-experimentalDesignII.html">3.1. Experimental Design I</a>
+      <a href="03-experimentalDesign.html">3. Experimental Design I</a>
     </li>
     <li>
       <a href="04-dataExploration.html">4. Data Exploration</a>
@@ -473,6 +470,12 @@ div.tocify {
       <a href="08-MultipleRegression-SpecificDesigns.html">8.2 Multiple Regression: Factorial Designs</a>
     </li>
     <li>
+      <a href="08-experimentalDesignII.html">8.3. Experimental Design II</a>
+    </li>
+    <li>
+      <a href="08-experimentalDesignIII.html">8.4. Experimental Design II</a>
+    </li>
+    <li>
       <a href="09-NonparametericStatistics-WilcoxonMannWithney.html">9.1. Nonparametric Statistics 1</a>
     </li>
     <li>
@@ -492,7 +495,21 @@ div.tocify {
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li class="dropdown-header">Lab 1</li>
+    <li>
+      <a href="04_exercises.html">4. Data Exploration</a>
+    </li>
+    <li>
+      <a href="05_exercises.html">5. Statistical inference</a>
+    </li>
+    <li>
+      <a href="06_exercises.html">6. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="07_exercises.html">7. ANOVA</a>
+    </li>
+    <li>
+      <a href="09_exercises.html">9. Non-parametric statistics</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -1490,13 +1507,13 @@ pro/leu - leu/leu == 0 -0.07395 -0.51370  0.36581</code></pre>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a>OR &lt;-<span class="st"> </span><span class="kw">exp</span>(posthocCI<span class="op">$</span>confint)</span>
 <span id="cb48-2"><a href="#cb48-2"></a>OR</span></code></pre></div>
 <pre><code>                   Estimate       lwr      upr
-leu/leu - pro/pro 1.2361111 0.7964268 1.918532
-pro/leu - pro/pro 1.1480000 0.8772677 1.502283
-pro/leu - leu/leu 0.9287191 0.5982761 1.441674
+leu/leu - pro/pro 1.2361111 0.7964261 1.918534
+pro/leu - pro/pro 1.1480000 0.8772672 1.502283
+pro/leu - leu/leu 0.9287191 0.5982755 1.441675
 attr(,&quot;conf.level&quot;)
 [1] 0.95
 attr(,&quot;calpha&quot;)
-[1] 2.324071</code></pre>
+[1] 2.324075</code></pre>
 <ul>
 <li><p>De odds ratios that we obtain is exactly equal to the one we calculated based on the contingency table:</p></li>
 <li><p>e.g <span class="math inline">\(\text{OR}_\text{Leu/Leu-Pro/Pro}=89\times 266/(56\times 342)=\)</span> 1.236.</p></li>

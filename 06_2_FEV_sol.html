@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Lieven Clement and Jeroen Gilis" />
+
+
+<title>Exeercise 6.2: Linear regression on the FEV dataset - solution</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSLS21</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-chalkboard-teacher"></span>
+     
+    Lectures
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01-intro.html">1. Introduction</a>
+    </li>
+    <li>
+      <a href="02-concepts.html">2. Concepts</a>
+    </li>
+    <li>
+      <a href="03-experimentalDesign.html">3. Experimental Design I</a>
+    </li>
+    <li>
+      <a href="04-dataExploration.html">4. Data Exploration</a>
+    </li>
+    <li>
+      <a href="05-statisticalInference.html">5.1 Statistical Inference 1</a>
+    </li>
+    <li>
+      <a href="05-statisticalInference-twosampleT.html">5.2 Statistical Inference 2</a>
+    </li>
+    <li>
+      <a href="06-linearRegression.html">6. Linear Regression</a>
+    </li>
+    <li>
+      <a href="07-Anova.html">7. Analysis of Variance</a>
+    </li>
+    <li>
+      <a href="08-MultipleRegression.html">8. Multiple Regression</a>
+    </li>
+    <li>
+      <a href="08-MultipleRegression-SpecificDesigns.html">8.2 Multiple Regression: Factorial Designs</a>
+    </li>
+    <li>
+      <a href="08-experimentalDesignII.html">8.3. Experimental Design II</a>
+    </li>
+    <li>
+      <a href="08-experimentalDesignIII.html">8.4. Experimental Design II</a>
+    </li>
+    <li>
+      <a href="09-NonparametericStatistics-WilcoxonMannWithney.html">9.1. Nonparametric Statistics 1</a>
+    </li>
+    <li>
+      <a href="09-NonparametericStatistics-KruskalWallis.html">9.2. Nonparametric Statistics 2</a>
+    </li>
+    <li>
+      <a href="10-categoricalDataAnalysis.html">10. Categorical Data Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04_exercises.html">4. Data Exploration</a>
+    </li>
+    <li>
+      <a href="05_exercises.html">5. Statistical inference</a>
+    </li>
+    <li>
+      <a href="06_exercises.html">6. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="07_exercises.html">7. ANOVA</a>
+    </li>
+    <li>
+      <a href="09_exercises.html">9. Non-parametric statistics</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/statOmics/PSLS21">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://statomics.github.io/">statOmics</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Exeercise 6.2: Linear regression on the FEV dataset - solution</h1>
+<h4 class="author">Lieven Clement and Jeroen Gilis</h4>
+<h4 class="date">statOmics, Ghent University (<a href="https://statomics.github.io" class="uri">https://statomics.github.io</a>)</h4>
+
+</div>
+
+
+<p>As an exercise on linear regression, we will analyse the FEV dataset.</p>
+<div id="the-fev-dataset" class="section level1">
+<h1><span class="header-section-number">1</span> The FEV dataset</h1>
+<p>The FEV, which is an acronym for forced expiratory volume, is a measure of how much air a person can exhale (in litres) during a forced breath. In this dataset, the FEV of 606 children, between the ages of 6 and 17, were measured. The dataset also provides additional information on these children: their <code>age</code>, their <code>height</code>, their <code>gender</code> and, most importantly, whether the child is a smoker or a non-smoker.</p>
+<p>The overarching goal of this experiment was to find out if smoking has an effect on the FEV of children.</p>
+</div>
+<div id="load-the-required-libraries" class="section level1">
+<h1><span class="header-section-number">2</span> Load the required libraries</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(tidyverse)</span></code></pre></div>
+</div>
+<div id="import-data" class="section level1">
+<h1><span class="header-section-number">3</span> Import data</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>fev &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="st">&quot;https://raw.githubusercontent.com/statOmics/PSLS21/data/fev.txt&quot;</span>)</span></code></pre></div>
+<pre><code>## Rows: 606 Columns: 5</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;\t&quot;
+## chr (1): gender
+## dbl (4): age, fev, height, smoking</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">head</span>(fev)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["age"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["fev"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["height"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["gender"],"name":[4],"type":["chr"],"align":["left"]},{"label":["smoking"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"9","2":"1.708","3":"57.0","4":"f","5":"0"},{"1":"8","2":"1.724","3":"67.5","4":"f","5":"0"},{"1":"7","2":"1.720","3":"54.5","4":"f","5":"0"},{"1":"9","2":"1.558","3":"53.0","4":"m","5":"0"},{"1":"9","2":"1.895","3":"57.0","4":"m","5":"0"},{"1":"8","2":"2.336","3":"61.0","4":"f","5":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>There are a few things in the formatting of the data that can be improved upon:</p>
+<ol style="list-style-type: decimal">
+<li>Both the <code>gender</code> and <code>smoking</code> can be transformed to factors.</li>
+<li>The <code>height</code> variable is written in inches. Assuming that this audience is mainly Portuguese/Belgian, inches are hard to interpret. Let’s add a new column, <code>height_cm</code>, with the values converted to centimeter using the <code>mutate</code> function.</li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>fev &lt;-<span class="st"> </span>fev <span class="op">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gender =</span> <span class="kw">as.factor</span>(gender)) <span class="op">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">smoking =</span> <span class="kw">as.factor</span>(smoking)) <span class="op">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">height_cm =</span> height<span class="op">*</span><span class="fl">2.54</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="kw">head</span>(fev)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["age"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["fev"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["height"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["gender"],"name":[4],"type":["fct"],"align":["left"]},{"label":["smoking"],"name":[5],"type":["fct"],"align":["left"]},{"label":["height_cm"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"9","2":"1.708","3":"57.0","4":"f","5":"0","6":"144.78"},{"1":"8","2":"1.724","3":"67.5","4":"f","5":"0","6":"171.45"},{"1":"7","2":"1.720","3":"54.5","4":"f","5":"0","6":"138.43"},{"1":"9","2":"1.558","3":"53.0","4":"m","5":"0","6":"134.62"},{"1":"9","2":"1.895","3":"57.0","4":"m","5":"0","6":"144.78"},{"1":"8","2":"2.336","3":"61.0","4":"f","5":"0","6":"154.94"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="data-exploration" class="section level1">
+<h1><span class="header-section-number">4</span> Data Exploration</h1>
+<p>Now, let’s make a first explorative boxplot, showing only the FEV for both smoking categories.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>fev <span class="op">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>smoking,<span class="dt">y=</span>fev,<span class="dt">fill=</span>smoking)) <span class="op">+</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&quot;dimgrey&quot;</span>,<span class="st">&quot;firebrick&quot;</span>)) <span class="op">+</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">outlier.shape=</span><span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">width =</span> <span class="fl">0.2</span>, <span class="dt">size=</span><span class="fl">0.1</span>) <span class="op">+</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Boxplot of FEV versus smoking&quot;</span>) <span class="op">+</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;fev (l)&quot;</span>) <span class="op">+</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;smoking status&quot;</span>)</span></code></pre></div>
+<p><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Did you expect these results?</p>
+<p>It appears that children that smoke have a higher median FEV than children that do not smoke. Should we change legislations worldwide and make smoking obligatory for children?</p>
+<p>Maybe there is something else going on in the data. Now, we will generate a similar plot, but we will stratify the data based on age (age as factor).</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>fev <span class="op">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">as.factor</span>(age),<span class="dt">y=</span>fev,<span class="dt">fill=</span>smoking)) <span class="op">+</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">outlier.shape=</span><span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">width =</span> <span class="fl">0.2</span>, <span class="dt">size =</span> <span class="fl">0.1</span>, <span class="dt">position =</span> <span class="kw">position_jitterdodge</span>()) <span class="op">+</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&quot;dimgrey&quot;</span>,<span class="st">&quot;firebrick&quot;</span>)) <span class="op">+</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Boxplot of FEV versus smoking, stratified on age&quot;</span>) <span class="op">+</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;fev (l)&quot;</span>) <span class="op">+</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;smoking status&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: Ignoring unknown parameters: width</code></pre>
+<p><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>This plot seems to already give us a more plausible picture. First, it seems that we do not have any smoking children of ages 6, 7 or 8. Second, when looking at the results per age “category”, it seems no longer the case that smokers have a much higher FEV than non-smokers; for the higher ages, the contrary seems true.</p>
+<p>This shows that taking into account confounders (in this case) is crucial! If we simply analyse the dataset based on the smoking status and FEV values only, our inference might be incorrect.</p>
+<p>Can we provide an even better visualization of the data, taking into account more useful explanatory variables with respect to the FEV?</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>fev <span class="op">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">as.factor</span>(age),<span class="dt">y=</span>fev,<span class="dt">fill=</span>smoking)) <span class="op">+</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">outlier.shape=</span><span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">width =</span> <span class="fl">0.2</span>, <span class="dt">size =</span> <span class="fl">0.1</span>, <span class="dt">position =</span> <span class="kw">position_jitterdodge</span>()) <span class="op">+</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&quot;dimgrey&quot;</span>,<span class="st">&quot;firebrick&quot;</span>)) <span class="op">+</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Boxplot of FEV versus smoking, stratified on age and gender&quot;</span>) <span class="op">+</span></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;fev (l)&quot;</span>) <span class="op">+</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;smoking status&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="dt">rows =</span> <span class="kw">vars</span>(gender))</span></code></pre></div>
+<pre><code>## Warning: Ignoring unknown parameters: width</code></pre>
+<p><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>This plot holds one extra level of information, the gender of the child. Especially for higher ages, the median FEV is higher for males as compared to females.</p>
+<p>The only source of information that is lacking is <code>height</code>. To look at the effect of height, we could simply make a scatterplot displaying the FEV in function of a child’s height (in cm). Additionally, we could color the dots based on gender.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>fev <span class="op">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>height_cm,<span class="dt">y=</span>fev,<span class="dt">color=</span>gender)) <span class="op">+</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&quot;darkorchid&quot;</span>,<span class="st">&quot;olivedrab4&quot;</span>)) <span class="op">+</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Boxplot of FEV versus height&quot;</span>) <span class="op">+</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;fev (l)&quot;</span>) <span class="op">+</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;height (cm)&quot;</span>)</span></code></pre></div>
+<p><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>There is a clear relationship between height and FEV. In addition, we see that for the large height values (&gt;175cm), we mainly find male subjects.</p>
+</div>
+<div id="linear-regression-nalysis" class="section level1">
+<h1><span class="header-section-number">5</span> Linear regression nalysis</h1>
+<div id="assumptions-of-linear-regression" class="section level2">
+<h2><span class="header-section-number">5.1</span> Assumptions of linear regression</h2>
+<p>List the assumptions:</p>
+<ol style="list-style-type: decimal">
+<li>The observations are independent of each other</li>
+<li>Linearity between the response and predictor variable</li>
+<li>The residues of the model must be normally distributed</li>
+<li>Homoscedasticity of the data</li>
+</ol>
+<div id="independence" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Independence</h3>
+<p>The first assumption is <strong>not met</strong>. There are patterns of relatedness in the data. Indeed, we expect that fish of the same species have a more similar response to the poison as compared to fish of another species. Equivalently, we expect that fish of the same weight have a more similar response to the poison as compared to fish of different weight.</p>
+<p><strong>For now, we will ignore this problem</strong>. In a later tutorial, we will see how we can account for this dependence by including the species data and weigth data in the linear model (class on multiple regression). As such, <strong>you may assume</strong> <strong>the assumption is met.</strong></p>
+<p>We will check the other assumptions by first fitting the linear model and plotting the output. As such, we will get all the required diagnostic plots.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>model &lt;-<span class="st"> </span><span class="kw">lm</span>(fev<span class="op">~</span>smoking, <span class="dt">data=</span>fev) </span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co">## display the diagnostic plots of the model</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="kw">plot</span>(model)</span></code></pre></div>
+<p><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-8-1.png" width="672" /><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-8-2.png" width="672" /><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-8-3.png" width="672" /><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-8-4.png" width="672" /></p>
+<p>We have four diagnostic plots:</p>
+</div>
+<div id="linearity-with-the-residuals-vs-fitted-plot" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Linearity with the Residuals vs fitted plot</h3>
+<ul>
+<li>predictor of predictions <span class="math inline">\(\hat\beta_0+\hat\beta_1 x\)</span> on <span class="math inline">\(X\)</span>-axis</li>
+<li><em>residuals</em> on <span class="math inline">\(Y\)</span>-as <span class="math display">\[e_i=y_i-\hat{g}(x_i)=y_i-\hat\beta_0-\hat\beta_1\times x_i,\]</span></li>
+</ul>
+<p>If there would be a linear relationship in the data, the residuals are expected to lie on the y=0 line for the entire range of predicted values. Based on the first diagnostic plot, the linearity assumption is met.</p>
+</div>
+<div id="normal-q-q" class="section level3">
+<h3><span class="header-section-number">5.1.3</span> Normal Q-Q</h3>
+<ul>
+<li>QQ-plot of the residuals <span class="math inline">\(e_i\)</span>.</li>
+</ul>
+<p>The residuals of the linear regression model should be normally distributed. Based on the second diagnostic plot, the normality assumption is not met.</p>
+</div>
+<div id="homoscedasticity" class="section level3">
+<h3><span class="header-section-number">5.1.4</span> Homoscedasticity</h3>
+<ul>
+<li>Square-root of the absolute value of standardized residuals in function of the fitted values</li>
+</ul>
+<p>To meet the third assumption of linear regression, the variance on the <em>Square-root of the absolute value of standardized residuals</em> must be similar over the entire range of fitted values. The smoother in the plot helps us with looking at this; it should be nicely horizontal over the entire range of fitted values. This is clearly not the case here; based on the third diagnostic plot, the homosccedasticity assumption is met.</p>
+</div>
+</div>
+<div id="log-transformation" class="section level2">
+<h2><span class="header-section-number">5.2</span> Log transformation</h2>
+<p>The normality assumption was not met, so we cannot continue with performing a linear regression analysis.</p>
+<p>One possibility is to log-transform the data. Indeed, data with heavy right tails can often be normalized by applying this strategy</p>
+<p>Generate a new column in the poison dataset, containing the log-transformed survival times.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>fev &lt;-<span class="st"> </span>fev <span class="op">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log.fev =</span> <span class="kw">log</span>(fev))</span></code></pre></div>
+<p>Refit the (log-)linear model. Generate diagnostic plots. Assess the assumptions.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>log.model &lt;-<span class="st"> </span><span class="kw">lm</span>(log.fev<span class="op">~</span>smoking,<span class="dt">data=</span>fev)</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="kw">plot</span>(log.model)</span></code></pre></div>
+<p><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-10-1.png" width="672" /><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-10-2.png" width="672" /><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-10-3.png" width="672" /><img src="06_2_FEV_sol_files/figure-html/unnamed-chunk-10-4.png" width="672" /></p>
+<p>Upon log-transformation, all the required assumption (except the one for independence, see above) are met.</p>
+<p>Look at the output of the log-linear model:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">summary</span>(log.model)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = log.fev ~ smoking, data = fev)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.7701 -0.1958  0.0048  0.1953  0.8338 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.92286    0.01270  72.649  &lt; 2e-16 ***
+## smoking1     0.22591    0.04004   5.642 2.58e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2966 on 604 degrees of freedom
+## Multiple R-squared:  0.05007,    Adjusted R-squared:  0.0485 
+## F-statistic: 31.84 on 1 and 604 DF,  p-value: 2.582e-08</code></pre>
+<p>Compute the 95% confidence interval on the model parameters:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">confint</span>(log.model)</span></code></pre></div>
+<pre><code>##                 2.5 %    97.5 %
+## (Intercept) 0.8979164 0.9478117
+## smoking1    0.1472777 0.3045423</code></pre>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1><span class="header-section-number">6</span> Conclusion</h1>
+<div id="interpretation-on-the-log-scale" class="section level2">
+<h2><span class="header-section-number">6.1</span> Interpretation on the log scale</h2>
+<p>Currently, all the outcomes should be interpreted on the log-scale. Indeed, since we are now modelling <em>the log FEV</em>, we don’t have direct inference on the FEV as such</p>
+<p>We may interpret the output as follows:</p>
+<ul>
+<li>The slope:</li>
+</ul>
+<p>If the smoking status changes from 0 (non-smoking) to 1 (smoking), the natural logarithm of FEV will increase, on average, by 0.22591 units (95% CI [0.1472777,0.3045423]). This increase is significant on the 5% significance level (p=2.58e-08).</p>
+<ul>
+<li>The intercept:</li>
+</ul>
+<p>The average natural logarithm of FEV for children that have smoking status 0 is 0.92286 (95% CI [0.1472777; 0.3045423]). This value is significantly different from 0 on the 5% significance level (&lt; 2e-16).</p>
+</div>
+<div id="interpretation-on-the-original-scale" class="section level2">
+<h2><span class="header-section-number">6.2</span> Interpretation on the original scale</h2>
+<p>The interpretation the log-scale is quite difficult: the natural logarithm survival time is not exactly a casual measure. To ease the interpetation, we may backtransform the results to the original scale (time in minutes). This we can do by taking the exponent of the outcomes:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">exp</span>(<span class="kw">summary</span>(log.model)<span class="op">$</span>coefficients[,<span class="st">&quot;Estimate&quot;</span>])</span></code></pre></div>
+<pre><code>## (Intercept)    smoking1 
+##    2.516487    1.253463</code></pre>
+<p>and of their confidence intervals:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">exp</span>(<span class="kw">confint</span>(log.model))</span></code></pre></div>
+<pre><code>##                2.5 %   97.5 %
+## (Intercept) 2.454484 2.580058
+## smoking1    1.158676 1.356004</code></pre>
+<p>Now, we can interpret the results in terms of the geometric mean:</p>
+<ul>
+<li>The slope:</li>
+</ul>
+<p>If the smoking status changes from 0 (non-smoking) to 1 (smoking), the geometric mean of the FEV will increase, on average, by 1.253463 liters (95% CI [1.158676; 1.356004]). This increase is significant on the 5% significance level (p=2.58e-08).</p>
+<ul>
+<li>The intercept:</li>
+</ul>
+<p>The geometric mean of the FEV for children that have smoking status 0 is 2.516487 liters (95% CI [2.454484; 2.580058]). This value is significantly different from 0 on the 5% significance level (&lt; 2e-16).</p>
+<p>Again, note that in this dataset the assumption of <strong>independence</strong> is actually <strong>not met</strong>. In the tutorial of multiple regression, we will revisit this exercise. More specifically, we will there study the association between smoking and FEV while accounting for differences in the age, height and gender of the children.</p>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhlZXJjaXNlIDYuMjogTGluZWFyIHJlZ3Jlc3Npb24gb24gdGhlIEZFViBkYXRhc2V0IC0gc29sdXRpb24iICAgCmF1dGhvcjogIkxpZXZlbiBDbGVtZW50IGFuZCBKZXJvZW4gR2lsaXMiCmRhdGU6ICJzdGF0T21pY3MsIEdoZW50IFVuaXZlcnNpdHkgKGh0dHBzOi8vc3RhdG9taWNzLmdpdGh1Yi5pbykiICAKb3V0cHV0OgogICAgaHRtbF9kb2N1bWVudDoKICAgICAgY29kZV9kb3dubG9hZDogdHJ1ZSAgICAKICAgICAgdGhlbWU6IGNvc21vCiAgICAgIHRvYzogdHJ1ZQogICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgaGlnaGxpZ2h0OiB0YW5nbwogICAgICBudW1iZXJfc2VjdGlvbnM6IHRydWUKLS0tCgpBcyBhbiBleGVyY2lzZSBvbiBsaW5lYXIgcmVncmVzc2lvbiwgd2Ugd2lsbCBhbmFseXNlIHRoZSBGRVYgZGF0YXNldC4KCiMgVGhlIEZFViBkYXRhc2V0CgpUaGUgRkVWLCB3aGljaCBpcyBhbiBhY3JvbnltIGZvciBmb3JjZWQgZXhwaXJhdG9yeSB2b2x1bWUsCmlzIGEgbWVhc3VyZSBvZiBob3cgbXVjaCBhaXIgYSBwZXJzb24gY2FuIGV4aGFsZSAoaW4gbGl0cmVzKSAKZHVyaW5nICBhIGZvcmNlZCBicmVhdGguIEluIHRoaXMgZGF0YXNldCwgdGhlIEZFViBvZiA2MDYgY2hpbGRyZW4sCmJldHdlZW4gdGhlIGFnZXMgb2YgNiBhbmQgMTcsIHdlcmUgbWVhc3VyZWQuIFRoZSBkYXRhc2V0CmFsc28gcHJvdmlkZXMgYWRkaXRpb25hbCBpbmZvcm1hdGlvbiBvbiB0aGVzZSBjaGlsZHJlbjoKdGhlaXIgYGFnZWAsIHRoZWlyIGBoZWlnaHRgLCB0aGVpciBgZ2VuZGVyYCBhbmQsIG1vc3QKaW1wb3J0YW50bHksIHdoZXRoZXIgdGhlIGNoaWxkIGlzIGEgc21va2VyIG9yIGEgbm9uLXNtb2tlci4KClRoZSBvdmVyYXJjaGluZyBnb2FsIG9mIHRoaXMgZXhwZXJpbWVudCB3YXMgdG8gZmluZCBvdXQgaWYKc21va2luZyBoYXMgYW4gZWZmZWN0IG9uIHRoZSBGRVYgb2YgY2hpbGRyZW4uCgojIExvYWQgdGhlIHJlcXVpcmVkIGxpYnJhcmllcwoKYGBge3IsIG1lc3NhZ2UgPSBGQUxTRX0KbGlicmFyeSh0aWR5dmVyc2UpCmBgYAoKIyBJbXBvcnQgZGF0YQoKYGBge3J9CmZldiA8LSByZWFkX3RzdigiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3N0YXRPbWljcy9QU0xTMjEvZGF0YS9mZXYudHh0IikKaGVhZChmZXYpCmBgYAoKVGhlcmUgYXJlIGEgZmV3IHRoaW5ncyBpbiB0aGUgZm9ybWF0dGluZyBvZiB0aGUKZGF0YSB0aGF0IGNhbiBiZSBpbXByb3ZlZCB1cG9uOgoKMS4gQm90aCB0aGUgYGdlbmRlcmAgYW5kIGBzbW9raW5nYCBjYW4gYmUgdHJhbnNmb3JtZWQgdG8KZmFjdG9ycy4KMi4gVGhlIGBoZWlnaHRgIHZhcmlhYmxlIGlzIHdyaXR0ZW4gaW4gaW5jaGVzLiBBc3N1bWluZyB0aGF0CnRoaXMgYXVkaWVuY2UgaXMgbWFpbmx5IFBvcnR1Z3Vlc2UvQmVsZ2lhbiwgaW5jaGVzIGFyZSBoYXJkIHRvCmludGVycHJldC4gTGV0J3MgYWRkIGEgbmV3IGNvbHVtbiwgYGhlaWdodF9jbWAsIHdpdGggdGhlIHZhbHVlcwpjb252ZXJ0ZWQgdG8gY2VudGltZXRlciB1c2luZyB0aGUgYG11dGF0ZWAgZnVuY3Rpb24uIAoKYGBge3J9CmZldiA8LSBmZXYgJT4lCiAgbXV0YXRlKGdlbmRlciA9IGFzLmZhY3RvcihnZW5kZXIpKSAlPiUKICBtdXRhdGUoc21va2luZyA9IGFzLmZhY3RvcihzbW9raW5nKSkgJT4lCiAgbXV0YXRlKGhlaWdodF9jbSA9IGhlaWdodCoyLjU0KQoKaGVhZChmZXYpCmBgYAoKCiMgRGF0YSBFeHBsb3JhdGlvbgoKTm93LCBsZXQncyBtYWtlIGEgZmlyc3QgZXhwbG9yYXRpdmUgYm94cGxvdCwgc2hvd2luZwpvbmx5IHRoZSBGRVYgZm9yIGJvdGggc21va2luZyBjYXRlZ29yaWVzLgoKYGBge3J9CmZldiAlPiUKICBnZ3Bsb3QoYWVzKHg9c21va2luZyx5PWZldixmaWxsPXNtb2tpbmcpKSArCiAgc2NhbGVfZmlsbF9tYW51YWwodmFsdWVzPWMoImRpbWdyZXkiLCJmaXJlYnJpY2siKSkgKwogIHRoZW1lX2J3KCkgKwogIGdlb21fYm94cGxvdChvdXRsaWVyLnNoYXBlPU5BKSArIAogIGdlb21faml0dGVyKHdpZHRoID0gMC4yLCBzaXplPTAuMSkgKwogIGdndGl0bGUoIkJveHBsb3Qgb2YgRkVWIHZlcnN1cyBzbW9raW5nIikgKwogIHlsYWIoImZldiAobCkiKSArCiAgeGxhYigic21va2luZyBzdGF0dXMiKQpgYGAKCkRpZCB5b3UgZXhwZWN0IHRoZXNlIHJlc3VsdHM/CgpJdCBhcHBlYXJzIHRoYXQgY2hpbGRyZW4gdGhhdCBzbW9rZSBoYXZlIGEgaGlnaGVyCm1lZGlhbiBGRVYgdGhhbiBjaGlsZHJlbiB0aGF0IGRvIG5vdCBzbW9rZS4gClNob3VsZCB3ZSBjaGFuZ2UgbGVnaXNsYXRpb25zIHdvcmxkd2lkZSBhbmQgbWFrZSAKc21va2luZyBvYmxpZ2F0b3J5IGZvciBjaGlsZHJlbj8KCk1heWJlIHRoZXJlIGlzIHNvbWV0aGluZyBlbHNlIGdvaW5nIG9uIGluIHRoZSBkYXRhLgpOb3csIHdlIHdpbGwgZ2VuZXJhdGUgYSBzaW1pbGFyIHBsb3QsIGJ1dCB3ZSB3aWxsCnN0cmF0aWZ5IHRoZSBkYXRhIGJhc2VkIG9uIGFnZSAoYWdlIGFzIGZhY3RvcikuCgpgYGB7cn0KZmV2ICU+JQogIGdncGxvdChhZXMoeD1hcy5mYWN0b3IoYWdlKSx5PWZldixmaWxsPXNtb2tpbmcpKSArCiAgZ2VvbV9ib3hwbG90KG91dGxpZXIuc2hhcGU9TkEpICsKICBnZW9tX3BvaW50KHdpZHRoID0gMC4yLCBzaXplID0gMC4xLCBwb3NpdGlvbiA9IHBvc2l0aW9uX2ppdHRlcmRvZGdlKCkpICsKICB0aGVtZV9idygpICsKICBzY2FsZV9maWxsX21hbnVhbCh2YWx1ZXM9YygiZGltZ3JleSIsImZpcmVicmljayIpKSArCiAgZ2d0aXRsZSgiQm94cGxvdCBvZiBGRVYgdmVyc3VzIHNtb2tpbmcsIHN0cmF0aWZpZWQgb24gYWdlIikgKwogIHlsYWIoImZldiAobCkiKSArCiAgeGxhYigic21va2luZyBzdGF0dXMiKQpgYGAKClRoaXMgcGxvdCBzZWVtcyB0byBhbHJlYWR5IGdpdmUgdXMgYSBtb3JlCnBsYXVzaWJsZSBwaWN0dXJlLiBGaXJzdCwgaXQgc2VlbXMgdGhhdCB3ZSBkbyBub3QgaGF2ZQphbnkgc21va2luZyBjaGlsZHJlbiBvZiBhZ2VzIDYsIDcgb3IgOC4gU2Vjb25kLCB3aGVuCmxvb2tpbmcgYXQgdGhlIHJlc3VsdHMgcGVyIGFnZSAiY2F0ZWdvcnkiLCBpdCBzZWVtcwpubyBsb25nZXIgdGhlIGNhc2UgdGhhdCBzbW9rZXJzIGhhdmUgYSBtdWNoIGhpZ2hlciBGRVYKdGhhbiBub24tc21va2VyczsgZm9yIHRoZSBoaWdoZXIgYWdlcywgdGhlIGNvbnRyYXJ5CnNlZW1zIHRydWUuCgpUaGlzIHNob3dzIHRoYXQgdGFraW5nIGludG8gYWNjb3VudCBjb25mb3VuZGVycwooaW4gdGhpcyBjYXNlKSBpcyBjcnVjaWFsISBJZiB3ZSBzaW1wbHkgYW5hbHlzZSB0aGUgZGF0YXNldCBiYXNlZCBvbgp0aGUgc21va2luZyBzdGF0dXMgYW5kIEZFViB2YWx1ZXMgb25seSwgb3VyIGluZmVyZW5jZSBtaWdodApiZSBpbmNvcnJlY3QuCgpDYW4gd2UgcHJvdmlkZSBhbiBldmVuIGJldHRlciB2aXN1YWxpemF0aW9uIG9mIHRoZSBkYXRhLCB0YWtpbmcKaW50byBhY2NvdW50IG1vcmUgdXNlZnVsIGV4cGxhbmF0b3J5IHZhcmlhYmxlcyB3aXRoIHJlc3BlY3QKdG8gdGhlIEZFVj8KCmBgYHtyfQpmZXYgJT4lCiAgZ2dwbG90KGFlcyh4PWFzLmZhY3RvcihhZ2UpLHk9ZmV2LGZpbGw9c21va2luZykpICsKICBnZW9tX2JveHBsb3Qob3V0bGllci5zaGFwZT1OQSkgKwogIGdlb21fcG9pbnQod2lkdGggPSAwLjIsIHNpemUgPSAwLjEsIHBvc2l0aW9uID0gcG9zaXRpb25faml0dGVyZG9kZ2UoKSkgKwogIHRoZW1lX2J3KCkgKwogIHNjYWxlX2ZpbGxfbWFudWFsKHZhbHVlcz1jKCJkaW1ncmV5IiwiZmlyZWJyaWNrIikpICsKICBnZ3RpdGxlKCJCb3hwbG90IG9mIEZFViB2ZXJzdXMgc21va2luZywgc3RyYXRpZmllZCBvbiBhZ2UgYW5kIGdlbmRlciIpICsKICB5bGFiKCJmZXYgKGwpIikgKwogIHhsYWIoInNtb2tpbmcgc3RhdHVzIikgKyAKICBmYWNldF9ncmlkKHJvd3MgPSB2YXJzKGdlbmRlcikpCmBgYAoKVGhpcyBwbG90IGhvbGRzIG9uZSBleHRyYSBsZXZlbCBvZiBpbmZvcm1hdGlvbiwgdGhlIGdlbmRlciAKb2YgdGhlIGNoaWxkLiBFc3BlY2lhbGx5IGZvciBoaWdoZXIgYWdlcywgdGhlIG1lZGlhbiBGRVYKaXMgaGlnaGVyIGZvciBtYWxlcyBhcyBjb21wYXJlZCB0byBmZW1hbGVzLgoKVGhlIG9ubHkgc291cmNlIG9mIGluZm9ybWF0aW9uIHRoYXQgaXMgbGFja2luZyBpcyBgaGVpZ2h0YC4KVG8gbG9vayBhdCB0aGUgZWZmZWN0IG9mIGhlaWdodCwgd2UgY291bGQgc2ltcGx5IG1ha2UgYQpzY2F0dGVycGxvdCBkaXNwbGF5aW5nIHRoZSBGRVYgaW4gZnVuY3Rpb24gb2YgYSBjaGlsZCdzCmhlaWdodCAoaW4gY20pLiBBZGRpdGlvbmFsbHksIHdlIGNvdWxkIGNvbG9yIHRoZSBkb3RzIGJhc2VkCm9uIGdlbmRlci4KCmBgYHtyfQpmZXYgJT4lCiAgZ2dwbG90KGFlcyh4PWhlaWdodF9jbSx5PWZldixjb2xvcj1nZW5kZXIpKSArCiAgZ2VvbV9wb2ludCgpICsKICBzY2FsZV9jb2xvcl9tYW51YWwodmFsdWVzPWMoImRhcmtvcmNoaWQiLCJvbGl2ZWRyYWI0IikpICsKICB0aGVtZV9idygpICsKICBnZ3RpdGxlKCJCb3hwbG90IG9mIEZFViB2ZXJzdXMgaGVpZ2h0IikgKwogIHlsYWIoImZldiAobCkiKSArCiAgeGxhYigiaGVpZ2h0IChjbSkiKQpgYGAKClRoZXJlIGlzIGEgY2xlYXIgcmVsYXRpb25zaGlwIGJldHdlZW4gaGVpZ2h0IGFuZCBGRVYuCkluIGFkZGl0aW9uLCB3ZSBzZWUgdGhhdCBmb3IgdGhlIGxhcmdlIGhlaWdodCB2YWx1ZXMKKD4xNzVjbSksIHdlIG1haW5seSBmaW5kIG1hbGUgc3ViamVjdHMuCgojIExpbmVhciByZWdyZXNzaW9uIG5hbHlzaXMKCiMjIEFzc3VtcHRpb25zIG9mIGxpbmVhciByZWdyZXNzaW9uCgpMaXN0IHRoZSBhc3N1bXB0aW9uczoKCjEuIFRoZSBvYnNlcnZhdGlvbnMgYXJlIGluZGVwZW5kZW50IG9mIGVhY2ggb3RoZXIKMi4gTGluZWFyaXR5IGJldHdlZW4gdGhlIHJlc3BvbnNlIGFuZCBwcmVkaWN0b3IgdmFyaWFibGUKMy4gVGhlIHJlc2lkdWVzIG9mIHRoZSBtb2RlbCBtdXN0IGJlIG5vcm1hbGx5IGRpc3RyaWJ1dGVkCjQuIEhvbW9zY2VkYXN0aWNpdHkgb2YgdGhlIGRhdGEKCiMjIyBJbmRlcGVuZGVuY2UKClRoZSBmaXJzdCBhc3N1bXB0aW9uIGlzICoqbm90IG1ldCoqLiBUaGVyZSBhcmUgcGF0dGVybnMKb2YgcmVsYXRlZG5lc3MgaW4gdGhlIGRhdGEuIEluZGVlZCwgd2UgZXhwZWN0IHRoYXQKZmlzaCBvZiB0aGUgc2FtZSBzcGVjaWVzIGhhdmUgYSBtb3JlIHNpbWlsYXIgcmVzcG9uc2UgdG8KdGhlIHBvaXNvbiBhcyBjb21wYXJlZCB0byBmaXNoIG9mIGFub3RoZXIgc3BlY2llcy4KRXF1aXZhbGVudGx5LCB3ZSBleHBlY3QgdGhhdCBmaXNoIG9mIHRoZSBzYW1lIHdlaWdodCBoYXZlIAphIG1vcmUgc2ltaWxhciByZXNwb25zZSB0byB0aGUgcG9pc29uIGFzIGNvbXBhcmVkIHRvIGZpc2ggCm9mIGRpZmZlcmVudCB3ZWlnaHQuIAoKKipGb3Igbm93LCB3ZSB3aWxsIGlnbm9yZSB0aGlzIHByb2JsZW0qKi4gSW4gYSBsYXRlciAKdHV0b3JpYWwsIHdlIHdpbGwgc2VlIGhvdyB3ZSBjYW4gYWNjb3VudCBmb3IgdGhpcyBkZXBlbmRlbmNlCmJ5IGluY2x1ZGluZyB0aGUgc3BlY2llcyBkYXRhIGFuZCB3ZWlndGggZGF0YSBpbiB0aGUgbGluZWFyIG1vZGVsCihjbGFzcyBvbiBtdWx0aXBsZSByZWdyZXNzaW9uKS4gQXMgc3VjaCwgKip5b3UgbWF5IGFzc3VtZSoqCioqdGhlIGFzc3VtcHRpb24gaXMgbWV0LioqCgpXZSB3aWxsIGNoZWNrIHRoZSBvdGhlciBhc3N1bXB0aW9ucyBieSBmaXJzdCBmaXR0aW5nIHRoZSBsaW5lYXIKbW9kZWwgYW5kIHBsb3R0aW5nIHRoZSBvdXRwdXQuIEFzIHN1Y2gsIHdlIHdpbGwgZ2V0IGFsbCB0aGUKcmVxdWlyZWQgZGlhZ25vc3RpYyBwbG90cy4KCmBgYHtyfQptb2RlbCA8LSBsbShmZXZ+c21va2luZywgZGF0YT1mZXYpIAoKIyMgZGlzcGxheSB0aGUgZGlhZ25vc3RpYyBwbG90cyBvZiB0aGUgbW9kZWwKcGxvdChtb2RlbCkKYGBgCgpXZSBoYXZlIGZvdXIgZGlhZ25vc3RpYyBwbG90czoKCiMjIyBMaW5lYXJpdHkgd2l0aCB0aGUgUmVzaWR1YWxzIHZzIGZpdHRlZCBwbG90CgotIHByZWRpY3RvciBvZiBwcmVkaWN0aW9ucyAkXGhhdFxiZXRhXzArXGhhdFxiZXRhXzEgeCQgb24gJFgkLWF4aXMKLSAqcmVzaWR1YWxzKiBvbiAkWSQtYXMKJCRlX2k9eV9pLVxoYXR7Z30oeF9pKT15X2ktXGhhdFxiZXRhXzAtXGhhdFxiZXRhXzFcdGltZXMgeF9pLCQkCgpJZiB0aGVyZSB3b3VsZCBiZSBhIGxpbmVhciByZWxhdGlvbnNoaXAgaW4gdGhlIGRhdGEsCnRoZSByZXNpZHVhbHMgYXJlIGV4cGVjdGVkIHRvIGxpZSBvbiB0aGUgeT0wIGxpbmUgZm9yCnRoZSBlbnRpcmUgcmFuZ2Ugb2YgcHJlZGljdGVkIHZhbHVlcy4gQmFzZWQgb24gdGhlIGZpcnN0CmRpYWdub3N0aWMgcGxvdCwgdGhlIGxpbmVhcml0eSBhc3N1bXB0aW9uIGlzIG1ldC4KCiMjIyBOb3JtYWwgUS1RCgotIFFRLXBsb3Qgb2YgdGhlIHJlc2lkdWFscyAkZV9pJC4KClRoZSByZXNpZHVhbHMgb2YgdGhlIGxpbmVhciByZWdyZXNzaW9uIG1vZGVsIHNob3VsZCBiZSBub3JtYWxseQpkaXN0cmlidXRlZC4gQmFzZWQgb24gdGhlIHNlY29uZCBkaWFnbm9zdGljIHBsb3QsIHRoZSBub3JtYWxpdHkKYXNzdW1wdGlvbiBpcyBub3QgbWV0LgoKIyMjIEhvbW9zY2VkYXN0aWNpdHkKCi0gU3F1YXJlLXJvb3Qgb2YgdGhlIGFic29sdXRlIHZhbHVlIG9mIHN0YW5kYXJkaXplZCByZXNpZHVhbHMKaW4gZnVuY3Rpb24gb2YgdGhlIGZpdHRlZCB2YWx1ZXMKClRvIG1lZXQgdGhlIHRoaXJkIGFzc3VtcHRpb24gb2YgbGluZWFyIHJlZ3Jlc3Npb24sIHRoZSB2YXJpYW5jZQpvbiB0aGUgX1NxdWFyZS1yb290IG9mIHRoZSBhYnNvbHV0ZSB2YWx1ZSBvZiBzdGFuZGFyZGl6ZWQgcmVzaWR1YWxzXwptdXN0IGJlIHNpbWlsYXIgb3ZlciB0aGUgZW50aXJlIHJhbmdlIG9mIGZpdHRlZCB2YWx1ZXMuIFRoZSBzbW9vdGhlcgppbiB0aGUgcGxvdCBoZWxwcyB1cyB3aXRoIGxvb2tpbmcgYXQgdGhpczsgaXQgc2hvdWxkIGJlIG5pY2VseQpob3Jpem9udGFsIG92ZXIgdGhlIGVudGlyZSByYW5nZSBvZiBmaXR0ZWQgdmFsdWVzLiBUaGlzIGlzIGNsZWFybHkKbm90IHRoZSBjYXNlIGhlcmU7IGJhc2VkIG9uIHRoZSB0aGlyZCBkaWFnbm9zdGljIHBsb3QsIHRoZSBob21vc2NjZWRhc3RpY2l0eQphc3N1bXB0aW9uIGlzIG1ldC4KCiMjIExvZyB0cmFuc2Zvcm1hdGlvbgoKVGhlIG5vcm1hbGl0eSBhc3N1bXB0aW9uIHdhcyBub3QgbWV0LCBzbyB3ZSBjYW5ub3QgY29udGludWUgd2l0aCAKcGVyZm9ybWluZyBhIGxpbmVhciByZWdyZXNzaW9uIGFuYWx5c2lzLgoKT25lIHBvc3NpYmlsaXR5IGlzIHRvIGxvZy10cmFuc2Zvcm0gdGhlIGRhdGEuIEluZGVlZCwgZGF0YSB3aXRoIGhlYXZ5CnJpZ2h0IHRhaWxzIGNhbiBvZnRlbiBiZSBub3JtYWxpemVkIGJ5IGFwcGx5aW5nIHRoaXMgc3RyYXRlZ3kKCkdlbmVyYXRlIGEgbmV3IGNvbHVtbiBpbiB0aGUgcG9pc29uIGRhdGFzZXQsIGNvbnRhaW5pbmcgdGhlIApsb2ctdHJhbnNmb3JtZWQgc3Vydml2YWwgdGltZXMuCgpgYGB7cn0KZmV2IDwtIGZldiAlPiUKICBtdXRhdGUobG9nLmZldiA9IGxvZyhmZXYpKQpgYGAKClJlZml0IHRoZSAobG9nLSlsaW5lYXIgbW9kZWwuIEdlbmVyYXRlIGRpYWdub3N0aWMgcGxvdHMuCkFzc2VzcyB0aGUgYXNzdW1wdGlvbnMuCgpgYGB7cn0KbG9nLm1vZGVsIDwtIGxtKGxvZy5mZXZ+c21va2luZyxkYXRhPWZldikKcGxvdChsb2cubW9kZWwpCmBgYAoKVXBvbiBsb2ctdHJhbnNmb3JtYXRpb24sIGFsbCB0aGUgcmVxdWlyZWQgYXNzdW1wdGlvbiAoZXhjZXB0IHRoZSBvbmUgCmZvciBpbmRlcGVuZGVuY2UsIHNlZSBhYm92ZSkgYXJlIG1ldC4KCkxvb2sgYXQgdGhlIG91dHB1dCBvZiB0aGUgbG9nLWxpbmVhciBtb2RlbDoKCmBgYHtyfQpzdW1tYXJ5KGxvZy5tb2RlbCkKYGBgCgpDb21wdXRlIHRoZSA5NSUgY29uZmlkZW5jZSBpbnRlcnZhbCBvbiB0aGUgbW9kZWwgcGFyYW1ldGVyczoKCmBgYHtyfQpjb25maW50KGxvZy5tb2RlbCkKYGBgCgojIENvbmNsdXNpb24KCiMjIEludGVycHJldGF0aW9uIG9uIHRoZSBsb2cgc2NhbGUgCgpDdXJyZW50bHksIGFsbCB0aGUgb3V0Y29tZXMgc2hvdWxkIGJlIGludGVycHJldGVkIG9uIHRoZSBsb2ctc2NhbGUuCkluZGVlZCwgc2luY2Ugd2UgYXJlIG5vdyBtb2RlbGxpbmcgIF90aGUgbG9nIEZFVl8sIHdlIGRvbid0IGhhdmUgZGlyZWN0IAppbmZlcmVuY2Ugb24gdGhlIEZFViBhcyBzdWNoCgpXZSBtYXkgaW50ZXJwcmV0IHRoZSBvdXRwdXQgYXMgZm9sbG93czoKCi0gVGhlIHNsb3BlOgoKSWYgdGhlIHNtb2tpbmcgc3RhdHVzIGNoYW5nZXMgZnJvbSAwIChub24tc21va2luZykgdG8gMSAoc21va2luZyksCnRoZSBuYXR1cmFsIGxvZ2FyaXRobSBvZiBGRVYgd2lsbCBpbmNyZWFzZSwgb24gYXZlcmFnZSwKYnkgMC4yMjU5MSB1bml0cyAoOTUlIENJIFswLjE0NzI3NzcsMC4zMDQ1NDIzXSkuIFRoaXMgaW5jcmVhc2UgaXMgc2lnbmlmaWNhbnQKb24gdGhlIDUlIHNpZ25pZmljYW5jZSBsZXZlbCAocD0yLjU4ZS0wOCkuCgotIFRoZSBpbnRlcmNlcHQ6CgpUaGUgYXZlcmFnZSBuYXR1cmFsIGxvZ2FyaXRobSBvZiBGRVYgZm9yIGNoaWxkcmVuIHRoYXQKaGF2ZSBzbW9raW5nIHN0YXR1cyAwIGlzIDAuOTIyODYgKDk1JSBDSSBbMC4xNDcyNzc3OyAwLjMwNDU0MjNdKS4gVGhpcwp2YWx1ZSBpcyBzaWduaWZpY2FudGx5IGRpZmZlcmVudCBmcm9tIDAgb24gdGhlIDUlIHNpZ25pZmljYW5jZSBsZXZlbAooPCAyZS0xNikuCgojIyBJbnRlcnByZXRhdGlvbiBvbiB0aGUgb3JpZ2luYWwgc2NhbGUgCgpUaGUgaW50ZXJwcmV0YXRpb24gdGhlIGxvZy1zY2FsZSBpcyBxdWl0ZSBkaWZmaWN1bHQ6IHRoZSBuYXR1cmFsIApsb2dhcml0aG0gc3Vydml2YWwgdGltZSBpcyBub3QgZXhhY3RseSBhIGNhc3VhbCBtZWFzdXJlLiBUbyBlYXNlIAp0aGUgaW50ZXJwZXRhdGlvbiwgd2UgbWF5IGJhY2t0cmFuc2Zvcm0gdGhlIHJlc3VsdHMgdG8gdGhlIG9yaWdpbmFsCnNjYWxlICh0aW1lIGluIG1pbnV0ZXMpLiBUaGlzIHdlIGNhbiBkbyBieSB0YWtpbmcgdGhlIGV4cG9uZW50IG9mCnRoZSBvdXRjb21lczoKCmBgYHtyfQpleHAoc3VtbWFyeShsb2cubW9kZWwpJGNvZWZmaWNpZW50c1ssIkVzdGltYXRlIl0pCmBgYAoKYW5kIG9mIHRoZWlyIGNvbmZpZGVuY2UgaW50ZXJ2YWxzOgoKYGBge3J9CmV4cChjb25maW50KGxvZy5tb2RlbCkpCmBgYAoKTm93LCB3ZSBjYW4gaW50ZXJwcmV0IHRoZSByZXN1bHRzIGluIHRlcm1zIG9mIHRoZSBnZW9tZXRyaWMgbWVhbjoKCi0gVGhlIHNsb3BlOgoKSWYgdGhlIHNtb2tpbmcgc3RhdHVzIGNoYW5nZXMgZnJvbSAwIChub24tc21va2luZykgdG8gMSAoc21va2luZyksCnRoZSBnZW9tZXRyaWMgbWVhbiBvZiB0aGUgRkVWIHdpbGwgaW5jcmVhc2UsIG9uIGF2ZXJhZ2UsCmJ5IDEuMjUzNDYzIGxpdGVycyAoOTUlIENJIFsxLjE1ODY3NjsgMS4zNTYwMDRdKS4gVGhpcyBpbmNyZWFzZSBpcyAKc2lnbmlmaWNhbnQgb24gdGhlIDUlIHNpZ25pZmljYW5jZSBsZXZlbCAocD0yLjU4ZS0wOCkuCgotIFRoZSBpbnRlcmNlcHQ6CgpUaGUgZ2VvbWV0cmljIG1lYW4gb2YgdGhlIEZFViBmb3IgY2hpbGRyZW4gdGhhdCBoYXZlIHNtb2tpbmcgc3RhdHVzIDAgCmlzIDIuNTE2NDg3IGxpdGVycyAoOTUlIENJIFsyLjQ1NDQ4NDsgMi41ODAwNThdKS4gClRoaXMgdmFsdWUgaXMgc2lnbmlmaWNhbnRseSBkaWZmZXJlbnQgZnJvbSAwIG9uIHRoZSA1JSBzaWduaWZpY2FuY2UgbGV2ZWwKKDwgMmUtMTYpLgoKQWdhaW4sIG5vdGUgdGhhdCBpbiB0aGlzIGRhdGFzZXQgdGhlIGFzc3VtcHRpb24gb2YgKippbmRlcGVuZGVuY2UqKgppcyBhY3R1YWxseSAqKm5vdCBtZXQqKi4gSW4gdGhlIHR1dG9yaWFsIG9mIG11bHRpcGxlIHJlZ3Jlc3Npb24sCndlIHdpbGwgcmV2aXNpdCB0aGlzIGV4ZXJjaXNlLiBNb3JlIHNwZWNpZmljYWxseSwgd2Ugd2lsbCB0aGVyZSBzdHVkeSAKdGhlIGFzc29jaWF0aW9uIGJldHdlZW4gc21va2luZyBhbmQgRkVWIHdoaWxlIGFjY291bnRpbmcgZm9yCmRpZmZlcmVuY2VzIGluIHRoZSBhZ2UsIGhlaWdodCBhbmQgZ2VuZGVyIG9mIHRoZSBjaGlsZHJlbi4KCgoKCgoKCgoK</div>
+<div class="footer">
+    <hr>
+    This work is licensed under the <a href= "https://creativecommons.org/licenses/by-nc-sa/4.0">
+    CC BY-NC-SA 4.0</a> licence.
+</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("06_2_FEV_sol.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

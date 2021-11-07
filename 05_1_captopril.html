@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Lieven Clement and Jeroen Gilis" />
+
+
+<title>Exercise 5.1: Hypothesis testing on the captopril dataset</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSLS21</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-chalkboard-teacher"></span>
+     
+    Lectures
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01-intro.html">1. Introduction</a>
+    </li>
+    <li>
+      <a href="02-concepts.html">2. Concepts</a>
+    </li>
+    <li>
+      <a href="03-experimentalDesign.html">3. Experimental Design I</a>
+    </li>
+    <li>
+      <a href="04-dataExploration.html">4. Data Exploration</a>
+    </li>
+    <li>
+      <a href="05-statisticalInference.html">5.1 Statistical Inference 1</a>
+    </li>
+    <li>
+      <a href="05-statisticalInference-twosampleT.html">5.2 Statistical Inference 2</a>
+    </li>
+    <li>
+      <a href="06-linearRegression.html">6. Linear Regression</a>
+    </li>
+    <li>
+      <a href="07-Anova.html">7. Analysis of Variance</a>
+    </li>
+    <li>
+      <a href="08-MultipleRegression.html">8. Multiple Regression</a>
+    </li>
+    <li>
+      <a href="08-MultipleRegression-SpecificDesigns.html">8.2 Multiple Regression: Factorial Designs</a>
+    </li>
+    <li>
+      <a href="08-experimentalDesignII.html">8.3. Experimental Design II</a>
+    </li>
+    <li>
+      <a href="08-experimentalDesignIII.html">8.4. Experimental Design II</a>
+    </li>
+    <li>
+      <a href="09-NonparametericStatistics-WilcoxonMannWithney.html">9.1. Nonparametric Statistics 1</a>
+    </li>
+    <li>
+      <a href="09-NonparametericStatistics-KruskalWallis.html">9.2. Nonparametric Statistics 2</a>
+    </li>
+    <li>
+      <a href="10-categoricalDataAnalysis.html">10. Categorical Data Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04_exercises.html">4. Data Exploration</a>
+    </li>
+    <li>
+      <a href="05_exercises.html">5. Statistical inference</a>
+    </li>
+    <li>
+      <a href="06_exercises.html">6. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="07_exercises.html">7. ANOVA</a>
+    </li>
+    <li>
+      <a href="09_exercises.html">9. Non-parametric statistics</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/statOmics/PSLS21">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://statomics.github.io/">statOmics</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Exercise 5.1: Hypothesis testing on the captopril dataset</h1>
+<h4 class="author">Lieven Clement and Jeroen Gilis</h4>
+<h4 class="date">statOmics, Ghent University (<a href="https://statomics.github.io" class="uri">https://statomics.github.io</a>)</h4>
+
+</div>
+
+
+<p>In this exercise, we will see some basics in hypothesis testing and more specifically on t-tests. As an example, we will work with the captopril dataset that we already explored in the exercise on data exploration.</p>
+<p>The goal is to answer these two research questions;</p>
+<ol style="list-style-type: decimal">
+<li><p>Is the average systolic blood pressure before captopril treatment (SBPb) higher than 149 mmHg?</p></li>
+<li><p>Is the average SBP before captopril treatment significantly different from the average SBP after captopril treatment?</p></li>
+</ol>
+<p>First, load the required R libraries:</p>
+<div id="import-the-data" class="section level1">
+<h1><span class="header-section-number">1</span> Import the data</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>captopril &lt;-<span class="st"> </span>...</span></code></pre></div>
+</div>
+<div id="data-exploration" class="section level1">
+<h1><span class="header-section-number">2</span> Data exploration</h1>
+<p><strong>Note:</strong> you may copy the results from the data exploration tutorial.</p>
+<p>Before we start with hypothesis testing, it is crucial to first explore the data.</p>
+<p>We have 15 patients, for which we have measured the systolic blood pressure and diastolyic blood pressure, before and after treatment with the captopril drug.</p>
+<p>Visualize the data in an informative way (see tutorial of yesterday)</p>
+<p>Interpret the plot!</p>
+</div>
+<div id="question-1" class="section level1">
+<h1><span class="header-section-number">3</span> Question 1</h1>
+<p>Is the average systolic blood pressure (SBP) before captopril treatment higher than 149 mmHg?</p>
+<p>In the data exploration of the NHANES dataset we have set up a reference interval, i.e. an interval that is expected to hold 95% of the SBP values of healthy individuals. We found the interval of [93;149] mmHg. (If you did not get to this point of the script yet, don’t worry!).</p>
+<p>To test the effect of the captopril on subjects with hypertension (patients), we need to find a group of patients that have elevated SBP levels, higher than 149 mmHg.Therefore, we want to test whether the patients in the captopril study indeed have on average a SBP level that is greater than 149 mmHg. We can assess this research hypothesis using a one sample t-test.</p>
+<div id="assess-the-assumptions" class="section level2">
+<h2><span class="header-section-number">3.1</span> Assess the assumptions</h2>
+<p>Before we can perform a t-test, we must check that the required assumptions are met!</p>
+<ol style="list-style-type: decimal">
+<li>The observations are independent of each other</li>
+<li>The data (SBPb) must be normally distributed</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>... <span class="op">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="st">  </span>... <span class="op">+</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="st">  </span><span class="kw">geom_qq_line</span>()</span></code></pre></div>
+<p>Interpret the qq-plot</p>
+<p>If you feel comfortable with assuming normality based on the qq-plot, you may proceed with the analysis.</p>
+</div>
+<div id="hypothesis-test" class="section level2">
+<h2><span class="header-section-number">3.2</span> Hypothesis test</h2>
+<p>Here, we will test if mean SBPb is significantly higher than 149 mmHg.More specifically, we will test the null hypothesis;</p>
+<p><span class="math inline">\(H0:\)</span> the mean SBPb is equal to 149 mmHg</p>
+<p>versus the alternative hypothesis;</p>
+<p><span class="math inline">\(HA:\)</span> the mean SBPb is greater than 149 mmHg</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>output1 &lt;-<span class="st"> </span><span class="kw">t.test</span>(...,<span class="dt">mu=</span>...,<span class="dt">alternative =</span> ...,<span class="dt">conf.level =</span> ...,<span class="dt">data=</span>...)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>output1</span></code></pre></div>
+</div>
+<div id="conclusion" class="section level2">
+<h2><span class="header-section-number">3.3</span> Conclusion</h2>
+<p>When writing a conclusion on your research hypothesis, it is very important to be precise, concise, and complete. Try to formulate a good conclusion here.</p>
+<p>…</p>
+</div>
+</div>
+<div id="question-2" class="section level1">
+<h1><span class="header-section-number">4</span> Question 2</h1>
+<p>Is the average SBP before captopril treatment is different from the average SBP after captopril treatment?</p>
+<p>The data are paired data; each patient’s BP values were measured twice. Therefore, there will be a strong correlation between the BP values before and after treatment of each individual patient. We can show this with a scatterplot.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Create scatterplot</span></span></code></pre></div>
+<p>We clearly see that if a patient’s SBPb value is high, its SBPa value will be comparatively high as well.</p>
+<p>As such, we will now need to perform a paired two-sample t-test. First, we must check the assumptions.</p>
+<div id="check-the-assumptions" class="section level2">
+<h2><span class="header-section-number">4.1</span> Check the assumptions</h2>
+<p>State the assumptions that you have to check and include the diagnostic plots to assess the assumption.</p>
+</div>
+<div id="hypothesis-test-1" class="section level2">
+<h2><span class="header-section-number">4.2</span> Hypothesis test</h2>
+<p>If all assumptions are met, we may continue with performing the paired two-sample t-test.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>output2 &lt;-<span class="st"> </span><span class="kw">t.test</span>(...,..., <span class="dt">paired =</span> ...,<span class="dt">data=</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>output2</span></code></pre></div>
+</div>
+<div id="conclusion-1" class="section level2">
+<h2><span class="header-section-number">4.3</span> Conclusion</h2>
+<p>Formulate a conclusion based on the output.</p>
+<p>…</p>
+</div>
+</div>
+<div id="alternative-solution-one-sample-t-test-on-the-difference" class="section level1">
+<h1><span class="header-section-number">5</span> Alternative solution: One-sample t-test on the difference</h1>
+<p>Performing a paired two-sample t-test is analogous to performing a one-sample t-test on the difference between both groups.</p>
+<p>This can be spotted in the output of the paired two-sample t-test. The alternative hypothesis “HA” from the output states that the “true difference in means is not equal to 0”. So internally, R will actually perform a one-sample t-test on the difference, and check whether or not the true mean difference is equal to 0. We can also set this up manually.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>captopril <span class="op">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">bp_diff =</span> ...) <span class="op">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">t.test</span>(...,<span class="dt">mu=</span>...)</span></code></pre></div>
+<p>Indeed, the output is equivalent to that of the paired two-sample t-test.</p>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhlcmNpc2UgNS4xOiBIeXBvdGhlc2lzIHRlc3Rpbmcgb24gdGhlIGNhcHRvcHJpbCBkYXRhc2V0IiAgIAphdXRob3I6ICJMaWV2ZW4gQ2xlbWVudCBhbmQgSmVyb2VuIEdpbGlzIgpkYXRlOiAic3RhdE9taWNzLCBHaGVudCBVbml2ZXJzaXR5IChodHRwczovL3N0YXRvbWljcy5naXRodWIuaW8pIiAgCm91dHB1dDoKICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUgICAgCiAgICAgIHRoZW1lOiBjb3NtbwogICAgICB0b2M6IHRydWUKICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgIGhpZ2hsaWdodDogdGFuZ28KICAgICAgbnVtYmVyX3NlY3Rpb25zOiB0cnVlCi0tLQoKSW4gdGhpcyBleGVyY2lzZSwgd2Ugd2lsbCBzZWUgc29tZSBiYXNpY3MgaW4gaHlwb3RoZXNpcyB0ZXN0aW5nIGFuZCBtb3JlIApzcGVjaWZpY2FsbHkgb24gdC10ZXN0cy4gQXMgYW4gZXhhbXBsZSwgd2Ugd2lsbCB3b3JrIHdpdGggdGhlCmNhcHRvcHJpbCBkYXRhc2V0IHRoYXQgd2UgYWxyZWFkeSBleHBsb3JlZCBpbiB0aGUgZXhlcmNpc2Ugb24gZGF0YSBleHBsb3JhdGlvbi4KClRoZSBnb2FsIGlzIHRvIGFuc3dlciB0aGVzZSB0d28gcmVzZWFyY2ggcXVlc3Rpb25zOwoKMS4gSXMgdGhlIGF2ZXJhZ2Ugc3lzdG9saWMgYmxvb2QgcHJlc3N1cmUKYmVmb3JlIGNhcHRvcHJpbCB0cmVhdG1lbnQgKFNCUGIpIGhpZ2hlciB0aGFuIDE0OSBtbUhnPwoKMi4gSXMgdGhlIGF2ZXJhZ2UgU0JQIGJlZm9yZSBjYXB0b3ByaWwgdHJlYXRtZW50IApzaWduaWZpY2FudGx5IGRpZmZlcmVudCBmcm9tIHRoZSBhdmVyYWdlIFNCUCBhZnRlcgpjYXB0b3ByaWwgdHJlYXRtZW50PwoKRmlyc3QsIGxvYWQgdGhlIHJlcXVpcmVkIFIgbGlicmFyaWVzOgoKYGBge3IsIG1lc3NhZ2U9RkFMU0UsIHdhcm5pbmc9RkFMU0V9CgpgYGAKCiMgSW1wb3J0IHRoZSBkYXRhCgpgYGB7ciwgZXZhbD1GQUxTRX0KY2FwdG9wcmlsIDwtIC4uLgpgYGAKCiMgRGF0YSBleHBsb3JhdGlvbgoKKipOb3RlOioqIHlvdSBtYXkgY29weSB0aGUgcmVzdWx0cyBmcm9tIHRoZSBkYXRhIGV4cGxvcmF0aW9uIHR1dG9yaWFsLgoKQmVmb3JlIHdlIHN0YXJ0IHdpdGggaHlwb3RoZXNpcyB0ZXN0aW5nLCBpdCBpcyBjcnVjaWFsIHRvIGZpcnN0IGV4cGxvcmUgdGhlIGRhdGEuIAoKYGBge3J9CgpgYGAKCldlIGhhdmUgMTUgcGF0aWVudHMsIGZvciB3aGljaCB3ZSBoYXZlIG1lYXN1cmVkIHRoZSBzeXN0b2xpYyAKYmxvb2QgcHJlc3N1cmUgYW5kIGRpYXN0b2x5aWMgYmxvb2QgcHJlc3N1cmUsIGJlZm9yZSBhbmQgYWZ0ZXIKdHJlYXRtZW50IHdpdGggdGhlIGNhcHRvcHJpbCBkcnVnLgoKVmlzdWFsaXplIHRoZSBkYXRhIGluIGFuIGluZm9ybWF0aXZlIHdheSAoc2VlIHR1dG9yaWFsIG9mIHllc3RlcmRheSkKCmBgYHtyfQoKYGBgCgpJbnRlcnByZXQgdGhlIHBsb3QhCgojIFF1ZXN0aW9uIDEKCklzIHRoZSBhdmVyYWdlIHN5c3RvbGljIGJsb29kIHByZXNzdXJlIChTQlApCmJlZm9yZSBjYXB0b3ByaWwgdHJlYXRtZW50IGhpZ2hlciB0aGFuIDE0OSBtbUhnPwoKSW4gdGhlIGRhdGEgZXhwbG9yYXRpb24gb2YgdGhlIE5IQU5FUyBkYXRhc2V0IHdlIGhhdmUgc2V0IHVwIGEgcmVmZXJlbmNlCmludGVydmFsLCBpLmUuIGFuIGludGVydmFsIHRoYXQgaXMgZXhwZWN0ZWQgdG8gaG9sZCA5NSUgb2YKdGhlIFNCUCB2YWx1ZXMgb2YgaGVhbHRoeSBpbmRpdmlkdWFscy4gV2UgZm91bmQgdGhlIGludGVydmFsCm9mIFs5MzsxNDldIG1tSGcuIChJZiB5b3UgZGlkIG5vdCBnZXQgdG8gdGhpcyBwb2ludCBvZiB0aGUgc2NyaXB0CnlldCwgZG9uJ3Qgd29ycnkhKS4KClRvIHRlc3QgdGhlIGVmZmVjdCBvZiB0aGUgY2FwdG9wcmlsIG9uIHN1YmplY3RzIHdpdGggaHlwZXJ0ZW5zaW9uCihwYXRpZW50cyksIHdlIG5lZWQgdG8gZmluZCBhIGdyb3VwIG9mIHBhdGllbnRzIHRoYXQgaGF2ZQplbGV2YXRlZCBTQlAgbGV2ZWxzLCBoaWdoZXIgdGhhbiAxNDkgbW1IZy5UaGVyZWZvcmUsIHdlIHdhbnQKdG8gdGVzdCB3aGV0aGVyIHRoZSBwYXRpZW50cyBpbiB0aGUgY2FwdG9wcmlsIHN0dWR5IGluZGVlZCBoYXZlIG9uIGF2ZXJhZ2UgYSBTQlAgbGV2ZWwKdGhhdCBpcyBncmVhdGVyIHRoYW4gMTQ5IG1tSGcuIApXZSBjYW4gYXNzZXNzIHRoaXMgcmVzZWFyY2ggaHlwb3RoZXNpcyB1c2luZyBhIG9uZSBzYW1wbGUgdC10ZXN0LgoKIyMgQXNzZXNzIHRoZSBhc3N1bXB0aW9ucwoKQmVmb3JlIHdlIGNhbiBwZXJmb3JtIGEgdC10ZXN0LCB3ZSBtdXN0IGNoZWNrIHRoYXQgdGhlIHJlcXVpcmVkCmFzc3VtcHRpb25zIGFyZSBtZXQhCgoxLiBUaGUgb2JzZXJ2YXRpb25zIGFyZSBpbmRlcGVuZGVudCBvZiBlYWNoIG90aGVyCjIuIFRoZSBkYXRhIChTQlBiKSBtdXN0IGJlIG5vcm1hbGx5IGRpc3RyaWJ1dGVkCgoKYGBge3IsIGV2YWw9RkFMU0V9Ci4uLiAlPiUKICAuLi4gKwogIGdlb21fcXEoKSArCiAgZ2VvbV9xcV9saW5lKCkKYGBgCgpJbnRlcnByZXQgdGhlIHFxLXBsb3QKCklmIHlvdSBmZWVsIGNvbWZvcnRhYmxlIHdpdGggYXNzdW1pbmcgbm9ybWFsaXR5IGJhc2VkIG9uIHRoZSBxcS1wbG90LAp5b3UgbWF5IHByb2NlZWQgd2l0aCB0aGUgYW5hbHlzaXMuIAoKIyMgSHlwb3RoZXNpcyB0ZXN0CgpIZXJlLCB3ZSB3aWxsIHRlc3QgaWYgbWVhbiBTQlBiIGlzIHNpZ25pZmljYW50bHkgaGlnaGVyIHRoYW4gMTQ5IG1tSGcuTW9yZSAKc3BlY2lmaWNhbGx5LCB3ZSB3aWxsIHRlc3QgdGhlIG51bGwgaHlwb3RoZXNpczsKCiRIMDokIHRoZSBtZWFuIFNCUGIgaXMgZXF1YWwgdG8gMTQ5IG1tSGcKCnZlcnN1cyB0aGUgYWx0ZXJuYXRpdmUgaHlwb3RoZXNpczsKCiRIQTokIHRoZSBtZWFuIFNCUGIgaXMgZ3JlYXRlciB0aGFuIDE0OSBtbUhnCgpgYGB7ciwgZXZhbD1GQUxTRX0Kb3V0cHV0MSA8LSB0LnRlc3QoLi4uLG11PS4uLixhbHRlcm5hdGl2ZSA9IC4uLixjb25mLmxldmVsID0gLi4uLGRhdGE9Li4uKQpvdXRwdXQxCmBgYAoKIyMgQ29uY2x1c2lvbgoKV2hlbiB3cml0aW5nIGEgY29uY2x1c2lvbiBvbiB5b3VyIHJlc2VhcmNoIGh5cG90aGVzaXMsIGl0IGlzIHZlcnkgaW1wb3J0YW50IHRvIApiZSBwcmVjaXNlLCBjb25jaXNlLCBhbmQgY29tcGxldGUuIFRyeSB0byBmb3JtdWxhdGUgYSBnb29kIGNvbmNsdXNpb24gaGVyZS4KCi4uLgoKIyBRdWVzdGlvbiAyCgpJcyB0aGUgYXZlcmFnZSBTQlAgYmVmb3JlIGNhcHRvcHJpbCB0cmVhdG1lbnQgaXMgZGlmZmVyZW50IGZyb20gdGhlIAphdmVyYWdlIFNCUCBhZnRlciBjYXB0b3ByaWwgdHJlYXRtZW50PwoKVGhlIGRhdGEgYXJlIHBhaXJlZCBkYXRhOyBlYWNoIHBhdGllbnQncyBCUCB2YWx1ZXMgd2VyZSBtZWFzdXJlZCB0d2ljZS4gClRoZXJlZm9yZSwgdGhlcmUgd2lsbCBiZSBhIHN0cm9uZyBjb3JyZWxhdGlvbiBiZXR3ZWVuIHRoZSBCUCB2YWx1ZXMgYmVmb3JlIGFuZAphZnRlciB0cmVhdG1lbnQgb2YgZWFjaCBpbmRpdmlkdWFsIHBhdGllbnQuIFdlIGNhbiBzaG93IHRoaXMKd2l0aCBhIHNjYXR0ZXJwbG90LgoKYGBge3J9CiMgQ3JlYXRlIHNjYXR0ZXJwbG90CmBgYAoKV2UgY2xlYXJseSBzZWUgdGhhdCBpZiBhIHBhdGllbnQncyBTQlBiIHZhbHVlIGlzIGhpZ2gsIGl0cwpTQlBhIHZhbHVlIHdpbGwgYmUgY29tcGFyYXRpdmVseSBoaWdoIGFzIHdlbGwuIAoKQXMgc3VjaCwgd2Ugd2lsbCBub3cgbmVlZCB0byBwZXJmb3JtIGEgcGFpcmVkIHR3by1zYW1wbGUgdC10ZXN0LiBGaXJzdCwgd2UgbXVzdCAKY2hlY2sgdGhlIGFzc3VtcHRpb25zLgoKIyMgQ2hlY2sgdGhlIGFzc3VtcHRpb25zCgpTdGF0ZSB0aGUgYXNzdW1wdGlvbnMgdGhhdCB5b3UgaGF2ZSB0byBjaGVjayBhbmQgaW5jbHVkZSB0aGUgZGlhZ25vc3RpYyBwbG90cyB0byBhc3Nlc3MgdGhlIGFzc3VtcHRpb24uIAoKIyMgSHlwb3RoZXNpcyB0ZXN0CgpJZiBhbGwgYXNzdW1wdGlvbnMgYXJlIG1ldCwgd2UgbWF5IGNvbnRpbnVlIHdpdGgKcGVyZm9ybWluZyB0aGUgcGFpcmVkIHR3by1zYW1wbGUgdC10ZXN0LgoKYGBge3IsIGV2YWw9RkFMU0V9Cm91dHB1dDIgPC0gdC50ZXN0KC4uLiwuLi4sIHBhaXJlZCA9IC4uLixkYXRhPSkKb3V0cHV0MgpgYGAKCiMjIENvbmNsdXNpb24KCkZvcm11bGF0ZSBhIGNvbmNsdXNpb24gYmFzZWQgb24gdGhlIG91dHB1dC4KCi4uLgoKIyBBbHRlcm5hdGl2ZSBzb2x1dGlvbjogT25lLXNhbXBsZSB0LXRlc3Qgb24gdGhlIGRpZmZlcmVuY2UKClBlcmZvcm1pbmcgYSBwYWlyZWQgdHdvLXNhbXBsZSB0LXRlc3QgaXMgYW5hbG9nb3VzIHRvIHBlcmZvcm1pbmcgYSBvbmUtc2FtcGxlIAp0LXRlc3Qgb24gdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBib3RoIGdyb3Vwcy4KClRoaXMgY2FuIGJlIHNwb3R0ZWQgaW4gdGhlIG91dHB1dCBvZiB0aGUgcGFpcmVkIHR3by1zYW1wbGUKdC10ZXN0LiBUaGUgYWx0ZXJuYXRpdmUgaHlwb3RoZXNpcyAiSEEiIGZyb20gdGhlIG91dHB1dCBzdGF0ZXMgdGhhdCAKdGhlICJ0cnVlIGRpZmZlcmVuY2UgaW4gbWVhbnMgaXMgbm90IGVxdWFsIHRvIDAiLiBTbyBpbnRlcm5hbGx5LApSIHdpbGwgYWN0dWFsbHkgcGVyZm9ybSBhIG9uZS1zYW1wbGUgdC10ZXN0IG9uIHRoZSBkaWZmZXJlbmNlLCBhbmQKY2hlY2sgd2hldGhlciBvciBub3QgdGhlIHRydWUgbWVhbiBkaWZmZXJlbmNlIGlzIGVxdWFsIHRvIDAuCldlIGNhbiBhbHNvIHNldCB0aGlzIHVwIG1hbnVhbGx5LgoKYGBge3IsIGV2YWw9RkFMU0V9CmNhcHRvcHJpbCAlPiUKICBtdXRhdGUoYnBfZGlmZiA9IC4uLikgJT4lCiAgdC50ZXN0KC4uLixtdT0uLi4pCmBgYAoKSW5kZWVkLCB0aGUgb3V0cHV0IGlzIGVxdWl2YWxlbnQgdG8gdGhhdCBvZiB0aGUgcGFpcmVkIHR3by1zYW1wbGUgdC10ZXN0LgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoK</div>
+<div class="footer">
+    <hr>
+    This work is licensed under the <a href= "https://creativecommons.org/licenses/by-nc-sa/4.0">
+    CC BY-NC-SA 4.0</a> licence.
+</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("05_1_captopril.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
