@@ -94,7 +94,7 @@ Though our results do not allow to infer causality, they do reinforce our a prio
 knitr::include_graphics("./figures/fear.png")
 ```
 
-Papers are merged, published, and 32 times cited 
+Papers are merged, published, and 39 times cited 
 
 Bousquet et al. (2021). Cabbage and fermented vegetables: From death rate heterogeneity in countries to candidates for mitigation strategies of severe COVID-19. Allergy 76:735–750.
 
@@ -138,6 +138,62 @@ Another group of abundant bacteria are the *Staphylococcus spp.*, these bacteria
   	1. Remove armpit-microbiome with antibiotics
     2. Influence armpit microbiome with microbial  transplant (https://youtu.be/9RIFyqLXdVw)
 
+
+```{r out.width='80%',fig.asp=.8, fig.align='center',echo=FALSE}
+if ("pi"%in%ls()) rm("pi")
+kopvoeter<-function(x,y,angle=0,l=.2,cex.dot=.5,pch=19,col="black")
+{
+angle=angle/180*pi
+points(x,y,cex=cex.dot,pch=pch,col=col)
+lines(c(x,x+l*cos(-pi/2+angle)),c(y,y+l*sin(-pi/2+angle)),col=col)
+lines(c(x+l/2*cos(-pi/2+angle),x+l/2*cos(-pi/2+angle)+l/4*cos(angle)),c(y+l/2*sin(-pi/2+angle),y+l/2*sin(-pi/2+angle)+l/4*sin(angle)),col=col)
+lines(c(x+l/2*cos(-pi/2+angle),x+l/2*cos(-pi/2+angle)+l/4*cos(pi+angle)),c(y+l/2*sin(-pi/2+angle),y+l/2*sin(-pi/2+angle)+l/4*sin(pi+angle)),col=col)
+lines(c(x+l*cos(-pi/2+angle),x+l*cos(-pi/2+angle)+l/2*cos(-pi/2+pi/4+angle)),c(y+l*sin(-pi/2+angle),y+l*sin(-pi/2+angle)+l/2*sin(-pi/2+pi/4+angle)),col=col)
+lines(c(x+l*cos(-pi/2+angle),x+l*cos(-pi/2+angle)+l/2*cos(-pi/2-pi/4+angle)),c(y+l*sin(-pi/2+angle),y+l*sin(-pi/2+angle)+l/2*sin(-pi/2-pi/4+angle)),col=col)
+}
+
+par(mar=c(0,0,0,0),mai=c(0,0,0,0))
+plot(0,0,xlab="",ylab="",xlim=c(0,10),ylim=c(0,10),col=0,xaxt="none",yaxt="none",axes=FALSE)
+rect(0,6,10,10,border="red",lwd=2)
+text(.5,8,"population",srt=90,col="red",cex=2)
+symbols (3, 8, circles=1.5, col="red",add=TRUE,fg="red",inches=FALSE,lwd=2)
+set.seed(330)
+grid=seq(0,1.3,.01)
+
+for (i in 1:50)
+{
+	angle1=runif(n=1,min=0,max=360)
+	angle2=runif(n=1,min=0,max=360)
+	radius=sample(grid,prob=grid^2*pi/sum(grid^2*pi),size=1)
+	kopvoeter(3+radius*cos(angle1/180*pi),8+radius*sin(angle1/180*pi),angle=angle2)
+}
+text(7.5,8,"Microbiome in population",col="red",cex=1.2)
+
+rect(0,0,10,4,border="blue",lwd=2)
+text(.5,2,"sample",srt=90,col="blue",cex=2)
+symbols (3, 2, circles=1.5, col="red",add=TRUE,fg="blue",inches=FALSE,lwd=2)
+for (i in 0:1)
+	for (j in 0:4)
+{
+
+	kopvoeter(2.1+j*(3.9-2.1)/4,1.1+i/2,col="purple")
+}
+for (i in 2:3)
+	for (j in 0:4)
+{
+
+	kopvoeter(2.1+j*(3.9-2.1)/4,1.6+i/2,col="orange")
+}
+text(7.5,2,"Microbiome in sample",col="blue",cex=1.2)
+
+arrows(3,5.9,3,4.1,col="black",lwd=3)
+text(1.5,5,"EXP. DESIGN (1)",col="black",cex=1.2)
+text(7.5,.5,"DATA EXPLORATION &\nDESCRIPTIVE STATISTICS (2)",col="black",cex=1.2)
+arrows(7,4.1,7,5.9,col="black",lwd=3)
+text(8.5,5,"ESTIMATION &\nINFERENCE (3)",col="black",cex=1.2)
+```
+
+
 - Experiment:
 
     - 20 subjects with smelly armpits are attributed to one of two treatment groups
@@ -168,6 +224,7 @@ ap
 - It is often underrated and overlooked. 
 
 ### Descriptive statistics
+
 We first summarize the data and calculate the mean, standard deviation, number of observations and standard error and store the result in an object apRelSum via 'apRelSum<-`
 
 1. We pipe the `ap` dataframe to the group_by function to group the data by treatment trt `group_by(trt)`
@@ -281,50 +338,55 @@ This is an informative plot!
 
 ---
 
-## Some concepts
+- We observed an effect of the transplantation on the relatieve abundantie of Staphylococcus.
 
-- Why do we need more than one student per group?
-
-- What are the meaning and the consequences of the term "randomly"?
-
-- Consider two designs:
-
-1. A research assistant selects 20 male students with smelly armpits from his faculty.
-
-2. A research assistant selects 20 random people with smelly armpits from the Belgian population.
+- Is that effect large enough to conclude that the treatment works? 
 
 ---
 
-```{r echo=FALSE}
-ap2<-ap
-hlp<-lm(rel~trt,ap)
-ap2$rel<-rnorm(20,mean=hlp$fit-20,sd=sigma(hlp)*2)
-```
+## Estimation and statistical inference 
 
+- Induction: With statistical inference we can generalize what we observe in the sample towards the population. 
+
+- The price that we have to pay: uncertainty on our conclusions! 
+
+---
+
+- With data we cannot prove that the treatment works
+
+- Falsification principle of Popper: With data we can only  reject a hypothesis or theory. 
+
+- With stats we can thus not prove that the treatment works. 
+
+- But stats will allow us to falcify the opposite hypothesis: how much evidence is there in the data against the assumption that there is no effect of the treatment?
+
+- With stats we can calculate how likely it is to draw a random sample (when you would repeat the experiment) with a mean difference in relative abundance between transplant and placebo group that is at least as large as what we observed in our sample when there would be no effect of the treatment. 
+
+- This probability is called a p-value.
+
+- If p is very small, it is very unlikely to observe a sample like ours by random change when there would be no effect of the treatment. 
+
+- We typically compare p with 5%. If there is no effect of the treatment we will thus tolerate a probability of 5% on a false positive conclusion. 
+
+- To calculate p we will have to model the data using  statistical models.
+
+---
+
+In chapter 5 we will learn that we can use a two-sample t-test to generalise what we observe in the microbiome dataset towards the population. 
 
 ```{r}
-ap %>%  
-  ggplot(aes(x=trt,y=rel)) +
-  geom_boxplot(outlier.shape=NA) +
-  geom_point(position="jitter") + 
-  ylim(0,100)
-
-ap2 %>%  
-  ggplot(aes(x=trt,y=rel)) +
-  geom_boxplot(outlier.shape=NA) +
-  geom_point(position="jitter") + 
-  ylim(0,100)
+t.test(rel~trt,data=ap)
 ```
 
----
+Conclusion:
 
-- Design 1: smaller variability
-
-- Design 2: larger variability and lower relative abundance of *Staphylococcus*
-
-- What is the best design?
+We can conclude that the relative abundance of Staphylococcus in the microbiome of individuals with smelly armpits  is `r format(apRelSum$mean[2]-apRelSum$mean[1],digits=3)`% higher upon the transplant than upon the placebo treatment (p < 0.001). 
 
 ---
+
+## Some concepts
+
+What are the consequences of using a sample and randomisation?
 
 - Random sampling is closely related to the concept of the population or the scope of the study.
 
@@ -624,6 +686,70 @@ Only in `r sum(res[,2]<0.05&res[,1]<0)` out of 20000 samples we conclude that th
 2. Add it here below
 3. Modify the sample size to 50.
 4. What do you observe?
+
+
+---
+
+## Control of false positives
+
+Wat happens when there is no difference between both groups? 
+
+- We will have to simulate experiments for which the cholestorol levels are the same for both groups. 
+
+
+- We can do this by sampling data for both groups from the subset of women in the study. 
+
+- We do this again for 10 subjects per group
+
+
+```{r}
+nsim<-20000
+nSamp<-10
+res<-matrix(0,nrow=nsim,ncol=2)
+fem<-nhanesSub%>%filter(Gender=="female")
+mal<-nhanesSub%>%filter(Gender=="male")
+
+for (i in 1:nsim)
+{
+ femSamp<-sample(fem$cholLog,nSamp)
+ fem2Samp<-sample(fem$cholLog,nSamp)
+
+meanFem<-mean(femSamp)
+ meanFem2<-mean(fem2Samp)
+ delta<-meanFem-meanFem2
+ sdFem<-sd(femSamp)
+ sdFem2<-sd(fem2Samp)
+ seFem<-sdFem/sqrt(nSamp)
+ seFem<-sdFem2/sqrt(nSamp)
+ sdPool<-sqrt((sdFem^2*(nSamp-1) + sdFem2^2*(nSamp-1))/(2*nSamp-2))
+tvalue<-(delta)/(sdPool*sqrt(1/nSamp+1/nSamp))
+pvalue<-pt(abs(tvalue),lower.tail = FALSE,df=2*nSamp-2)*2
+ res[i,]<-c(delta,pvalue)
+}
+sum(res[,2]<0.05&res[,1]>0)
+sum(res[,2]>=0.05)
+sum(res[,2]<0.05&res[,1]<0)
+
+res<-res %>% as.data.frame
+names(res) <- c("delta","pvalue")
+res %>% 
+  ggplot(aes(x=delta,y=-log10(pvalue),color=pvalue<0.05)) + 
+  geom_point() + 
+  xlab("Average cholesterol difference") +
+  ylab("- log10(pvalue)") +
+  scale_color_manual(values=c("black","red"))
+
+res %>% 
+  ggplot(aes(y=delta)) +
+  geom_boxplot() +
+  geom_point(aes(x=0,y=0,color="pop. diff")) +
+  xlab("")
+```
+
+Note, that the number of false positives are on `r sum(res[,2]<0.05)` on `r format(nsim,digits=5)` experiments and are nicely controlled at the 5% level.
+
+What happens if we increase the sample size to 50 subjects per group?  
+
 
 ---
 

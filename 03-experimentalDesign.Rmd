@@ -129,9 +129,14 @@ text(7.5,.5,"DATA EXPLORATION &\nDESCRIPTIVE STATISTICS (2)",col="black",cex=1.2
 
 ---
 
-# Blocking
+# Sample size 
 
-## Gene expression example
+- The sample size and the design are crucial.
+
+- The larger the sample size, the more precise the results.
+
+
+# Bad design example
 
 - dm: diabetic medium, nd: non diabetic medium, co: control
 - 4 bio-reps, 2 techreps/biorep
@@ -143,17 +148,7 @@ text(7.5,.5,"DATA EXPLORATION &\nDESCRIPTIVE STATISTICS (2)",col="black",cex=1.2
 
 ![](https://raw.githubusercontent.com/GTPB/PSLS20/gh-pages/assets/figs/qpcrBadDesign2.png){ width=100% }
 
-## Nature methods: Points of significance - Blocking 
-
-![](https://www.nature.com/articles/nmeth.3005.pdf){ width=100% }
-
 ---
-
-# Sample size 
-
-- The sample size and the design are crucial.
-
-- The larger the sample size, the more precise the results.
 
 
 # Wrap-up
@@ -169,3 +164,4 @@ text(7.5,.5,"DATA EXPLORATION &\nDESCRIPTIVE STATISTICS (2)",col="black",cex=1.2
 - Confounding can be avoided via randomization.
 
 - We can also correct for confounding in the statistical analysis for the confounders that have been registered. 
+

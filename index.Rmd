@@ -110,27 +110,39 @@ source("https://raw.githubusercontent.com/GTPB/PSLS20/master/install.R")
 
 1. [Introduction](./01-intro.html)
 2. [Concepts](./02-concepts.html)
-3. Experimental Design 
-    - [3.1.Intro](./03-experimentalDesign.html)
-    - [3.2. Power and Replication](./03-experimentalDesignII.html)
+3. [Experimental Design](./03-experimentalDesign.html)
+    
 
 4. [Data Exploration](./04-dataExploration.html)
+
+    - [Exercises](./04_exercises.html)
+
 5. Statistical Inference
 
     - [5.1. Statistical Inference](./05-statisticalInference.html)
     - [5.2. Two sample t-test](./05-statisticalInference-twosampleT.html)
+    - [Exercises](./05_exercises.html)
 
 6. [Linear Regression](./06-linearRegression.html)
+
+    - [Exercises](./06_exercises.html)
+
 7. [Analysis of Variance](./07-Anova.html)
+
+    - [Exercises](./07_exercises.html)
+
 8. Multiple Regression: 
 
     - [Multiple Regression](./08-MultipleRegression.html)
     - [Factorial Designs](./08-MultipleRegression-SpecificDesigns.html)
+    - [Experimental Design II: Power and Replication](./08-experimentalDesignII.html)
+    - [Experimental Design III: Blocking](./08-experimentalDesignIII.html)
     
 9. Nonparametric Statistics:
     
     - [9.1 Nonparametric Statistics: Wilcoxon-Mann-Whitney test](./09-NonparametericStatistics-WilcoxonMannWithney.html)
     - [9.2 Nonparametric Statistics: Kruskal Wallis test](./09-NonparametericStatistics-KruskalWallis.html)
+    - [Exercises](./049_exercises.html)
     
 10. [Categorical Data Analysis](./10-categoricalDataAnalysis.html)
 

@@ -184,7 +184,7 @@ $\rightarrow$ assess cholesterol level in population above 25.
 
 ---
 
-##Intermezzo probability theory
+## Intermezzo probability theory
 
 ### Discrete random variables
 
@@ -197,8 +197,8 @@ $\rightarrow$ assess cholesterol level in population above 25.
 
 - An event $A$  is a subset of the sample space 
       
-      - Get an even number when rolling a dice: $A=(2,4,6)$.
-      - Can also be $A=(1)$ one  subset of the sample space. 
+    - Get an even number when rolling a dice: $A=(2,4,6)$.
+    - Can also be $A=(1)$ one  subset of the sample space. 
 
 - Event space $\mathcal{A}$ is the class of all possible events associated with a given experiment.
 
@@ -285,7 +285,10 @@ $$E[X]=\sum\limits_{x\in\Omega} x P(X=x)$$
     - The mean equals $E[X]=0.508$.
 
 - Dice example: 
-$ E[X]= 1 \times 1/6 + 2 \times 1/6 + \ldots + 6 \times 1/6 = $ `r sum(1:6)/6`
+
+$$
+E[X]= 1 \times 1/6 + 2 \times 1/6 + \ldots + 6 \times 1/6 = `r sum(1:6)/6`
+$$
 
 ---
 

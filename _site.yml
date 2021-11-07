@@ -11,10 +11,8 @@ navbar:
           href: 01-intro.html
         - text: "2. Concepts"
           href: 02-concepts.html
-        - text: "3.1. Experimental Design I"
+        - text: "3. Experimental Design I"
           href: 03-experimentalDesign.html
-        - text: "3.1. Experimental Design I"
-          href: 03-experimentalDesignII.html
         - text: "4. Data Exploration"
           href: 04-dataExploration.html
         - text: "5.1 Statistical Inference 1"
@@ -29,6 +27,10 @@ navbar:
           href: 08-MultipleRegression.html
         - text: "8.2 Multiple Regression: Factorial Designs"
           href: 08-MultipleRegression-SpecificDesigns.html
+        - text: "8.3. Experimental Design II"
+          href: 08-experimentalDesignII.html
+        - text: "8.4. Experimental Design II"
+          href: 08-experimentalDesignIII.html
         - text: "9.1. Nonparametric Statistics 1"
           href: 09-NonparametericStatistics-WilcoxonMannWithney.html
         - text: "9.2. Nonparametric Statistics 2"
@@ -39,8 +41,16 @@ navbar:
     - text: "Labs"
       icon: fa-laptop
       menu:
-      - text: "Lab 1"
-        href:
+      - text: "4. Data Exploration"
+        href: 04_exercises.html
+      - text: "5. Statistical inference"
+        href: 05_exercises.html
+      - text: "6. Simple linear regression"
+        href: 06_exercises.html
+      - text: "7. ANOVA"
+        href: 07_exercises.html
+      - text: "9. Non-parametric statistics"
+        href: 09_exercises.html
 
   right:
     - icon: fab fa-github
@@ -52,7 +62,7 @@ output:
       code_download: true
       df_print: paged
       theme: flatly
-      highligt: tango
+      highlight: tango
       toc: true
       toc_float: true
       number_sections: true

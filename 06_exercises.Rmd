@@ -1,0 +1,53 @@
+---
+title: "Exercises on chapter 6: Simple linear regression"
+author: "Lieven Clement and Jeroen Gilis"
+date: "statOmics, Ghent University (https://statomics.github.io)"
+output:
+    html_document:
+      code_download: true    
+      theme: cosmo
+      toc: true
+      toc_float: true
+      highlight: tango
+      number_sections: true
+---
+
+On the third day of the "Practical Statistics for the Life Sciences (2021)" 
+course, we will have two tutorials on data linear regression, based on different 
+datasets:
+
+
+# The poison dataset:
+
+In this experiment, 96 fish (dojofish, goldfish and zebrafish)
+were placed separately in a tank with two litres of water and
+a certain dose (in mg) of a certain poison EI-43,064. The resistance
+of the fish a against the poison was measured as the amount of
+minutes the fish survived upon adding the poison (Surv_time, in
+minutes). Additionally, the weight of each fish was measured.
+
+In this tutorial, we will study the association between dose and survival time
+by using a linear regression model.
+
+- Exercise: [Exercise1](./06_1_poison.html)
+- Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/poison.csv
+
+---
+
+# The FEV dataset:
+
+The FEV, which is an acronym for forced expiratory volume,
+is a measure of how much air a person can exhale (in litres) 
+during  a forced breath. In this dataset, the FEV of 606 children,
+between the ages of 6 and 17, were measured. The dataset
+also provides additional information on these children:
+their `age`, their `height`, their `gender` and, most
+importantly, whether the child is a smoker or a non-smoker.
+
+The overarching goal of this experiment was to find out if
+smoking has an effect on the FEV of children.
+
+- Exercise: [Exercise2](./06_2_FEV.html)
+- Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/fev.txt
+
+

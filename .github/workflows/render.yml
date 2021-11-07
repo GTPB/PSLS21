@@ -2,18 +2,14 @@ name: Render and Deploy
 
 on:
   push:
-    branches:
-      - master
   pull_request:
-    branches:
-      - master
 
 ## If you need to clear the cache, update the number inside cache-version as
 ## discussed at https://github.com/r-lib/actions/issues/86.
 ## Note that you can always run a GHA test without the cache by using the word
 ## "/nocache" in the commit message.
 env:
-  cache-version: 'cache-v1'
+  cache-version: 1
 
 jobs:
   render:
@@ -40,18 +36,10 @@ jobs:
         run: |
           brew install --cask xquartz
 
-      - name: Cache Renv packages
-        if: "!contains(github.event.head_commit.message, '/nocache')"
-        uses: actions/cache@v2
+      - name: Set up renv
+        uses: r-lib/actions/setup-renv@master
         with:
-          path: $HOME/.local/share/renv
-          key: ${{ env.cache-version }}-renv-${{ hashFiles('renv.lock') }}
-          restore-keys: ${{ env.cache-version }}-renv-
-
-      - name: Install packages
-        run: |
-          R -e 'install.packages("renv")'
-          R -e 'renv::restore()'
+          cache-version: ${{ env.cache-version }}
 
       - name: Session info
         run: |
@@ -66,8 +54,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: '**/*_cache'
-          key: ${{ env.cache-version }}-knitr-${{ runner.os }}
-          restore-keys: ${{ env.cache-version }}-knitr-
+          key: cache-version-${{ env.cache-version }}-knitr-${{ runner.os }}
+          restore-keys: cache-version-${{ env.cache-version }}-knitr-
 
       - name: Render site
         run: |
@@ -75,7 +63,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Deploy 🚀
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
