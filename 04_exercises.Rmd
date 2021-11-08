@@ -45,10 +45,7 @@ The CMET-groep at Ghent University does research on transplanting the armpit
 microbiome to help people with smelly armpits. To test the effect of 
 transplanting the microbiome, they conducted an experiment on two groups 
 of volunteers: one group was treated with a placebo, while the other had a 
-microbiome transplant. The goal was to find whether or not the relative 
-abundance  Staphylococcus spp. in the microbiome of the armpit is significantly 
-different between subjects treated with the placebo and subjects treated with a 
-microbial transplant.
+microbiome transplant. The goal was to assess whether a microbial transplant can affect the relative abundanceStaphylococcus spp. in the microbiome of the armpit.
 
 In this exercise, you will use your acquired skills from the first exercise to 
 explore the armpit dataset all by yourself!

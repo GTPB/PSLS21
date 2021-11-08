@@ -151,32 +151,21 @@ Cuckoo %>%
 There seems to be no clear deviation from normality.
 
 The third assumption seems to be met based on our
-visualization with the boxplots. As all assumptions are met, 
-we may proceed with the analysis.
+visualization with boxplots. Indeed the interquartile range of the boxes are very comparable. As all assumptions are met, we may proceed with the analysis.
 
 ## Hypothesis testing
 
 ```{r}
-length_4 <- Cuckoo %>% 
-  filter(type == "4") %>%
-  pull(length)
-
-length_6 <- Cuckoo %>% 
-  filter(type == "6") %>%
-  pull(length)
-
-output <- t.test(length_4,length_6,conf.level = 0.95,var.equal = TRUE)
+output <- t.test(length ~ type, data = Cuckoo, var.equal = TRUE)
 output
 ```
 
 ## Conclusion 
 
-We may conclude that, on the 5% significance level, the mean 
-length of eggs fostered by the European robin in extremely
-significantly higher (p = `r round(output$p.value,8)`) than the mean
-length of eggs fostered by the Eurasian wren. The eggs 
+There is an extremely significant difference in mean 
+length of Cuckoo eggs fostered by the European robin and those fostered by the Eurasian wren  (p << 0.001). The eggs 
 fostered by the European wren are on average 
-`r round(unname(output$estimate[1])-unname(output$estimate[2]),2)` mm longer
+`r round(output$estimate[1]-output$estimate[2],2)` mm longer
 (95% CI [`r round(output$conf.int[c(1,2)],2)`]).
 
 

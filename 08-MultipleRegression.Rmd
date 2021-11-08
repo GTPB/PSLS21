@@ -598,7 +598,7 @@ Note, however, that all dummies for factors with multiple levels will be taken o
 
 ---
 
-#Diagnostics
+# Diagnostics
 ## Multicollineariteit
 
 ```{r echo=FALSE}
@@ -783,4 +783,178 @@ dfbetasPlots(lmVWS_IntVW)
 ```{r out.width='100%',fig.align='center', message=FALSE, echo=FALSE}
 boxplot(exp(prostate$lweight),ylab="Prostate Weight (g)")
 ```
+
+
+# Constrasts
+
+- In more complex designs that are modelled using general linear models one often has to assess multiple hypotheses. 
+- Moreover these hypotheses can typically not always be translated into a test on one parameter, but in a linear combination of model parameters. 
+- A linear combination of model parameters is also referred to as a contrast.
+
+## NHANES example
+
+- Suppose that researchers want to assess the association between age and bloodpressure. 
+
+- Possibly this association will differ for females and males. 
+
+- They want to assess following hypotheses: 
+
+    - Is there an association between age and blood pressure for females? 
+    - Is there an association between age and blood pressure for males? 
+    - Is the association between age and blood pressure different for females and  males? 
+
+## Model
+
+We fit a model for the average systolic blood pressure (`BPSysAve`) using age, gender and the interaction between age and gender for adult caucasians from the NHANES study.
+
+```{r}
+library(NHANES)
+bpData <- NHANES %>%
+filter(
+  Race1 =="White" &
+    Age >= 18 &
+    !is.na(BPSysAve)
+    )
+
+mBp1 <- lm(BPSysAve ~ Age*Gender, bpData)
+par(mfrow = c(2,2))
+plot(mBp1)
+```
+
+- Assumptions are not fullfilled!
+
+    - lineariteit is ok
+    - heteroscedasticity
+    - No normality: distribution is skewed to the right .
+    - Large dataset so we can adopt the CLT
+
+### Transformation
+
+We fit a model using log2 transformed average systolic blood pressure (`BPSysAve`).
+
+```{r}
+mBp2 <- lm(BPSysAve %>% log2 ~ Age*Gender, bpData)
+par(mfrow = c(2,2))
+plot(mBp2)
+```
+
+- Residuals are still heteroscedastic.
+
+### Remediate for heteroscedasticity
+
+- If the residual plot shows a cone we can get to valid inference for large samples by modeling the variance  explicitly in function of the fitted response. 
+
+- The inverse variance for each observation can than be used as a weight in the lm function. 
+
+1. Model standard deviation in function of mean response.
+2. Do this by modeling absolute values of residuals in function of fitted values of model. 
+3. We can than estimate the variance of Y for each observation by squaring the predictions for all observations using the model for the standard deviation. 
+4. Inference remains valid asymptotically. 
+
+```{r}
+mSd <- lm(mBp1$res %>% abs ~ mBp2$fitted)
+```
+
+We estimate the model again:
+
+```{r}
+mBp3 <- lm(BPSysAve ~ Age*Gender, bpData, w = 1/mSd$fitted^2)
+```
+
+Residuals are still heteroscedastic.
+
+```{r}
+data.frame(residuals = mBp3$residuals, fit = mBp3$fitted) %>%
+  ggplot(aes(fit,residuals)) +
+  geom_point()
+```
+
+But we accounted for that using weights! 
+Note that if we rescale the residuals using the standard deviation (multiplying them with the square root of the weight) we obtain  rescaled residuals that are homoscedastic.
+
+The model parameters are estimated using weighted least squares:
+
+\[ SSE = \sum\limits_{i=1}^n w_i e_i^2\]
+
+with $w_i = 1/\hat \sigma^2_i$.
+
+Weighted regression will correct for heteroscedasticity.
+
+```{r}
+data.frame(scaled_residuals = mBp3$residuals/mSd$fitted, fit = mBp3$fitted) %>%
+  ggplot(aes(fit,scaled_residuals)) +
+  geom_point()
+```
+
+### Inference
+
+```{r}
+summary(mBp3)
+```
+
+The research questions translate to following nullhypotheses:
+
+1. Association between blood pressure and age for females? \[H_0: \beta_\text{Age} = 0 \text{ vs } H_1: \beta_\text{Age} \neq 0 \]
+
+2. Association between blood pressure and age for males? \[H_0: \beta_\text{Age} + \beta_\text{Age:Gendermale} = 0 \text{ vs } H_1: \beta_\text{Age} + \beta_\text{Age:Gendermale} \neq 0 \]
+
+3. Is the association between blood pressure and age different for females and males?  \[H_0: \beta_\text{Age:Gendermale} = 0 \text{ vs } H_1: \beta_\text{Age:Gendermale} \neq 0 \]
+
+
+- We can assess hypotheses 1 and 3 immediately using the output of the model. 
+- Hypotheses 2 is a linear combination of two parameters. 
+- We also need multiple tests for assessing the association between sysBp and Age. 
+
+We can again use an Anova approach.
+
+1.  We first assess the omnibus hypothesis that there is no association between age and blood pressure. 
+\[ H_0: \beta_\text{Age} = \beta_\text{Age} + \beta_\text{Age:Gendermale} = \beta_\text{Age:Gendermale} = 0
+\]
+
+- which simplifies to assessing 
+
+\[ H_0: \beta_\text{Age} = \beta_\text{Age:Gendermale} = 0
+\]
+
+- We can do this by comparing two models: the full model with an effect for Gender, Age and Gender x Age interaction against a reduced model with only Gender.
+
+2. If we can reject this hypothesis we can again do a posthoc analysis for each of the contrasts. 
+
+
+#### Omnibus test
+
+```{r}
+mBp0 <- lm(BPSysAve ~ Gender, bpData, w = 1/mSd$fitted^2)
+anova(mBp0, mBp3)
+```  
+
+
+#### Posthoc tests
+
+For the posthoc tests we will again build upon the `multcomp` package.
+
+```{r}
+library(multcomp)
+bpPosthoc <- glht(mBp3, linfct=c(
+  "Age = 0",
+  "Age + Age:Gendermale = 0",
+  "Age:Gendermale = 0")
+  )
+bpPosthoc %>% summary
+
+bpPosthocCI <- bpPosthoc %>% confint
+bpPosthocCI
+```
+
+Note that the glht function allows us to define the contrasts by explicitely defining the nullhypothese using the names of the model parameters. 
+
+#### Conclusion
+
+We can conclude that the association between age and blood pressure is extremely significant (p << 0.001).
+
+The blood pressure for females that differ in age is on average `r round(bpPosthocCI$confint[1,1],2)` mm Hg higher per year of age difference for the eldest female and is extremely significant (p << 0.001, 95% CI [`r round(bpPosthocCI$confint[1,-1],2)`].
+
+The blood pressure for males that differ in age is on average `r round(bpPosthocCI$confint[2,1],2)` mm Hg higher per year of age difference for the eldest male and is extremely significant (p << 0.001, 95% CI [`r round(bpPosthocCI$confint[2,-1],2)`].
+
+The average blood pressure difference between subjects that differ in age is on average  `r round(abs(bpPosthocCI$confint[3,1]),2)` mm Hg/jaar higher for females than for males (p << 0.001, 95% CI [`r bpPosthocCI$confint[3,-1] %>% abs %>% sort %>%round(.,2)`]).  
 

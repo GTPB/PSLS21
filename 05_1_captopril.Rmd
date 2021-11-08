@@ -138,7 +138,7 @@ with a scatterplot.
 We clearly see that if a patient's SBPb value is high, its
 SBPa value will be comparatively high as well. 
 
-As such, we will now need to perform a paired two-sample t-test. First, we must 
+As such, we will now need to perform a paired t-test. First, we must 
 check the assumptions.
 
 ## Check the assumptions
@@ -163,10 +163,10 @@ Formulate a conclusion based on the output.
 
 # Alternative solution: One-sample t-test on the difference
 
-Performing a paired two-sample t-test is analogous to performing a one-sample 
+Performing a paired t-test is analogous to performing a one-sample 
 t-test on the difference between both groups.
 
-This can be spotted in the output of the paired two-sample
+This can be spotted in the output of the paired 
 t-test. The alternative hypothesis "HA" from the output states that 
 the "true difference in means is not equal to 0". So internally,
 R will actually perform a one-sample t-test on the difference, and
@@ -179,7 +179,7 @@ captopril %>%
   t.test(...,mu=...)
 ```
 
-Indeed, the output is equivalent to that of the paired two-sample t-test.
+Indeed, the output is equivalent to that of the paired t-test.
 
 
 

@@ -576,7 +576,7 @@ brca %>% ggplot(aes(x=ESR1,y=S100A8)) +
 ```
 
 
-### NHANES voorbeeld
+## NHANES example
 
 
 - Replace reference interval for cholesterol level from chapter 2 by prediction-interval.
@@ -761,7 +761,7 @@ anova(lm2)
 ```
 
 
-## Dummy variables
+# Dummy variables
 
 - Linear regression model  can also be used to compare two group means.
 - brca: difference in average age between patients with unaffected and affected lymph nodes.
@@ -839,7 +839,7 @@ for(i in 1:9) plot(rnorm(32)~node,brca,ylab="iid N(0,1)")
 ```
 
 
-## Observational study
+# Observational study
 
 - We cannot conclude that age causes a higher risk for affected lymph nodes. 
 - Possibly **confounding**: no randomisation $\rightarrow$ groups of patients with affected and unaffected lymph nodes. They can also differ in other characteristics.
