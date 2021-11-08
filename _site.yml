@@ -54,7 +54,7 @@ navbar:
 
   right:
     - icon: fab fa-github
-      href: https://github.com/statOmics/PSLS21
+      href: https://github.com/GTPB/PSLS21
     - text: "statOmics"
       href: http://statomics.github.io/
 output:
