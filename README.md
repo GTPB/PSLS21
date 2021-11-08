@@ -1,15 +1,10 @@
 #  PSLS21 - Practical Statistics for the Life Sciences 2021
 
-[![Render and Deploy](https://github.com/statOmics/PSLS21/workflows/Render%20and%20Deploy/badge.svg)](https://github.com/statOmics/PSLS21/actions)
+[![Render and Deploy](https://github.com/GTPB/PSLS21/workflows/Render%20and%20Deploy/badge.svg)](https://github.com/GTPB/PSLS21/actions)
 
 Course site for Practical Statistics for the Life Sciences 2021 (PSLS 2021)
 
-https://statomics.github.io/PSLS21/
-
-
-### Issues
-
-If you encounter any problems related to the course material (e.g. package installation problems, bugs in the code, typos, ...), please consider [posting an issue on GitHub](https://github.com/statOmics/PSLS21/issues).
+https://gtpb.github.io/PSLS21/
 
 
 
