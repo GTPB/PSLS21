@@ -1488,15 +1488,15 @@ Multiple Comparisons of Means: Tukey Contrasts
 
 Fit: glm(formula = cancer ~ variant, family = binomial, data = brca)
 
-Quantile = 2.3237
+Quantile = 2.3234
 95% family-wise confidence level
  
 
 Linear Hypotheses:
                        Estimate lwr      upr     
-leu/leu - pro/pro == 0  0.21197 -0.22755  0.65149
-pro/leu - pro/pro == 0  0.13802 -0.13090  0.40694
-pro/leu - leu/leu == 0 -0.07395 -0.51364  0.36574</code></pre>
+leu/leu - pro/pro == 0  0.21197 -0.22749  0.65143
+pro/leu - pro/pro == 0  0.13802 -0.13087  0.40691
+pro/leu - leu/leu == 0 -0.07395 -0.51358  0.36568</code></pre>
 <ul>
 <li>With the <code>confint</code> function CI are obtained on the log-odds ratios corrected for multiple testing.</li>
 </ul>
@@ -1507,13 +1507,13 @@ pro/leu - leu/leu == 0 -0.07395 -0.51364  0.36574</code></pre>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a>OR &lt;-<span class="st"> </span><span class="kw">exp</span>(posthocCI<span class="op">$</span>confint)</span>
 <span id="cb48-2"><a href="#cb48-2"></a>OR</span></code></pre></div>
 <pre><code>                   Estimate       lwr      upr
-leu/leu - pro/pro 1.2361111 0.7964801 1.918404
-pro/leu - pro/pro 1.1480000 0.8773036 1.502221
-pro/leu - leu/leu 0.9287191 0.5983161 1.441578
+leu/leu - pro/pro 1.2361111 0.7965269 1.918291
+pro/leu - pro/pro 1.1480000 0.8773351 1.502167
+pro/leu - leu/leu 0.9287191 0.5983513 1.441493
 attr(,&quot;conf.level&quot;)
 [1] 0.95
 attr(,&quot;calpha&quot;)
-[1] 2.323717</code></pre>
+[1] 2.323406</code></pre>
 <ul>
 <li><p>De odds ratios that we obtain is exactly equal to the one we calculated based on the contingency table:</p></li>
 <li><p>e.g <span class="math inline">\(\text{OR}_\text{Leu/Leu-Pro/Pro}=89\times 266/(56\times 342)=\)</span> 1.236.</p></li>
