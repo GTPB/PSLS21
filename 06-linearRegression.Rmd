@@ -66,7 +66,7 @@ brcaSubset[,-(1:4)] %>% ggpairs()
 
 - Proteins of S100 family often dysregulated in cancer
 
-      - S100A8 expressie represses immune systeem in tumor en creates an environment of inflamation that promotes tumor growth.
+    - S100A8 expressie represses immune systeem in tumor en creates an environment of inflamation that promotes tumor growth.
 
 - Assess association between ESR1 and S100A8 expression.
 
@@ -292,7 +292,7 @@ $$T=\frac{\hat{\beta}_1-0}{SE(\hat{\beta}_k)}$$
 \vspace{15pt}
 - Under $H_0$ the statistics follows a t-distribution with n-2 degrees of freedom.
 
-###brca dataset
+### BRCA dataset
 
 ```{r}
 summary(lm1)
@@ -432,7 +432,7 @@ A patient with an ESR1 expression that is one unit on $\log_2$ scale higher than
 $$\log_2 \hat\mu_1=23.401  -1.615 \times \text{logESR}_1,\text{ } \log_2 \hat\mu_2=23.401  -1.615 \times \text{logESR}_2 $$
 $$\log_2 \hat\mu_2-\log_2 \hat\mu_1=  -1.615 (\log_2 \text{ESR}_2-\log_2 \text{ESR}_1) = -1.615 \times 1 = -1.615$$
 
-### Interpretatie 2
+### Interpretation 2
 
 Model on log-scale: upon back-transformation we obtain geometric means
 

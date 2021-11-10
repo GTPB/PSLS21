@@ -1,5 +1,5 @@
 ---
-title: "Experimental Design II: replication and power"
+title: "Experimental Design II: replication and power exercise 1"
 author: "Lieven Clement & Alexandre Segers"
 date: "statOmics, Ghent University (https://statomics.github.io)"
 output:

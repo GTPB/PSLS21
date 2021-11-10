@@ -131,9 +131,23 @@ We can assess the second assumption with a quantile-quantile plot.
 
 ```{r}
 captopril %>%
+  ggplot(aes(sample=SBPa)) +
+  geom_qq() +
+  geom_qq_line()
+
+captopril %>%
   ggplot(aes(sample=SBPb)) +
   geom_qq() +
   geom_qq_line()
+
+# or, equivalently
+captoprilTidy <- captopril %>% gather(type,bp,-id) 
+captoprilTidy %>%
+  filter(type%in%c("SBPa","SBPb")) %>%
+  ggplot(aes(sample=bp)) +
+  geom_qq() +
+  geom_qq_line() +
+  facet_wrap(~type)
 ```
 
 We can see that all of the data lies nicely around the quantile-quantile
@@ -241,9 +255,10 @@ performing the unpaired t-test.
 
 As such, we will perform a `paired` t-test.
 
-- The null hypothesis of the test is that the blood pressure before and after the treatment with captopril is on average equal. 
-- Which will be tested against the alternative that the blood pressure before and after the treatment with captopril is on average different. 
-
+- The null hypothesis of the test is that the blood pressure before and after 
+the treatment with captopril is on average equal. 
+- Which will be tested against the alternative that the blood pressure before
+and after the treatment with captopril is on average different. 
 
 ```{r}
 output2 <- t.test(captopril$SBPb, captopril$SBPa, paired = TRUE)
@@ -269,7 +284,7 @@ check whether or not the true mean difference is equal to 0.
 We can also set this up manually.
 
 ```{r}
-t.test(captopril$deltaSBP,mu=0)
+t.test(captopril$deltaSBP, mu=0)
 ```
 
 Indeed, the output is equivalent to that of the  paired t-test.

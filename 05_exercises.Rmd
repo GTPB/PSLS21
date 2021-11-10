@@ -30,6 +30,7 @@ testing with data from paired experimental designs.
 
 - Exercise: [Exercise1](./05_1_captopril.html)
 - Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/captopril.txt"
+- Solution: [Solution1](./05_1_captopril_sol.html)
 
 ---
 
@@ -74,6 +75,7 @@ foster parent has an effect on the average length of the cuckoo eggs.
 
 - Exercise: [Exercise3](./05_3_cuckoo.html)
 - Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/Cuckoo.txt
+- Solution: [Solution3](./05_3_cuckoo_sol.html)
 
 ---
 
