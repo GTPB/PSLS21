@@ -13,9 +13,23 @@ output:
 ---
 
 On the third day of the "Practical Statistics for the Life Sciences (2021)" 
-course, we will have two tutorials on data linear regression, based on different 
+course, we will have exercises on linear regression, based on different 
 datasets:
 
+# The puromycin dataset
+
+Data on the velocity of an enzymatic reaction were obtained by Treloar (1974).  
+The number of counts per minute of radioactive product from the reaction was 
+measured as a function of substrate concentration in parts per million (ppm) 
+and from these counts the initial rate (or velocity) of the reaction was 
+calculated (counts/min/min). The experiment was conducted once with the enzyme 
+treated with Puromycin, and once with the enzyme untreated.
+
+The goal is to assess if there is an association between the substrate 
+concentration and rate for the **treated** enzyme. 
+
+- Exercise: [Exercise1](./06_3_puromycin.html)
+- Data path: Not required
 
 # The poison dataset:
 
@@ -29,25 +43,27 @@ minutes). Additionally, the weight of each fish was measured.
 In this tutorial, we will study the association between dose and survival time
 by using a linear regression model.
 
-- Exercise: [Exercise1](./06_1_poison.html)
+- Exercise: [Exercise2](./06_1_poison.html)
 - Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/poison.csv
 
 ---
 
-# The FEV dataset:
+# Armpit example 
 
-The FEV, which is an acronym for forced expiratory volume,
-is a measure of how much air a person can exhale (in litres) 
-during  a forced breath. In this dataset, the FEV of 606 children,
-between the ages of 6 and 17, were measured. The dataset
-also provides additional information on these children:
-their `age`, their `height`, their `gender` and, most
-importantly, whether the child is a smoker or a non-smoker.
+Smelly armpits are not caused by sweat, itself. The smell is caused by specific 
+micro-organisms belonging to the group of Corynebacterium spp. that metabolise 
+sweat. Another group of abundant bacteria are the Staphylococcus spp., which do
+not metabolise sweat in smelly compounds.
 
-The overarching goal of this experiment was to find out if
-smoking has an effect on the FEV of children.
+The CMET-groep at Ghent University does research on transplanting the armpit 
+microbiome to help people with smelly armpits. To test the effect of 
+transplanting the microbiome, they conducted an experiment on two groups 
+of volunteers: one group was treated with a placebo, while the other had a 
+microbiome transplant. The goal was to assess whether a microbial transplant can affect the relative abundance Staphylococcus spp. in the microbiome of the armpit.
 
-- Exercise: [Exercise2](./06_2_FEV.html)
-- Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/fev.txt
+In the previous tutorial, we analysed the armpit data using a two sample t-test.
+Add a section to the script file for the armpit example where you model the data using a linear model. Compare the output of the linear model to the results you optained with the two sample t-test and formulate your conclusion based on the output of the linear model.  
 
+- Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/armpit.csv"
+- Exercise: [Exercise3](./06_3_armpit.html)
 

@@ -10,9 +10,9 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-## How confident are you in understanding the difference between the standard deviation and the standard error?
+## How confident are you in explaining the difference between the standard deviation and the standard error?
 
-## How confident are you in understanding what the impact is of sample size on the standard error and the width of a confidence interval?
+## How confident are you in explaining what the impact is of sample size on the standard error and the width of a confidence interval?
 
 ## How confident are you in translating the research question in a null and alternative hypothesis?
 

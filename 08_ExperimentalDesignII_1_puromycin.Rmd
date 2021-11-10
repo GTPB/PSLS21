@@ -56,7 +56,6 @@ In the original publication the authors observed a linear relationship between
 the log10 substrate concentration and the reaction rate. Make a visualization
 that allows for reproducing this finding.
 
-
 ```{r, eval=FALSE}
 Puromycin %>%
   ggplot(...) + # select which elements of the dataset we need to visualize
@@ -172,7 +171,7 @@ concentrations <- Puromycin %>%
   pull(conc) %>% 
   unique
   
-powers <- data.frame(n = 1:10, power=NA)
+powers <- data.frame(n = 1:10, power=NA) # to later store our results
 
 for (i in 1:10)
 {
@@ -187,24 +186,19 @@ for (i in 1:10)
 }
 ```
 
-```{r}
-
-```
-
+Make a visualization that displays the power in function of the number of
+repeats in the data.
 
 ```{r, eval=FALSE}
 powers %>% 
-  ggplot(aes(n,power)) +
+  ggplot(...) +
   geom_line() +
-  geom_hline(yintercept = .9, lty = 2)
+  geom_hline(yintercept = 0.9, lty = 2)
 ```
-
-We need `which(powers$power>0.9) %>%min` repeats for each concentration to 
-obtain a power above 90%. 
 
 # Question 4 
 
-Suppose that you would setup an experiment with a design similar with the 
+Suppose that you would set up an experiment with a design similar with the 
 same concentrations as in the puromycin dataset and you have the following 
 restriction: you need to use each concentration at least once and can setup at 
 most 12 reactions, how would you choose your design points? Calculate the power 
@@ -212,37 +206,32 @@ for this design when the effect size is 10 counts/min per 10 times increase in
 the substrate concentration ($\beta_1=10$).
 
 ```{r, eval=FALSE}
-concentrations <- Puromycin %>% 
-  pull(conc) %>% 
-  unique
+concentrations <- ...
   
-betas <- mod1$coefficients
-betas[2] <- 10
 
-nSim <- 10000
-form <- ~ conc %>% log10 
-sd <- sigma(mod1)
-contrast <- matrix(c(0,1),ncol=1)
-rownames(contrast) <- names(mod1$coefficients)
-alpha <- 0.05 
+simData <- data.frame(conc = c(concentrations,rep(min(concentrations),3),
+                               rep(max(concentrations),3)))
 
-simData <- data.frame(conc = c(concentrations,rep(min(concentrations),3),rep(max(concentrations),3)))
-powerOpt <- simFast(form, simData, betas, sd, contrasts = contrast, alpha = alpha, nSim = nSim)
+powerOpt <- simFast(form = ..., 
+                    data = ..., 
+                    betas = ..., 
+                    sd = ..., 
+                    contrasts = ..., 
+                    alpha = ..., 
+                    nSim = ...)
 
 simData
 powerOpt
 ```
 
-Note that the power for a design where we repeat each concentration 1 time and the minimum and maximum concentration 4 times is considerably higher than that for the designs where we repeat all data points. 
+Make a visualization that displays the power in function of the number of
+repeats in the data.
 
 ```{r, eval=FALSE}
-powers %>% 
-  ggplot(aes(n,power)) +
-  geom_line() +
-  geom_hline(yintercept = powerOpt, lty = 2)
+
 ```
 
-Indeed, the power for our optimal design with 12 reactions is as high as the power for an experiment where you would repeat every concentration 3 times for which we need to conduct 18 reactions! 
+Inspect and interpret the results.
 
 
 

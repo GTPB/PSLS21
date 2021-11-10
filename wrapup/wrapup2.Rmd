@@ -10,7 +10,12 @@ output:
       number_sections: true
 ---
 
+# Translate research question into parameter of linear  model. 
+
+- Why so many hypothesis specified in terms of the mean? 
+
 # Distribution of the mean?
+
 - Unbiased
 - SE
 - SD vs SE in function of sample size

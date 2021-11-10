@@ -12,7 +12,6 @@ output:
     number_sections: yes
 ---
 
-
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
 
 ```{r}
@@ -116,7 +115,8 @@ power <- simFast(form, Puromycin, betas, sd, contrasts = contrast, alpha = alpha
 power
 ```
 
-The power to pick up a slope of $\beta_1=10$ for this experiment is only `round(power*100,1)`%. 
+The power to pick up a slope of $\beta_1=10$ for this experiment is only 
+`round(power*100,1)`%. 
 
 ## Calculate the number of repeats needed per concentration to obtain a power of 90% to pick up an effect of $\beta=10$.
 
@@ -151,7 +151,8 @@ powers %>%
   geom_line() +
   geom_hline(yintercept = .9, lty = 2)
 ```
-We need `which(powers$power>0.9) %>%min` repeats for each concentration to obtain a power above 90%. 
+We need `which(powers$power>0.9) %>%min` repeats for each concentration to 
+obtain a power above 90%. 
 
 # Optimal design with 12 reactions 
 
@@ -178,7 +179,9 @@ simData
 powerOpt
 ```
 
-Note that the power for a design where we repeat each concentration 1 time and the minimum and maximum concentration 4 times is considerably higher than that for the designs where we repeat all data points. 
+Note that the power for a design where we repeat each concentration 1 time and 
+the minimum and maximum concentration 4 times is considerably higher than that 
+for the designs where we repeat all data points. 
 
 ```{r}
 powers %>% 
@@ -186,4 +189,6 @@ powers %>%
   geom_line() +
   geom_hline(yintercept = powerOpt, lty = 2)
 ```
-Indeed, the power for our optimal design with 12 reactions is as high as the power for an experiment where you would repeat every concentration 3 times for which we need to conduct 18 reactions! 
+Indeed, the power for our optimal design with 12 reactions is as high as the 
+power for an experiment where you would repeat every concentration 3 times for 
+which we need to conduct 18 reactions! 

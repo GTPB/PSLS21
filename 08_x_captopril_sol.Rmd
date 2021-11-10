@@ -1,0 +1,262 @@
+---
+title: "Exercise 8.x: Blocking on the captopril dataset - solution"   
+author: "Lieven Clement and Jeroen Gilis"
+date: "statOmics, Ghent University (https://statomics.github.io)"  
+output:
+    html_document:
+      code_download: true    
+      theme: cosmo
+      toc: true
+      toc_float: true
+      highlight: tango
+      number_sections: true
+---
+
+# Background 
+
+Researchers want to assess the effect of captopril on blood pressure of 
+patients with hypertension. They select 15 hypertension patients at random from 
+participants who gave consent to participate in a clinical trial. 
+They measure the systolic and diasystolic blood pressure before and after t
+reating them with captopril. Hence, we have a randomized complete block (RCB) 
+design with patient as block factor, i.e. every patient serves as its own 
+control.
+
+In this exercise, we will focus only on the systolic blood pressure. Our goal
+is to determine if the captopril treatment was succesful in lowering the
+systolic blood pressure.
+
+Load libraries
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+# Data import
+
+```{r}
+captopril <- read.table("https://raw.githubusercontent.com/statOmics/PSLS21/data/captopril.txt", 
+                        sep=",", 
+                        header=TRUE)
+```
+
+# Data exploration
+
+**Note that we already explore this dataset in the exercise session on**
+**hypothesis testing.**
+
+Before we start delving into the data in order to solve our research hypothesis,
+we first explore the data. Our dataset looks like this;
+
+```{r}
+head(captopril)
+```
+
+We have 15 patients, for which we have measure the systolic 
+blood pressure and diastolyic blood pressure, before and after
+treatment with the captopril drug.
+
+Note that the dataset is not in the tidy format. We could tidy the data using
+the following code.
+
+```{r}
+captopril <- captopril %>% 
+    gather(type,bp,-id) %>%
+    filter(type%in%c("SBPa","SBPb")) %>%
+    mutate(id = as.factor(id), type = as.factor(type))
+    # we are only interested in the systolic blood pressure
+captopril
+```
+
+We can visualize the entire dataframe in an informative way 
+with boxplots;
+
+```{r}
+captopril %>% 
+  ggplot(aes(x=type,y=bp,fill=type)) + 
+    scale_fill_brewer(palette="RdGy") +
+    theme_bw() +
+    geom_boxplot(outlier.shape=NA) + 
+    geom_jitter(width = 0.2) +
+    ggtitle("Boxplot of different blood pressure measures") +
+    ylab("blood pressure (mmHg)") + 
+   stat_summary(fun.y=mean, geom="point", shape=5, size=3, color="black", fill="black")
+``` 
+
+# Analysis 1: two-sample t-test
+
+Because we have a pre-test/post-test design we can immediately assess systolic 
+blood pressure differences before and after treatment. We already performed this
+analysis in the chapter of hypothesis testing.
+
+## Hypotheses
+
+$H0$: On average the systolic blood pressure before and after the captopril 
+treatment are equal. 
+
+$H1$: The average systolic blood pressure after the captopril treatment differs 
+from the average systolic blood pressure before the treatment
+
+## Assumptions
+
+The paired t-test has 2 assumptions:
+
+1. The observations are independent of each other (in both groups)
+
+2. The data (SBPb and SBPa) must be normally distributed (in both groups)
+
+Additionally, we must check if the variances are similar for both groups.
+If so, we can use a t-test with a pooled variance (see theory).
+If not, we must rely on the Welch t-test, which can deal with
+unequal variances.
+
+The first assumption is met given the experimental design.
+
+Secondly, we assess if the data are normally distributed.
+
+```{r}
+captopril %>%
+  filter(type == "SBPb") %>%
+  ggplot(aes(sample=bp)) +
+  geom_qq() +
+  geom_qq_line()
+
+captopril %>%
+  filter(type == "SBPa") %>%
+  ggplot(aes(sample=bp)) +
+  geom_qq() +
+  geom_qq_line()
+```
+
+The QQ-plot shows that the values for the systolic blood pressure can be assumed
+to be normally distributed in both groups.
+
+For the third assumption, we must compare the within-group variability of both 
+groups. We can do this visually with boxplots.
+
+```{r}
+captopril %>% 
+  ggplot(aes(x=type,y=bp,fill=type)) + 
+    scale_fill_brewer(palette="RdGy") +
+    theme_bw() +
+    geom_boxplot(outlier.shape=NA) + 
+    geom_jitter(width = 0.2) +
+    ggtitle("Boxplot of different blood pressure measures") +
+    ylab("blood pressure (mmHg)") + 
+   stat_summary(fun=mean, geom="point", shape=5, size=3, color="black", fill="black")
+``` 
+
+We do not observe large difference in the within-group variability of both 
+groups. Hence, all assumptions for the paired t-test are valid.
+
+## Hypothesis testing
+
+```{r}
+ttest <- t.test(captopril %>% filter(type == "SBPb") %>% pull(bp),
+                captopril %>% filter(type == "SBPa") %>% pull(bp),
+                paired=TRUE)
+ttest
+```
+
+Note, that the one sample t-test on the difference produces exactly the same 
+result as the paired t-test on the original systolic blood pressure 
+measurements. 
+
+There is an extremely significant effect of the captopril treatment on the 
+systolic blood pressure of patients with hypertension. 
+On average, the blood pressure decreases with 
+`r round(unname(ttest$estimate),1)` mmHg after treatment with hypertension 
+(95% CI [`r  round(ttest$conf.int,1)`]).
+
+# Analysis 2: Linear regression without blocking (incorrect)
+
+Next, we may try to answer the research question using linear regression.
+However, imagine we perform an analysis that uses `type` as the only predictor
+variable for blood pressure. Note that such an analysis does not account for 
+the fact that measurements of the same individual are correlated, hence 
+violating one of the assumptions for linear regression.
+
+```{r}
+lm1 <- lm(bp~type, data=captopril)
+plot(lm1)
+```
+
+```{r}
+summary(lm1)
+```
+
+Note, that the point estimate for the captopril effect is exactly the same as
+with the paired t-test (estimate = `r round(unname(ttest$estimate),1)`)! 
+This is because the design is balanced. The standard error, however, on the 
+captopril effect is wrong in this linear regression model, because both between 
+and within subject variability in the systolic blood pressure are lumped in the 
+error term. Hence, the error term contains the total variability and ignores 
+the fact that systolic blood pressure measurements are correlated. 
+
+# Analysis 3: Linear regression without blocking (correct)
+
+Here, we adjust the model formula below to analyse the captopril experiment as a 
+randomized complete block design.
+
+```{r}
+lm2 <- lm(bp ~ type+id, data=captopril)
+plot(lm2)
+```
+
+```{r}
+summary(lm2)
+```
+
+```{r}
+library(car)
+Anova(lm2, type=3)
+```
+
+Note, that the RCB analysis provides exactly the same results as the paired 
+t-test (p-value for the captopril effect = `r format(ttest$p.value,digits=4)`). 
+If we look at the error term, we notice that it only captures the within patient 
+variability in systolic blood pressure measurements. 
+
+**Hence, the RCB analysis is only valid for assessing within block effects.**
+
+Note that we need to use the `Anova` function to obtain type 3 anova results. 
+The anova function in R by default returns type I results which assesses each 
+term in the model sequentially. For balanced designs this is no problem because 
+oth anova results coincide. For unbalanced designs, however, different results 
+can be obtained. Note that there is a huge block effect. Showing that there is 
+a huge variation in the systolic blood pressures between patients.
+
+## Conclusion
+
+There is an extremely significant effect of the captopril treatment on the 
+systolic blood pressure of patients with hypertension. 
+On average, the blood pressure decreases with 
+`r round(unname(ttest$estimate),1)` mmHg after treatment with hypertension 
+(95% CI [`r  round(ttest$conf.int,1)`]).
+
+# Concluding remarks
+
+We have shown that 
+  
+- The captopril design can be correctly analysed using a paired t-test or 
+with a linear model with a blocking factor for patient. 
+
+- In experimental design, we can affect the precision of our estimates by 
+    
+    1. Increasing the sample size
+    2. Blocking to isolate sources of variability from the experiment 
+
+Researchers could further improve the design by using a proper control 
+treatment. In the current pre-test/post-test design the blood pressure of 
+patients could have dropped due to a placebo effect. So researchers can only 
+conclude that there is an extremely significant effect from administering 
+captopril to patients with hypertension. They cannot assign the effect to the 
+mode of action of the drug. In order to draw causal conclusions they should 
+have randomized the patients in two groups: one group that receives captopril 
+and another group that receives a placebo. Again blood, pressures 
+before and after the treatment should be used to isolate the patient to patient 
+variation in the systolic blood pressures from the analysis. 
+
+
+
+
