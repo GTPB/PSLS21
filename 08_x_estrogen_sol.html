@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Lieven Clement and Jeroen Gilis" />
+
+
+<title>Exercise 8.x: Blocking on the estrogen dataset - solution</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSLS21</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-chalkboard-teacher"></span>
+     
+    Lectures
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01-intro.html">1. Introduction</a>
+    </li>
+    <li>
+      <a href="02-concepts.html">2. Concepts</a>
+    </li>
+    <li>
+      <a href="03-experimentalDesign.html">3. Experimental Design I</a>
+    </li>
+    <li>
+      <a href="04-dataExploration.html">4. Data Exploration</a>
+    </li>
+    <li>
+      <a href="05-statisticalInference.html">5.1 Statistical Inference 1</a>
+    </li>
+    <li>
+      <a href="05-statisticalInference-twosampleT.html">5.2 Statistical Inference 2</a>
+    </li>
+    <li>
+      <a href="06-linearRegression.html">6. Linear Regression</a>
+    </li>
+    <li>
+      <a href="07-Anova.html">7. Analysis of Variance</a>
+    </li>
+    <li>
+      <a href="08-MultipleRegression.html">8. Multiple Regression</a>
+    </li>
+    <li>
+      <a href="08-MultipleRegression-SpecificDesigns.html">8.2 Multiple Regression: Factorial Designs</a>
+    </li>
+    <li>
+      <a href="08-experimentalDesignII.html">8.3. Experimental Design II</a>
+    </li>
+    <li>
+      <a href="08-experimentalDesignIII.html">8.4. Experimental Design II</a>
+    </li>
+    <li>
+      <a href="09-NonparametericStatistics-WilcoxonMannWithney.html">9.1. Nonparametric Statistics 1</a>
+    </li>
+    <li>
+      <a href="09-NonparametericStatistics-KruskalWallis.html">9.2. Nonparametric Statistics 2</a>
+    </li>
+    <li>
+      <a href="10-categoricalDataAnalysis.html">10. Categorical Data Analysis</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    Labs
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04_exercises.html">4. Data Exploration</a>
+    </li>
+    <li>
+      <a href="05_exercises.html">5. Statistical inference</a>
+    </li>
+    <li>
+      <a href="06_exercises.html">6. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="07_exercises.html">7. ANOVA</a>
+    </li>
+    <li>
+      <a href="09_exercises.html">9. Non-parametric statistics</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/GTPB/PSLS21">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://statomics.github.io/">statOmics</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Exercise 8.x: Blocking on the estrogen dataset - solution</h1>
+<h4 class="author">Lieven Clement and Jeroen Gilis</h4>
+<h4 class="date">statOmics, Ghent University (<a href="https://statomics.github.io" class="uri">https://statomics.github.io</a>)</h4>
+
+</div>
+
+
+<div id="background" class="section level1">
+<h1><span class="header-section-number">1</span> Background</h1>
+<p>A 2x2 factorial experiment on cancer cell cultures is performed. Two factors were considered in this experiment: estrogen (present or absent) and length of exposure (10 or 48 hours). The study aims to discriminate between early and late response. The researchers assessed gene expression of the TK1 gene (thymidine kinase 1, soluble) a protein-coding gene associated with colorectal cancer.</p>
+<p>Note, that the tk1 variable consists of background corrected normalized <span class="math inline">\(\log_2\)</span> transformed intensities, which are a proxy for the <span class="math inline">\(\log_2\)</span> transformed concentration of gene expression product of the TK1 gene.</p>
+</div>
+<div id="experimental-design" class="section level1">
+<h1><span class="header-section-number">2</span> Experimental design</h1>
+<ul>
+<li><p>There are two explanatory variables: factor estrogen (present and absent) and time (early vs late).</p></li>
+<li><p>There response variable is the normalized log2-transformed intensity for the TK1 gene.</p></li>
+<li><p>The experimental and observational units are the 8 different cell cultures.</p></li>
+<li><p>The treatments are: early-absent, early-present, late-absent and late-present.</p></li>
+<li><p>The design is a randomized complete block design.</p></li>
+</ul>
+</div>
+<div id="research-hypotheses" class="section level1">
+<h1><span class="header-section-number">3</span> Research hypotheses</h1>
+<ul>
+<li><p>Is there an early response of the TK1 gene on the estrogen treatment?</p></li>
+<li><p>Is there a late response of the TK1 gene on the estrogen treatment?</p></li>
+<li><p>Does the response of the TK1 gene on the estrogen treatment change over time?</p></li>
+</ul>
+<p>Load libraries</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(tidyverse)</span></code></pre></div>
+</div>
+<div id="data-import" class="section level1">
+<h1><span class="header-section-number">4</span> Data import</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>tk1 &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;https://raw.githubusercontent.com/statOmics/PSLS21/data/estrogenTk1.txt&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2"></a>                  <span class="dt">sep=</span><span class="st">&quot;,&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3"></a>                  <span class="dt">header=</span><span class="ot">TRUE</span>)</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="kw">head</span>(tk1)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["estrogen"],"name":[1],"type":["chr"],"align":["left"]},{"label":["time.h"],"name":[2],"type":["int"],"align":["right"]},{"label":["time.f"],"name":[3],"type":["int"],"align":["right"]},{"label":["tk1"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"absent","2":"10","3":"10","4":"8.589664","_rn_":"1"},{"1":"absent","2":"10","3":"10","4":"8.580125","_rn_":"2"},{"1":"present","2":"10","3":"10","4":"11.644443","_rn_":"3"},{"1":"present","2":"10","3":"10","4":"11.752811","_rn_":"4"},{"1":"absent","2":"48","3":"48","4":"7.397465","_rn_":"5"},{"1":"absent","2":"48","3":"48","4":"7.104903","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="tidy-data" class="section level1">
+<h1><span class="header-section-number">5</span> Tidy data</h1>
+<p>We have two columns indicating time. The first <code>time.h</code> should display numeric values, but <code>time.f</code> should display time categories; change <code>time.f</code> to a factor using <code>dplyr</code>. Additionally, change <code>estrogen</code> to a factor.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>tk1 &lt;-<span class="st"> </span>tk1 <span class="op">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">time.f =</span> <span class="kw">as.factor</span>(time.f), <span class="dt">estrogen =</span> <span class="kw">as.factor</span>(estrogen))</span></code></pre></div>
+</div>
+<div id="data-exploration" class="section level1">
+<h1><span class="header-section-number">6</span> Data exploration</h1>
+<p>Time and estrogen treatment both may have an effect on the tk1 gene. Moreover, it is also possible that the response on the estrogen treatment changes over time. Therefore, we plot the gene expression for each treatment combination. We do not use boxplots here because there are only two biological repeats for each treatment x time combination. In stead, we make a scatterplot. Note, to avoid overplotting the points, we make use of <code>geom_jitter</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">set.seed</span>(<span class="dv">4684165</span>) <span class="co"># to make jitter reproducible</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>tk1 <span class="op">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> time.f<span class="op">:</span>estrogen, <span class="dt">y =</span> tk1, <span class="dt">col =</span> time.f<span class="op">:</span>estrogen)) <span class="op">+</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">width=</span><span class="fl">0.2</span>) <span class="op">+</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;log2 TK1 intensity&quot;</span>) <span class="op">+</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;time x estrogen combination&quot;</span>) <span class="op">+</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;TK1 expression in function of time and estrogen&quot;</span>)</span></code></pre></div>
+<p><img src="08_x_estrogen_sol_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>The plot suggests</p>
+<ol style="list-style-type: decimal">
+<li>an estrogen response at both early and late timepoint</li>
+<li>an effect of time</li>
+<li>a potential change in estrogen response between early and late timepoint.</li>
+</ol>
+<p>Since there are only two biological repeats for every treatment combination the plot does not allow us to learn much about variability in gene expression for every treatment*time combination.</p>
+</div>
+<div id="analysis-1-early-response-only" class="section level1">
+<h1><span class="header-section-number">7</span> Analysis 1: early response (only)</h1>
+<p>Time and estrogen treatment can have an effect on the tk1 gene. Moreover, it is also possible that the response on the estrogen treatment changes over time. Hence, we will have to model the gene expression by using main effects for time, estrogen and a time*estrogen interaction.</p>
+<div id="assumptions" class="section level2">
+<h2><span class="header-section-number">7.1</span> Assumptions</h2>
+<p>List assumptions:</p>
+<ol style="list-style-type: decimal">
+<li>The observations are independent of each other</li>
+<li>Linearity between the response and predictor variable</li>
+<li>The residues of the model must be normally distributed</li>
+<li>Homoscedasticity of the data</li>
+</ol>
+<p>The assumption of independence is met, each of the 8 cell cultures was randomly assigned to a time and treatment combination.</p>
+<p>For the remaining assumptions, we fit a linear model with a main effects for estrogen dosage, a main effect for time and an estrogen-time interaction effect.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>fit &lt;-<span class="st"> </span><span class="kw">lm</span>(tk1 <span class="op">~</span><span class="st"> </span>estrogen<span class="op">*</span>time.f, <span class="dt">data =</span> tk1)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">plot</span>(fit)</span></code></pre></div>
+<p><img src="08_x_estrogen_sol_files/figure-html/unnamed-chunk-5-1.png" width="672" /><img src="08_x_estrogen_sol_files/figure-html/unnamed-chunk-5-2.png" width="672" /><img src="08_x_estrogen_sol_files/figure-html/unnamed-chunk-5-3.png" width="672" /><img src="08_x_estrogen_sol_files/figure-html/unnamed-chunk-5-4.png" width="672" /></p>
+<p>There is not enough data to assess equality of the variance for every treatment x time combination. The QQ-plot of the residuals suggests some deviations from normality, however, there are only a limited number of observations to assess normality.</p>
+<p><strong>For demonstrational purposes, we will continue the analysis, but keep in</strong> <strong>mind that we do not have enough data to be sure that the assumptions of the</strong> <strong>model hold! We will come back to this in the <code>conclusions</code> section.</strong></p>
+</div>
+<div id="interpretation-of-model-parameters-and-statistical-tests" class="section level2">
+<h2><span class="header-section-number">7.2</span> Interpretation of model parameters and statistical tests</h2>
+<p>We obtain the following estimates for our linear regression model,</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">summary</span>(fit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = tk1 ~ estrogen * time.f, data = tk1)
+## 
+## Residuals:
+##         1         2         3         4         5         6         7         8 
+##  0.004769 -0.004769 -0.054184  0.054184  0.146281 -0.146281  0.015274 -0.015274 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)               8.58489    0.07841 109.492 4.17e-08 ***
+## estrogenpresent           3.11373    0.11088  28.081 9.57e-06 ***
+## time.f48                 -1.33371    0.11088 -12.028 0.000274 ***
+## estrogenpresent:time.f48  0.74133    0.15681   4.727 0.009121 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1109 on 4 degrees of freedom
+## Multiple R-squared:  0.9981, Adjusted R-squared:  0.9967 
+## F-statistic: 716.1 on 3 and 4 DF,  p-value: 6.473e-06</code></pre>
+<p>and the following corresponding confidence intervals on these estimates.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>CIfit &lt;-<span class="st"> </span><span class="kw">confint</span>(fit)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>CIfit</span></code></pre></div>
+<pre><code>##                               2.5 %    97.5 %
+## (Intercept)               8.3672037  8.802585
+## estrogenpresent           2.8058714  3.421594
+## time.f48                 -1.6415715 -1.025849
+## estrogenpresent:time.f48  0.3059474  1.176710</code></pre>
+<p>Next, we should carefully think about the interpretation of these model parameters. We model the log<span class="math inline">\(_2\)</span>-transformed intensities with the following regression model:</p>
+<p><span class="math display">\[
+y=\beta_0+\beta_{e}x_{e}+\beta_{t}x_{t}+\beta_{et}x_{e}x_{t},
+\]</span></p>
+<p>with</p>
+<ul>
+<li><p><span class="math inline">\(\beta_0\)</span> the intercept,</p></li>
+<li><p><span class="math inline">\(\beta_{e}\)</span> the main effect for estrogen,</p></li>
+<li><p><span class="math inline">\(x_{e}\)</span> a dummy variable for estrogen which is 0 for the control treatment in the absence of estrogen and 1 for the treatment with estrogen,</p></li>
+<li><p><span class="math inline">\(\beta_{t}\)</span> the main effect for time,</p></li>
+<li><p><span class="math inline">\(x_{t}\)</span> a dummy variable that is 0 for the measurements at the early time (10h) and 1 for measurements at the late timepoint (48h)</p></li>
+<li><p><span class="math inline">\(\beta_{et}\)</span> the interaction effect between estrogen and time.</p></li>
+</ul>
+<p>To ease the interpretation of the parameters, <span class="math inline">\(\log_2\)</span> transformed mean intensities are given for each treatment group as well as corresponding contrasts between treatments, which have an interpretation in terms of <span class="math inline">\(\log_2\)</span> transformed fold changes (FC).</p>
+<ul>
+<li><p><span class="math inline">\(\log_2\hat \mu_{A10}=\hat\beta_0\)</span>, <span class="math inline">\(\log_2 \hat\mu_{P10}=\hat\beta_0+\hat\beta_e\)</span> –&gt; <span class="math inline">\(\log_2 \widehat{FC}_{P10-A10}=\hat\beta_e\)</span></p></li>
+<li><p><span class="math inline">\(\log_2 \hat \mu_{A48}=\hat\beta_0+\hat\beta_t\)</span>, <span class="math inline">\(\log_2 \hat \mu_{P48}=\hat\beta_0+\hat\beta_e+\hat\beta_t+\hat\beta_{et}\)</span> –&gt; <span class="math inline">\(\log_2 \widehat{FC}_{P48-A48}=\hat \beta_e +\hat\beta_{et}\)</span></p></li>
+<li><p><span class="math inline">\(\log_2 \widehat{FC}_{A48-A10}=\hat\beta_{t}\)</span>, <span class="math inline">\(\log_2 \widehat{FC}_{P48-P10}=\hat\beta_{t}+\hat\beta_{et}\)</span> –&gt; <span class="math inline">\(\log_2\frac{\widehat{FC}_{P48-A48}}{\widehat{FC}_{P10-A10}}=\hat\beta_{et}\)</span></p></li>
+</ul>
+<p>with <span class="math inline">\(\log_2\hat \mu_{A10}\)</span>, <span class="math inline">\(\log_2\hat \mu_{P10}\)</span>, <span class="math inline">\(\log_2\hat \mu_{A48}\)</span> and <span class="math inline">\(\log_2\hat \mu_{P48}\)</span> the estimated mean <span class="math inline">\(\log_2\)</span> transformed intensity for the control treatment in the absence of estrogen at 10h, the estrogen treatment at 10h, the control treatment at 48h and the estrogen treatment at 48h, respectively. With <span class="math inline">\(\log_2 \widehat{FC}_{b-a}\)</span> we indicate <span class="math inline">\(\log_2\)</span> transformed fold change estimates between treatment B and treatment A, i.e. <span class="math inline">\(\log_2 \widehat{FC}_{b-a}=\log_2 \hat\mu_{b}-\log_2 \hat\mu_a=\log_2 \frac{\hat\mu_{b}}{\hat\mu_{a}}\)</span>.</p>
+<p>The model immediately provides statistical tests for assessing the significance of fold changes between the estrogen and control treatment at the early time point <span class="math inline">\(\log_2 \widehat{FC}_{P10-A10}\)</span>, fold changes between the control at the late time point and the control at the early time point <span class="math inline">\(\log_2 \widehat{FC}_{A48-P10}\)</span> and for changes in fold change between control and estrogen treatment at the late and the early timepoint <span class="math inline">\(\log_2\frac{\widehat{FC}_{P48-A48}}{\widehat{FC}_{P10-A10}}\)</span>, the interaction term.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">summary</span>(fit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = tk1 ~ estrogen * time.f, data = tk1)
+## 
+## Residuals:
+##         1         2         3         4         5         6         7         8 
+##  0.004769 -0.004769 -0.054184  0.054184  0.146281 -0.146281  0.015274 -0.015274 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)               8.58489    0.07841 109.492 4.17e-08 ***
+## estrogenpresent           3.11373    0.11088  28.081 9.57e-06 ***
+## time.f48                 -1.33371    0.11088 -12.028 0.000274 ***
+## estrogenpresent:time.f48  0.74133    0.15681   4.727 0.009121 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1109 on 4 degrees of freedom
+## Multiple R-squared:  0.9981, Adjusted R-squared:  0.9967 
+## F-statistic: 716.1 on 3 and 4 DF,  p-value: 6.473e-06</code></pre>
+<p>For communicating the results, we may transform the model parameters to the original scale, i.e., the (geometric) average intensity in stead of the average log2 intensity, using:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Transform parameters and the CI back to the original scale</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="dv">2</span><span class="op">^</span>fit<span class="op">$</span>coef</span></code></pre></div>
+<pre><code>##              (Intercept)          estrogenpresent                 time.f48 
+##              383.9818884                8.6561923                0.3967466 
+## estrogenpresent:time.f48 
+##                1.6717150</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="dv">2</span><span class="op">^</span>CIfit</span></code></pre></div>
+<pre><code>##                                2.5 %      97.5 %
+## (Intercept)              330.2016989 446.5212961
+## estrogenpresent            6.9928055  10.7152508
+## time.f48                   0.3205072   0.4911211
+## estrogenpresent:time.f48   1.2362302   2.2606072</code></pre>
+<ul>
+<li><p>The geometric average intensity for the control treatment on the early timepoint equals <span class="math inline">\(\exp(\hat \beta_0)\)</span>=383.98.</p></li>
+<li><p>The estrogen effect at the early time point and the time effect are extremely significant (p&lt;&lt;0.001).</p></li>
+<li><p>The expression of the tk1 gene at the early timepoint is on average 8.66 times higher after estrogen treatment (95% CI [6.99, 10.72]).</p></li>
+<li><p>The gene expression in the control treatment is on average 2.52 times lower (or 0.4 times higher) at the late time point (95% CI [3.12, 2.04]).</p></li>
+<li><p>The difference in estrogen response at the late timepoint and the early timepoint is strongly significant (p=0.009). The fold change due to the estrogen treatment is on average 1.67 times higher at the late time point (95% CI [1.24, 2.26]).</p></li>
+</ul>
+</div>
+</div>
+<div id="analysis-2-late-response-only" class="section level1">
+<h1><span class="header-section-number">8</span> Analysis 2: Late response (only)</h1>
+<p>The researchers, however, are also interested in testing the significance of the fold change between estrogen and control treatment at the late timepoint. This involves assessing a contrast of the model parameters: <span class="math inline">\(\log_2 \widehat{FC}_{P48-A48}=\hat \beta_e +\hat\beta_{et}\)</span>. We can test this linear combination of model parameters using the <code>multcomp</code> package.</p>
+<div id="test" class="section level2">
+<h2><span class="header-section-number">8.1</span> Test</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">library</span>(multcomp)</span>
+<span id="cb16-2"><a href="#cb16-2"></a></span>
+<span id="cb16-3"><a href="#cb16-3"></a>testFCP48_A48 &lt;-<span class="st"> </span><span class="kw">glht</span>(<span class="dt">model =</span> fit, </span>
+<span id="cb16-4"><a href="#cb16-4"></a>                      <span class="dt">linfct =</span> <span class="st">&quot;estrogenpresent + estrogenpresent:time.f48 = 0&quot;</span>)</span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="kw">summary</span>(testFCP48_A48)</span></code></pre></div>
+<pre><code>## 
+##   Simultaneous Tests for General Linear Hypotheses
+## 
+## Fit: lm(formula = tk1 ~ estrogen * time.f, data = tk1)
+## 
+## Linear Hypotheses:
+##                                                 Estimate Std. Error t value
+## estrogenpresent + estrogenpresent:time.f48 == 0   3.8551     0.1109   34.77
+##                                                 Pr(&gt;|t|)    
+## estrogenpresent + estrogenpresent:time.f48 == 0 4.08e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## (Adjusted p values reported -- single-step method)</code></pre>
+<div id="confidence-intervals-fc-at-time-48h." class="section level3">
+<h3><span class="header-section-number">8.1.1</span> Confidence intervals FC at time 48h.</h3>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># CI for fold changes on time point 48h</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>CIFCP48_A48 &lt;-<span class="st"> </span><span class="kw">confint</span>(testFCP48_A48)</span>
+<span id="cb18-3"><a href="#cb18-3"></a>CIFCP48_A48</span></code></pre></div>
+<pre><code>## 
+##   Simultaneous Confidence Intervals
+## 
+## Fit: lm(formula = tk1 ~ estrogen * time.f, data = tk1)
+## 
+## Quantile = 2.7764
+## 95% family-wise confidence level
+##  
+## 
+## Linear Hypotheses:
+##                                                 Estimate lwr    upr   
+## estrogenpresent + estrogenpresent:time.f48 == 0 3.8551   3.5472 4.1629</code></pre>
+<p>For communicating the results, we may transform the model parameters to the original scale, i.e., the (geometric) average intensity in stead of the average log2 intensity, using:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># Original scale</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="dv">2</span><span class="op">^</span>CIFCP48_A48<span class="op">$</span>confint</span></code></pre></div>
+<pre><code>##                                            Estimate      lwr      upr
+## estrogenpresent + estrogenpresent:time.f48 14.47069 11.68998 17.91285
+## attr(,&quot;conf.level&quot;)
+## [1] 0.95
+## attr(,&quot;calpha&quot;)
+## [1] 2.776445</code></pre>
+<p>The estrogen effect at the late time point is also extremely significant (p&lt;&lt;0.001). The expression of the tk1 gene at the late timepoint is on average 14.47 times higher after estrogen treatment (95% CI [11.69, 17.91]).</p>
+</div>
+</div>
+</div>
+<div id="analysis-3-simultaneously-assess-all-research-hypotheses" class="section level1">
+<h1><span class="header-section-number">9</span> Analysis 3: simultaneously assess all research hypotheses</h1>
+<p>Alternatively, we can simultaneously assess all research hypotheses for our linear regression model using the package <code>multcomp</code>. This is the most elegant way for addressing all research hypotheses, and additionally allows for efficient multiple testing correction.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>testFCAll &lt;-<span class="st"> </span><span class="kw">glht</span>(<span class="dt">model =</span> fit, </span>
+<span id="cb22-2"><a href="#cb22-2"></a>                  <span class="dt">linfct =</span> <span class="kw">c</span>(<span class="st">&quot;estrogenpresent = 0&quot;</span>,</span>
+<span id="cb22-3"><a href="#cb22-3"></a>                             <span class="st">&quot;estrogenpresent + estrogenpresent:time.f48 = 0&quot;</span>,</span>
+<span id="cb22-4"><a href="#cb22-4"></a>                             <span class="st">&quot;estrogenpresent:time.f48 = 0&quot;</span>))</span>
+<span id="cb22-5"><a href="#cb22-5"></a><span class="kw">summary</span>(testFCAll)</span></code></pre></div>
+<pre><code>## 
+##   Simultaneous Tests for General Linear Hypotheses
+## 
+## Fit: lm(formula = tk1 ~ estrogen * time.f, data = tk1)
+## 
+## Linear Hypotheses:
+##                                                 Estimate Std. Error t value
+## estrogenpresent == 0                              3.1137     0.1109  28.081
+## estrogenpresent + estrogenpresent:time.f48 == 0   3.8551     0.1109  34.767
+## estrogenpresent:time.f48 == 0                     0.7413     0.1568   4.727
+##                                                 Pr(&gt;|t|)    
+## estrogenpresent == 0                              &lt;0.001 ***
+## estrogenpresent + estrogenpresent:time.f48 == 0   &lt;0.001 ***
+## estrogenpresent:time.f48 == 0                     0.0188 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## (Adjusted p values reported -- single-step method)</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="co"># Confidence intervals </span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>CIFCAll &lt;-<span class="st"> </span><span class="kw">confint</span>(testFCAll)</span>
+<span id="cb24-3"><a href="#cb24-3"></a>CIFCAll</span></code></pre></div>
+<pre><code>## 
+##   Simultaneous Confidence Intervals
+## 
+## Fit: lm(formula = tk1 ~ estrogen * time.f, data = tk1)
+## 
+## Quantile = 3.5137
+## 95% family-wise confidence level
+##  
+## 
+## Linear Hypotheses:
+##                                                 Estimate lwr    upr   
+## estrogenpresent == 0                            3.1137   2.7241 3.5033
+## estrogenpresent + estrogenpresent:time.f48 == 0 3.8551   3.4654 4.2447
+## estrogenpresent:time.f48 == 0                   0.7413   0.1903 1.2923</code></pre>
+<p>For communicating the results, we may transform the model parameters to the original scale, i.e., the (geometric) average intensity in stead of the average log2 intensity, using:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="co"># Confidence intervals on original scale</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="dv">2</span><span class="op">^</span>CIFCAll<span class="op">$</span>confint</span></code></pre></div>
+<pre><code>##                                             Estimate       lwr       upr
+## estrogenpresent                             8.656192  6.607557 11.339996
+## estrogenpresent + estrogenpresent:time.f48 14.470686 11.045951 18.957241
+## estrogenpresent:time.f48                    1.671715  1.141024  2.449231
+## attr(,&quot;conf.level&quot;)
+## [1] 0.95
+## attr(,&quot;calpha&quot;)
+## [1] 3.513748</code></pre>
+</div>
+<div id="conclusions" class="section level1">
+<h1><span class="header-section-number">10</span> Conclusions</h1>
+<p>There was an extremely significant effect of estrogen on the expression of the TK1 gene 10h and 48h after estrogen dosage ( <span class="math inline">\(p&lt;&lt;0.001\)</span>).</p>
+<p>The TK1 gene was significantly upregulated after estrogen treatment as compared to a control treatment without estrogen. On average, the fold change between the estrogen treatment and control varied form 14.47 (95% CI [6.61, 11.34]) 10 hours after estrogen dosage up to 14.47 (95% CI [11.05, 18.96]) at the late timepoint (48h), respectively.</p>
+<p>The increase in fold change between the early and the late timepoint was significant (<span class="math inline">\(p=0.02\)</span>), fold change increase: 1.67, 95% CI [1.14, 2.45]).</p>
+<p>All p-values and confidence intervals were adjusted for multiple testing.</p>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhlcmNpc2UgOC54OiBCbG9ja2luZyBvbiB0aGUgZXN0cm9nZW4gZGF0YXNldCAtIHNvbHV0aW9uIiAgIAphdXRob3I6ICJMaWV2ZW4gQ2xlbWVudCBhbmQgSmVyb2VuIEdpbGlzIgpkYXRlOiAic3RhdE9taWNzLCBHaGVudCBVbml2ZXJzaXR5IChodHRwczovL3N0YXRvbWljcy5naXRodWIuaW8pIiAgCm91dHB1dDoKICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUgICAgCiAgICAgIHRoZW1lOiBjb3NtbwogICAgICB0b2M6IHRydWUKICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgIGhpZ2hsaWdodDogdGFuZ28KICAgICAgbnVtYmVyX3NlY3Rpb25zOiB0cnVlCi0tLQoKIyBCYWNrZ3JvdW5kCgpBIDJ4MiBmYWN0b3JpYWwgZXhwZXJpbWVudCBvbiBjYW5jZXIgY2VsbCBjdWx0dXJlcyBpcyBwZXJmb3JtZWQuIFR3byBmYWN0b3JzIAp3ZXJlIGNvbnNpZGVyZWQgaW4gdGhpcyBleHBlcmltZW50OiBlc3Ryb2dlbiAocHJlc2VudCBvciBhYnNlbnQpIGFuZCBsZW5ndGggb2YgCmV4cG9zdXJlICgxMCBvciA0OCBob3VycykuIFRoZSBzdHVkeSBhaW1zIHRvIGRpc2NyaW1pbmF0ZSBiZXR3ZWVuIGVhcmx5IGFuZCAKbGF0ZSByZXNwb25zZS4gVGhlIHJlc2VhcmNoZXJzIGFzc2Vzc2VkIGdlbmUgZXhwcmVzc2lvbiBvZiB0aGUgVEsxIGdlbmUgCih0aHltaWRpbmUga2luYXNlIDEsIHNvbHVibGUpIGEgcHJvdGVpbi1jb2RpbmcgZ2VuZSBhc3NvY2lhdGVkIHdpdGggY29sb3JlY3RhbCAKY2FuY2VyLiAKCk5vdGUsIHRoYXQgdGhlIHRrMSB2YXJpYWJsZSBjb25zaXN0cyBvZiBiYWNrZ3JvdW5kIGNvcnJlY3RlZCBub3JtYWxpemVkIAokXGxvZ18yJCB0cmFuc2Zvcm1lZCBpbnRlbnNpdGllcywgd2hpY2ggYXJlIGEgcHJveHkgZm9yIHRoZSAkXGxvZ18yJCB0cmFuc2Zvcm1lZApjb25jZW50cmF0aW9uIG9mIGdlbmUgZXhwcmVzc2lvbiBwcm9kdWN0IG9mIHRoZSBUSzEgZ2VuZS4gCgojIEV4cGVyaW1lbnRhbCBkZXNpZ24gCgotIFRoZXJlIGFyZSB0d28gZXhwbGFuYXRvcnkgdmFyaWFibGVzOiBmYWN0b3IgZXN0cm9nZW4gKHByZXNlbnQgYW5kIGFic2VudCkgYW5kCnRpbWUgKGVhcmx5IHZzIGxhdGUpLiAKCi0gVGhlcmUgcmVzcG9uc2UgdmFyaWFibGUgaXMgdGhlIG5vcm1hbGl6ZWQgbG9nMi10cmFuc2Zvcm1lZCBpbnRlbnNpdHkgZm9yIAp0aGUgVEsxIGdlbmUuCgotIFRoZSBleHBlcmltZW50YWwgYW5kIG9ic2VydmF0aW9uYWwgdW5pdHMgYXJlIHRoZSA4IGRpZmZlcmVudCBjZWxsIGN1bHR1cmVzLgoKLSBUaGUgdHJlYXRtZW50cyBhcmU6IGVhcmx5LWFic2VudCwgZWFybHktcHJlc2VudCwgbGF0ZS1hYnNlbnQgYW5kIGxhdGUtcHJlc2VudC4KCi0gVGhlIGRlc2lnbiBpcyBhIHJhbmRvbWl6ZWQgY29tcGxldGUgYmxvY2sgZGVzaWduLgoKIyBSZXNlYXJjaCBoeXBvdGhlc2VzCgotIElzIHRoZXJlIGFuIGVhcmx5IHJlc3BvbnNlIG9mIHRoZSBUSzEgZ2VuZSBvbiB0aGUgZXN0cm9nZW4gdHJlYXRtZW50PwoKLSBJcyB0aGVyZSBhIGxhdGUgcmVzcG9uc2Ugb2YgdGhlIFRLMSBnZW5lIG9uIHRoZSBlc3Ryb2dlbiB0cmVhdG1lbnQ/CgotIERvZXMgdGhlIHJlc3BvbnNlIG9mIHRoZSBUSzEgZ2VuZSBvbiB0aGUgZXN0cm9nZW4gdHJlYXRtZW50IGNoYW5nZSBvdmVyIHRpbWU/IAoKTG9hZCBsaWJyYXJpZXMKCmBgYHtyLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgojIERhdGEgaW1wb3J0CgpgYGB7cn0KdGsxIDwtIHJlYWQudGFibGUoImh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9zdGF0T21pY3MvUFNMUzIxL2RhdGEvZXN0cm9nZW5UazEudHh0IiwKICAgICAgICAgICAgICAgICAgc2VwPSIsIiwKICAgICAgICAgICAgICAgICAgaGVhZGVyPVRSVUUpCmhlYWQodGsxKQpgYGAKCiMgVGlkeSBkYXRhCgpXZSBoYXZlIHR3byBjb2x1bW5zIGluZGljYXRpbmcgdGltZS4gVGhlIGZpcnN0IGB0aW1lLmhgIHNob3VsZCBkaXNwbGF5IG51bWVyaWMKdmFsdWVzLCBidXQgYHRpbWUuZmAgc2hvdWxkIGRpc3BsYXkgdGltZSBjYXRlZ29yaWVzOyBjaGFuZ2UgYHRpbWUuZmAgdG8gYQpmYWN0b3IgdXNpbmcgYGRwbHlyYC4gQWRkaXRpb25hbGx5LCBjaGFuZ2UgYGVzdHJvZ2VuYCB0byBhIGZhY3Rvci4KCmBgYHtyfQp0azEgPC0gdGsxICU+JQogICAgbXV0YXRlKHRpbWUuZiA9IGFzLmZhY3Rvcih0aW1lLmYpLCBlc3Ryb2dlbiA9IGFzLmZhY3Rvcihlc3Ryb2dlbikpCmBgYAoKIyBEYXRhIGV4cGxvcmF0aW9uCgpUaW1lIGFuZCBlc3Ryb2dlbiB0cmVhdG1lbnQgYm90aCBtYXkgaGF2ZSBhbiBlZmZlY3Qgb24gdGhlIHRrMSBnZW5lLiBNb3Jlb3ZlciwgCml0IGlzIGFsc28gcG9zc2libGUgdGhhdCB0aGUgcmVzcG9uc2Ugb24gdGhlIGVzdHJvZ2VuIHRyZWF0bWVudCBjaGFuZ2VzIG92ZXIgCnRpbWUuIFRoZXJlZm9yZSwgd2UgcGxvdCB0aGUgZ2VuZSBleHByZXNzaW9uIGZvciBlYWNoIHRyZWF0bWVudCBjb21iaW5hdGlvbi4gCldlIGRvIG5vdCB1c2UgYm94cGxvdHMgaGVyZSBiZWNhdXNlIHRoZXJlIGFyZSBvbmx5IHR3byBiaW9sb2dpY2FsIHJlcGVhdHMgZm9yIAplYWNoIHRyZWF0bWVudCB4IHRpbWUgY29tYmluYXRpb24uIEluIHN0ZWFkLCB3ZSBtYWtlIGEgc2NhdHRlcnBsb3QuIE5vdGUsIHRvCmF2b2lkIG92ZXJwbG90dGluZyB0aGUgcG9pbnRzLCB3ZSBtYWtlIHVzZSBvZiBgZ2VvbV9qaXR0ZXJgLgoKYGBge3J9CnNldC5zZWVkKDQ2ODQxNjUpICMgdG8gbWFrZSBqaXR0ZXIgcmVwcm9kdWNpYmxlCnRrMSAlPiUKICBnZ3Bsb3QoYWVzKHggPSB0aW1lLmY6ZXN0cm9nZW4sIHkgPSB0azEsIGNvbCA9IHRpbWUuZjplc3Ryb2dlbikpICsKICBnZW9tX2ppdHRlcih3aWR0aD0wLjIpICsKICB0aGVtZV9idygpICsKICB5bGFiKCJsb2cyIFRLMSBpbnRlbnNpdHkiKSArCiAgeGxhYigidGltZSB4IGVzdHJvZ2VuIGNvbWJpbmF0aW9uIikgKwogIGdndGl0bGUoIlRLMSBleHByZXNzaW9uIGluIGZ1bmN0aW9uIG9mIHRpbWUgYW5kIGVzdHJvZ2VuIikKYGBgCgpUaGUgcGxvdCBzdWdnZXN0cwoKMS4gYW4gZXN0cm9nZW4gcmVzcG9uc2UgYXQgYm90aCBlYXJseSBhbmQgbGF0ZSB0aW1lcG9pbnQKMi4gYW4gZWZmZWN0IG9mIHRpbWUKMy4gYSBwb3RlbnRpYWwgY2hhbmdlIGluIGVzdHJvZ2VuIHJlc3BvbnNlIGJldHdlZW4gZWFybHkgYW5kIGxhdGUgdGltZXBvaW50LgoKU2luY2UgdGhlcmUgYXJlIG9ubHkgdHdvIGJpb2xvZ2ljYWwgcmVwZWF0cyBmb3IgZXZlcnkgdHJlYXRtZW50IGNvbWJpbmF0aW9uIAp0aGUgcGxvdCBkb2VzIG5vdCBhbGxvdyB1cyB0byBsZWFybiBtdWNoIGFib3V0IHZhcmlhYmlsaXR5IGluIGdlbmUgZXhwcmVzc2lvbiAKZm9yIGV2ZXJ5IHRyZWF0bWVudCp0aW1lIGNvbWJpbmF0aW9uLiAKCiMgQW5hbHlzaXMgMTogZWFybHkgcmVzcG9uc2UgKG9ubHkpCgpUaW1lIGFuZCBlc3Ryb2dlbiB0cmVhdG1lbnQgY2FuIGhhdmUgYW4gZWZmZWN0IG9uIHRoZSB0azEgZ2VuZS4gTW9yZW92ZXIsIGl0IGlzCmFsc28gcG9zc2libGUgdGhhdCB0aGUgcmVzcG9uc2Ugb24gdGhlIGVzdHJvZ2VuIHRyZWF0bWVudCBjaGFuZ2VzIG92ZXIgdGltZS4gCkhlbmNlLCB3ZSB3aWxsIGhhdmUgdG8gbW9kZWwgdGhlIGdlbmUgZXhwcmVzc2lvbiBieSB1c2luZyBtYWluIGVmZmVjdHMgZm9yIHRpbWUsCmVzdHJvZ2VuIGFuZCBhIHRpbWUqZXN0cm9nZW4gaW50ZXJhY3Rpb24uIAoKIyMgQXNzdW1wdGlvbnMKCkxpc3QgYXNzdW1wdGlvbnM6CgoxLiBUaGUgb2JzZXJ2YXRpb25zIGFyZSBpbmRlcGVuZGVudCBvZiBlYWNoIG90aGVyCjIuIExpbmVhcml0eSBiZXR3ZWVuIHRoZSByZXNwb25zZSBhbmQgcHJlZGljdG9yIHZhcmlhYmxlCjMuIFRoZSByZXNpZHVlcyBvZiB0aGUgbW9kZWwgbXVzdCBiZSBub3JtYWxseSBkaXN0cmlidXRlZAo0LiBIb21vc2NlZGFzdGljaXR5IG9mIHRoZSBkYXRhCgpUaGUgYXNzdW1wdGlvbiBvZiBpbmRlcGVuZGVuY2UgaXMgbWV0LCBlYWNoIG9mIHRoZSA4IGNlbGwgY3VsdHVyZXMgd2FzIHJhbmRvbWx5CmFzc2lnbmVkIHRvIGEgdGltZSBhbmQgdHJlYXRtZW50IGNvbWJpbmF0aW9uLgoKRm9yIHRoZSByZW1haW5pbmcgYXNzdW1wdGlvbnMsIHdlIGZpdCBhIGxpbmVhciBtb2RlbCB3aXRoIGEgbWFpbiBlZmZlY3RzIGZvciAKZXN0cm9nZW4gZG9zYWdlLCBhIG1haW4gZWZmZWN0IGZvciB0aW1lIGFuZCBhbiBlc3Ryb2dlbi10aW1lIGludGVyYWN0aW9uIGVmZmVjdC4KIApgYGB7cn0KZml0IDwtIGxtKHRrMSB+IGVzdHJvZ2VuKnRpbWUuZiwgZGF0YSA9IHRrMSkKcGxvdChmaXQpCmBgYAoKVGhlcmUgaXMgbm90IGVub3VnaCBkYXRhIHRvIGFzc2VzcyBlcXVhbGl0eSBvZiB0aGUgdmFyaWFuY2UgZm9yIGV2ZXJ5IAp0cmVhdG1lbnQgeCB0aW1lIGNvbWJpbmF0aW9uLiBUaGUgUVEtcGxvdCBvZiB0aGUgcmVzaWR1YWxzIHN1Z2dlc3RzIHNvbWUgCmRldmlhdGlvbnMgZnJvbSBub3JtYWxpdHksIGhvd2V2ZXIsIHRoZXJlIGFyZSBvbmx5IGEgbGltaXRlZCBudW1iZXIgb2YgCm9ic2VydmF0aW9ucyB0byBhc3Nlc3Mgbm9ybWFsaXR5LiAKCioqRm9yIGRlbW9uc3RyYXRpb25hbCBwdXJwb3Nlcywgd2Ugd2lsbCBjb250aW51ZSB0aGUgYW5hbHlzaXMsIGJ1dCBrZWVwIGluKioKKiptaW5kIHRoYXQgd2UgZG8gbm90IGhhdmUgZW5vdWdoIGRhdGEgdG8gYmUgc3VyZSB0aGF0IHRoZSBhc3N1bXB0aW9ucyBvZiB0aGUqKgoqKm1vZGVsIGhvbGQhIFdlIHdpbGwgY29tZSBiYWNrIHRvIHRoaXMgaW4gdGhlIGBjb25jbHVzaW9uc2Agc2VjdGlvbi4qKgogCiMjIEludGVycHJldGF0aW9uIG9mIG1vZGVsIHBhcmFtZXRlcnMgYW5kIHN0YXRpc3RpY2FsIHRlc3RzCgpXZSBvYnRhaW4gdGhlIGZvbGxvd2luZyBlc3RpbWF0ZXMgZm9yIG91ciBsaW5lYXIgcmVncmVzc2lvbiBtb2RlbCwKCmBgYHtyfQpzdW1tYXJ5KGZpdCkKYGBgCgphbmQgdGhlIGZvbGxvd2luZyBjb3JyZXNwb25kaW5nIGNvbmZpZGVuY2UgaW50ZXJ2YWxzIG9uIHRoZXNlIGVzdGltYXRlcy4KCmBgYHtyfQpDSWZpdCA8LSBjb25maW50KGZpdCkKQ0lmaXQKYGBgCgpOZXh0LCB3ZSBzaG91bGQgY2FyZWZ1bGx5IHRoaW5rIGFib3V0IHRoZSBpbnRlcnByZXRhdGlvbiBvZiB0aGVzZSBtb2RlbCAKcGFyYW1ldGVycy4gV2UgbW9kZWwgdGhlIGxvZyRfMiQtdHJhbnNmb3JtZWQgaW50ZW5zaXRpZXMgd2l0aCB0aGUgZm9sbG93aW5nIApyZWdyZXNzaW9uIG1vZGVsOiAKCiQkCnk9XGJldGFfMCtcYmV0YV97ZX14X3tlfStcYmV0YV97dH14X3t0fStcYmV0YV97ZXR9eF97ZX14X3t0fSwKJCQKCndpdGggCgotICRcYmV0YV8wJCB0aGUgaW50ZXJjZXB0LAoKLSAkXGJldGFfe2V9JCB0aGUgbWFpbiBlZmZlY3QgZm9yIGVzdHJvZ2VuLCAKCi0gJHhfe2V9JCBhIGR1bW15IHZhcmlhYmxlIGZvciBlc3Ryb2dlbiB3aGljaCBpcyAwIGZvciB0aGUgY29udHJvbCB0cmVhdG1lbnQgaW4gCnRoZSBhYnNlbmNlIG9mIGVzdHJvZ2VuIGFuZCAxIGZvciB0aGUgdHJlYXRtZW50IHdpdGggZXN0cm9nZW4sIAoKLSAkXGJldGFfe3R9JCB0aGUgbWFpbiBlZmZlY3QgZm9yIHRpbWUsIAoKLSAkeF97dH0kIGEgZHVtbXkgdmFyaWFibGUgdGhhdCBpcyAwIGZvciB0aGUgbWVhc3VyZW1lbnRzIGF0IHRoZSBlYXJseSB0aW1lIAooMTBoKSBhbmQgMSBmb3IgbWVhc3VyZW1lbnRzIGF0IHRoZSBsYXRlIHRpbWVwb2ludCAoNDhoKSAKCi0gJFxiZXRhX3tldH0kIHRoZSBpbnRlcmFjdGlvbiBlZmZlY3QgYmV0d2VlbiBlc3Ryb2dlbiBhbmQgdGltZS4gCgpUbyBlYXNlIHRoZSBpbnRlcnByZXRhdGlvbiBvZiB0aGUgcGFyYW1ldGVycywgJFxsb2dfMiQgdHJhbnNmb3JtZWQgbWVhbiAKaW50ZW5zaXRpZXMgYXJlIGdpdmVuIGZvciBlYWNoIHRyZWF0bWVudCBncm91cCBhcyB3ZWxsIGFzIGNvcnJlc3BvbmRpbmcgCmNvbnRyYXN0cyBiZXR3ZWVuIHRyZWF0bWVudHMsIHdoaWNoIGhhdmUgYW4gaW50ZXJwcmV0YXRpb24gaW4gdGVybXMgb2YgJFxsb2dfMiQgCnRyYW5zZm9ybWVkIGZvbGQgY2hhbmdlcyAoRkMpLiAKCi0gJFxsb2dfMlxoYXQgXG11X3tBMTB9PVxoYXRcYmV0YV8wJCwgJFxsb2dfMiBcaGF0XG11X3tQMTB9PVxoYXRcYmV0YV8wK1xoYXRcYmV0YV9lJCAKLS0+ICAgJFxsb2dfMiBcd2lkZWhhdHtGQ31fe1AxMC1BMTB9PVxoYXRcYmV0YV9lJAoKLSAkXGxvZ18yIFxoYXQgXG11X3tBNDh9PVxoYXRcYmV0YV8wK1xoYXRcYmV0YV90JCwgJFxsb2dfMiBcaGF0IFxtdV97UDQ4fT1caGF0XGJldGFfMCtcaGF0XGJldGFfZStcaGF0XGJldGFfdCtcaGF0XGJldGFfe2V0fSQgCi0tPiAgICRcbG9nXzIgXHdpZGVoYXR7RkN9X3tQNDgtQTQ4fT1caGF0IFxiZXRhX2UgK1xoYXRcYmV0YV97ZXR9JAoKLSAkXGxvZ18yIFx3aWRlaGF0e0ZDfV97QTQ4LUExMH09XGhhdFxiZXRhX3t0fSQsICRcbG9nXzIgXHdpZGVoYXR7RkN9X3tQNDgtUDEwfT1caGF0XGJldGFfe3R9K1xoYXRcYmV0YV97ZXR9JCAKLS0+ICAgJFxsb2dfMlxmcmFje1x3aWRlaGF0e0ZDfV97UDQ4LUE0OH19e1x3aWRlaGF0e0ZDfV97UDEwLUExMH19PVxoYXRcYmV0YV97ZXR9JAoKd2l0aCAkXGxvZ18yXGhhdCBcbXVfe0ExMH0kLCAkXGxvZ18yXGhhdCBcbXVfe1AxMH0kLCAkXGxvZ18yXGhhdCBcbXVfe0E0OH0kIAphbmQgJFxsb2dfMlxoYXQgXG11X3tQNDh9JCB0aGUgZXN0aW1hdGVkIG1lYW4gJFxsb2dfMiQgdHJhbnNmb3JtZWQgaW50ZW5zaXR5IApmb3IgdGhlIGNvbnRyb2wgdHJlYXRtZW50IGluIHRoZSBhYnNlbmNlIG9mIGVzdHJvZ2VuIGF0IDEwaCwgdGhlIGVzdHJvZ2VuIAp0cmVhdG1lbnQgYXQgMTBoLCB0aGUgY29udHJvbCB0cmVhdG1lbnQgYXQgNDhoIGFuZCB0aGUgZXN0cm9nZW4gdHJlYXRtZW50IAphdCA0OGgsIHJlc3BlY3RpdmVseS4gV2l0aCAkXGxvZ18yIFx3aWRlaGF0e0ZDfV97Yi1hfSQgd2UgaW5kaWNhdGUgJFxsb2dfMiQgCnRyYW5zZm9ybWVkIGZvbGQgY2hhbmdlIGVzdGltYXRlcyBiZXR3ZWVuIHRyZWF0bWVudCBCIGFuZCB0cmVhdG1lbnQgQSwgCmkuZS4gJFxsb2dfMiBcd2lkZWhhdHtGQ31fe2ItYX09XGxvZ18yIFxoYXRcbXVfe2J9LVxsb2dfMiBcaGF0XG11X2E9XGxvZ18yIFxmcmFje1xoYXRcbXVfe2J9fXtcaGF0XG11X3thfX0kLgoKVGhlIG1vZGVsIGltbWVkaWF0ZWx5IHByb3ZpZGVzIHN0YXRpc3RpY2FsIHRlc3RzIGZvciBhc3Nlc3NpbmcgdGhlIHNpZ25pZmljYW5jZSAKb2YgZm9sZCBjaGFuZ2VzIGJldHdlZW4gdGhlIGVzdHJvZ2VuIGFuZCBjb250cm9sIHRyZWF0bWVudCBhdCB0aGUgZWFybHkgdGltZSAKcG9pbnQgJFxsb2dfMiBcd2lkZWhhdHtGQ31fe1AxMC1BMTB9JCwgZm9sZCBjaGFuZ2VzIGJldHdlZW4gdGhlIGNvbnRyb2wgYXQgCnRoZSBsYXRlIHRpbWUgcG9pbnQgYW5kIHRoZSBjb250cm9sIGF0IHRoZSBlYXJseSB0aW1lIHBvaW50IAokXGxvZ18yIFx3aWRlaGF0e0ZDfV97QTQ4LVAxMH0kIGFuZCBmb3IgY2hhbmdlcyBpbiBmb2xkIGNoYW5nZSBiZXR3ZWVuIApjb250cm9sIGFuZCBlc3Ryb2dlbiB0cmVhdG1lbnQgYXQgdGhlIGxhdGUgYW5kIHRoZSBlYXJseSB0aW1lcG9pbnQgJFxsb2dfMlxmcmFje1x3aWRlaGF0e0ZDfV97UDQ4LUE0OH19e1x3aWRlaGF0e0ZDfV97UDEwLUExMH19JCwgdGhlIGludGVyYWN0aW9uIAp0ZXJtLiAKCmBgYHtyfQpzdW1tYXJ5KGZpdCkKYGBgCgpGb3IgY29tbXVuaWNhdGluZyB0aGUgcmVzdWx0cywgd2UgbWF5IHRyYW5zZm9ybSB0aGUgbW9kZWwgcGFyYW1ldGVycyB0byB0aGUKb3JpZ2luYWwgc2NhbGUsIGkuZS4sIHRoZSAoZ2VvbWV0cmljKSBhdmVyYWdlIGludGVuc2l0eSBpbiBzdGVhZCBvZiB0aGUgYXZlcmFnZSAKbG9nMiBpbnRlbnNpdHksIHVzaW5nOgoKYGBge3J9CiMgVHJhbnNmb3JtIHBhcmFtZXRlcnMgYW5kIHRoZSBDSSBiYWNrIHRvIHRoZSBvcmlnaW5hbCBzY2FsZQoyXmZpdCRjb2VmCjJeQ0lmaXQKYGBgCgotIFRoZSBnZW9tZXRyaWMgYXZlcmFnZSBpbnRlbnNpdHkgZm9yIHRoZSBjb250cm9sIHRyZWF0bWVudCBvbiB0aGUgZWFybHkgCnRpbWVwb2ludCBlcXVhbHMgJFxleHAoXGhhdCBcYmV0YV8wKSQ9YHIgcm91bmQoMl5maXQkY29lZlsiKEludGVyY2VwdCkiXSwyKWAuCgotIFRoZSBlc3Ryb2dlbiBlZmZlY3QgYXQgdGhlIGVhcmx5IHRpbWUgcG9pbnQgYW5kIHRoZSB0aW1lIGVmZmVjdCBhcmUgZXh0cmVtZWx5IApzaWduaWZpY2FudCAocDw8MC4wMDEpLiAKCi0gVGhlIGV4cHJlc3Npb24gb2YgdGhlIHRrMSBnZW5lIGF0IHRoZSBlYXJseSB0aW1lcG9pbnQgaXMgb24gYXZlcmFnZSAKYHIgcm91bmQoMl5maXQkY29lZlsiZXN0cm9nZW5wcmVzZW50Il0sMilgIHRpbWVzIGhpZ2hlciBhZnRlciBlc3Ryb2dlbiB0cmVhdG1lbnQgCig5NSUgQ0kgW2ByIHJvdW5kKDJeQ0lmaXRbImVzdHJvZ2VucHJlc2VudCIsXSwyKWBdKS4gCgotIFRoZSBnZW5lIGV4cHJlc3Npb24gaW4gdGhlIGNvbnRyb2wgdHJlYXRtZW50IGlzIG9uIGF2ZXJhZ2UgCmByIHJvdW5kKDEvMl5maXQkY29lZlsidGltZS5mNDgiXSwyKWAgdGltZXMgbG93ZXIgKG9yIApgciByb3VuZCgyXmZpdCRjb2VmWyJ0aW1lLmY0OCJdLDIpYCB0aW1lcyBoaWdoZXIpIGF0IHRoZSBsYXRlIHRpbWUgcG9pbnQgCig5NSUgQ0kgW2ByIHJvdW5kKDEvMl5DSWZpdFsidGltZS5mNDgiLF0sMilgXSkuCgotIFRoZSBkaWZmZXJlbmNlIGluIGVzdHJvZ2VuIHJlc3BvbnNlIGF0IHRoZSBsYXRlIHRpbWVwb2ludCBhbmQgdGhlIGVhcmx5IAp0aW1lcG9pbnQgaXMgc3Ryb25nbHkgc2lnbmlmaWNhbnQgKHA9MC4wMDkpLiBUaGUgZm9sZCBjaGFuZ2UgZHVlIHRvIHRoZSBlc3Ryb2dlbgp0cmVhdG1lbnQgaXMgb24gYXZlcmFnZSBgciByb3VuZCgyXmZpdCRjb2VmWyJlc3Ryb2dlbnByZXNlbnQ6dGltZS5mNDgiXSwyKWAgCnRpbWVzIGhpZ2hlciBhdCB0aGUgbGF0ZSB0aW1lIHBvaW50IAooOTUlIENJIFtgciByb3VuZCgyXkNJZml0WyJlc3Ryb2dlbnByZXNlbnQ6dGltZS5mNDgiLF0sMilgXSkuCgojIEFuYWx5c2lzIDI6IExhdGUgcmVzcG9uc2UgKG9ubHkpCgpUaGUgcmVzZWFyY2hlcnMsIGhvd2V2ZXIsIGFyZSBhbHNvIGludGVyZXN0ZWQgaW4gdGVzdGluZyB0aGUgc2lnbmlmaWNhbmNlIG9mCnRoZSBmb2xkIGNoYW5nZSBiZXR3ZWVuIGVzdHJvZ2VuIGFuZCBjb250cm9sIHRyZWF0bWVudCBhdCB0aGUgbGF0ZSB0aW1lcG9pbnQuClRoaXMgaW52b2x2ZXMgYXNzZXNzaW5nIGEgY29udHJhc3Qgb2YgdGhlIG1vZGVsIHBhcmFtZXRlcnM6CiRcbG9nXzIgXHdpZGVoYXR7RkN9X3tQNDgtQTQ4fT1caGF0IFxiZXRhX2UgK1xoYXRcYmV0YV97ZXR9JC4gV2UgY2FuIHRlc3QgdGhpcyAKbGluZWFyIGNvbWJpbmF0aW9uIG9mIG1vZGVsIHBhcmFtZXRlcnMgdXNpbmcgdGhlIGBtdWx0Y29tcGAgcGFja2FnZS4KCiMjIFRlc3QKCmBgYHtyLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KG11bHRjb21wKQoKdGVzdEZDUDQ4X0E0OCA8LSBnbGh0KG1vZGVsID0gZml0LCAKICAgICAgICAgICAgICAgICAgICAgIGxpbmZjdCA9ICJlc3Ryb2dlbnByZXNlbnQgKyBlc3Ryb2dlbnByZXNlbnQ6dGltZS5mNDggPSAwIikKc3VtbWFyeSh0ZXN0RkNQNDhfQTQ4KQpgYGAKCiMjIyBDb25maWRlbmNlIGludGVydmFscyBGQyBhdCB0aW1lIDQ4aC4KCmBgYHtyfQojIENJIGZvciBmb2xkIGNoYW5nZXMgb24gdGltZSBwb2ludCA0OGgKQ0lGQ1A0OF9BNDggPC0gY29uZmludCh0ZXN0RkNQNDhfQTQ4KQpDSUZDUDQ4X0E0OApgYGAKCkZvciBjb21tdW5pY2F0aW5nIHRoZSByZXN1bHRzLCB3ZSBtYXkgdHJhbnNmb3JtIHRoZSBtb2RlbCBwYXJhbWV0ZXJzIHRvIHRoZQpvcmlnaW5hbCBzY2FsZSwgaS5lLiwgdGhlIChnZW9tZXRyaWMpIGF2ZXJhZ2UgaW50ZW5zaXR5IGluIHN0ZWFkIG9mIHRoZSBhdmVyYWdlIApsb2cyIGludGVuc2l0eSwgdXNpbmc6CgpgYGB7cn0KIyBPcmlnaW5hbCBzY2FsZQoyXkNJRkNQNDhfQTQ4JGNvbmZpbnQKYGBgCgpUaGUgZXN0cm9nZW4gZWZmZWN0IGF0IHRoZSBsYXRlIHRpbWUgcG9pbnQgaXMgYWxzbyBleHRyZW1lbHkgc2lnbmlmaWNhbnQgCihwPDwwLjAwMSkuIFRoZSBleHByZXNzaW9uIG9mIHRoZSB0azEgZ2VuZSBhdCB0aGUgbGF0ZSB0aW1lcG9pbnQgaXMgb24gYXZlcmFnZSAKYHIgcm91bmQoMl5DSUZDUDQ4X0E0OCRjb25maW50LDIpWzFdYCB0aW1lcyBoaWdoZXIgYWZ0ZXIgZXN0cm9nZW4gdHJlYXRtZW50IAooOTUlIENJIFtgciByb3VuZCgyXkNJRkNQNDhfQTQ4JGNvbmZpbnQsMilbLTFdYF0pLiAKCiMgQW5hbHlzaXMgMzogc2ltdWx0YW5lb3VzbHkgYXNzZXNzIGFsbCByZXNlYXJjaCBoeXBvdGhlc2VzCgpBbHRlcm5hdGl2ZWx5LCB3ZSBjYW4gc2ltdWx0YW5lb3VzbHkgYXNzZXNzIGFsbCByZXNlYXJjaCBoeXBvdGhlc2VzIGZvciBvdXIKbGluZWFyIHJlZ3Jlc3Npb24gbW9kZWwgdXNpbmcgdGhlIHBhY2thZ2UgYG11bHRjb21wYC4gVGhpcyBpcyB0aGUgbW9zdCBlbGVnYW50CndheSBmb3IgYWRkcmVzc2luZyBhbGwgcmVzZWFyY2ggaHlwb3RoZXNlcywgYW5kIGFkZGl0aW9uYWxseSBhbGxvd3MgZm9yIAplZmZpY2llbnQgbXVsdGlwbGUgdGVzdGluZyBjb3JyZWN0aW9uLgoKYGBge3J9CnRlc3RGQ0FsbCA8LSBnbGh0KG1vZGVsID0gZml0LCAKICAgICAgICAgICAgICAgICAgbGluZmN0ID0gYygiZXN0cm9nZW5wcmVzZW50ID0gMCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImVzdHJvZ2VucHJlc2VudCArIGVzdHJvZ2VucHJlc2VudDp0aW1lLmY0OCA9IDAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICJlc3Ryb2dlbnByZXNlbnQ6dGltZS5mNDggPSAwIikpCnN1bW1hcnkodGVzdEZDQWxsKQpgYGAKCmBgYHtyfQojIENvbmZpZGVuY2UgaW50ZXJ2YWxzIApDSUZDQWxsIDwtIGNvbmZpbnQodGVzdEZDQWxsKQpDSUZDQWxsCmBgYAoKRm9yIGNvbW11bmljYXRpbmcgdGhlIHJlc3VsdHMsIHdlIG1heSB0cmFuc2Zvcm0gdGhlIG1vZGVsIHBhcmFtZXRlcnMgdG8gdGhlCm9yaWdpbmFsIHNjYWxlLCBpLmUuLCB0aGUgKGdlb21ldHJpYykgYXZlcmFnZSBpbnRlbnNpdHkgaW4gc3RlYWQgb2YgdGhlIGF2ZXJhZ2UgCmxvZzIgaW50ZW5zaXR5LCB1c2luZzoKCmBgYHtyfQojIENvbmZpZGVuY2UgaW50ZXJ2YWxzIG9uIG9yaWdpbmFsIHNjYWxlCjJeQ0lGQ0FsbCRjb25maW50CmBgYAoKIyBDb25jbHVzaW9ucwoKVGhlcmUgd2FzIGFuIGV4dHJlbWVseSBzaWduaWZpY2FudCBlZmZlY3Qgb2YgZXN0cm9nZW4gb24gdGhlIGV4cHJlc3Npb24gb2YgdGhlIApUSzEgZ2VuZSAxMGggYW5kIDQ4aCBhZnRlciBlc3Ryb2dlbiBkb3NhZ2UgKCAkcDw8MC4wMDEkKS4gCgpUaGUgVEsxIGdlbmUgd2FzIHNpZ25pZmljYW50bHkgdXByZWd1bGF0ZWQgYWZ0ZXIgZXN0cm9nZW4gdHJlYXRtZW50IGFzIGNvbXBhcmVkCnRvIGEgY29udHJvbCB0cmVhdG1lbnQgd2l0aG91dCBlc3Ryb2dlbi4gT24gYXZlcmFnZSwgdGhlIGZvbGQgY2hhbmdlIGJldHdlZW4gCnRoZSBlc3Ryb2dlbiB0cmVhdG1lbnQgYW5kIGNvbnRyb2wgdmFyaWVkIGZvcm0gCmByIHJvdW5kKDJeQ0lGQ0FsbCRjb25maW50WzIsMV0sMilgIAooOTUlIENJIFtgciByb3VuZCgyXkNJRkNBbGwkY29uZmludFsxLDI6M10sMilgXSkgMTAgaG91cnMgYWZ0ZXIgCmVzdHJvZ2VuIGRvc2FnZSB1cCB0byBgciByb3VuZCgyXkNJRkNBbGwkY29uZmludFsyLDFdLDIpYCAKKDk1JSBDSSBbYHIgcm91bmQoMl5DSUZDQWxsJGNvbmZpbnRbMiwyOjNdLDIpYF0pIGF0IHRoZSBsYXRlIHRpbWVwb2ludCAKKDQ4aCksIHJlc3BlY3RpdmVseS4gIAoKVGhlIGluY3JlYXNlIGluIGZvbGQgY2hhbmdlIGJldHdlZW4gdGhlIGVhcmx5IGFuZCB0aGUgbGF0ZSB0aW1lcG9pbnQgd2FzIApzaWduaWZpY2FudCAoJHA9MC4wMiQpLCBmb2xkIGNoYW5nZSBpbmNyZWFzZTogCmByIHJvdW5kKDJeQ0lGQ0FsbCRjb25maW50WzMsMV0sMilgLCAKOTUlIENJIFtgciByb3VuZCgyXkNJRkNBbGwkY29uZmludFszLDI6M10sMilgXSkuIAoKQWxsIHAtdmFsdWVzIGFuZCBjb25maWRlbmNlIGludGVydmFscyB3ZXJlIGFkanVzdGVkIGZvciBtdWx0aXBsZSB0ZXN0aW5nLiAKCgo=</div>
+<div class="footer">
+    <hr>
+    This work is licensed under the <a href= "https://creativecommons.org/licenses/by-nc-sa/4.0">
+    CC BY-NC-SA 4.0</a> licence.
+</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("08_x_estrogen_sol.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
