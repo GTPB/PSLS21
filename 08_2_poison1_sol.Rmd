@@ -111,14 +111,14 @@ poison %>%
   theme_bw() + 
   stat_summary(
     geom = "point",
-    fun.y = "mean",
+    fun = "mean",
     col = "black",
     size = 4,
     shape = 24,
     fill = "red")
 ```
 
-# Analysis with interaction and main effect for weight
+# Analysis with main effect and interaction for dose and weight
 
 ## Model specification
 
@@ -155,7 +155,7 @@ summary(lm_Int)
 We may interpret the estimate parameters as follows:
 
 - When we compare the log2 survival of fish with weight $x_g$ that are exposed to a dose that differs with 1 mg/l, the expected log2 survival time will be 
-$\beta_d+\beta_{d:g}*x_g$ higher for the fish that were exposed to the highest dose..
+$\beta_d+\beta_{d:g}*x_g$ higher for the fish that were exposed to the highest dose.
 
 - When we compare the log2 survival of fish exposed to dose $x_g$, but that have a weight that differs with 1 g, the expected log2 survival time 
 will be  $\beta_d+\beta_{d:g}*x_g$ higher for fish with the highest weight.
@@ -182,7 +182,7 @@ anova(lmDojo_weight, lm_Int)
 
 We observe an extremely significant (overall, or global) effect for dose on 
 the log2 survival time of dojofish 
-(p-value = `r format(anova(lmDojo_weight, lm_Int)[2,6],digits=3)`.
+(p-value <<0.001)`.
 
 ## Conventional approach
 
@@ -205,7 +205,7 @@ Anova(lm_Int,type="III") #3
 
 There is no significant interaction between dose and weight. As such, the
 effect of dose on survival is not signifiantly different between fish of
-different weight.
+different weight (p = `r format(Anova(lm_Int,type="III")$"Pr(>F)"[4], digits = 2)`).
 
 The conventional approach is to remove the interaction effect from the 
 model. As such, we are left with the additive linear regression model. 

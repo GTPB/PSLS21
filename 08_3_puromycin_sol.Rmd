@@ -99,8 +99,8 @@ with
 
 - $\beta_{p}$ the main effect for treatment ,
 
-- $x_p$ a dummy variable that is 0 for the enzymes that are untreated and 1 for
-the treated enzymes,
+- $x_s$ a dummy variable for "state" that is 0 if the enzymes that are untreated and 1 if
+the enzymes are treated with Puromycin,
 
 - $\beta_{c:s}$ the interaction effect between concentration and treatment state,
 
@@ -110,7 +110,7 @@ Note, that we write the substrate concentration with a small letter because
 the predictor is not random. The researchers have chosen the substrate 
 concentrations in the design phase and it is thus no random variable.
 
-The model implies to different regression lines
+The model implies two different regression lines
 
 - no treatment ($x_s = 0$) 
 $$
@@ -119,7 +119,7 @@ $$
 - treatment (x_s = 1)
 
 $$
-Y_i = (\beta_0 + \beta_t)  + (\beta_c+\beta_{c:s}) x_c + \epsilon  
+Y_i = (\beta_0 + \beta_s)  + (\beta_c+\beta_{c:s}) x_c + \epsilon  
 $$
 
 So the main effect for treatment has the interpretation as the change in intercept between treated and untreated samples. 
@@ -179,30 +179,41 @@ As such, we may assume homoscedasticity of the data.
 
 ### hypotheses 
 
-We want can first do an omnibus test to assess is there is an effect of the log10 concentration on the velocity. 
+We first do an omnibus test to assess is there is an effect of the log10 concentration on the velocity. 
 
 ```{r}
 mod0 <- lm(rate ~ state, data = Puromycin)
 anova(mod0,mod1)
 ```
+
+Next, we assess the interaction. 
+
 ```{r}
 car::Anova(mod1)
 ```
 
-We see that we cannot remove the interaction of the model. 
-We are now interested in assessing if 
+We cannot remove the interaction of the model. 
+
+Hence, we cannot study the effect of the concentration without accounting for the treatment and have to assess following research questions.  
 
 1. the association between velocity and the concentration is significant in the untreated group 
 
-$H_0: \beta_c = 0$ vs $H_1: \beta_c \neq 0$
+$$
+H_0: \beta_c = 0 \text{ vs } H_1: \beta_c \neq 0
+$$
 
 2. the association between velocity and the concentration is significant in the treated group
 
-$H_0: \beta_c + \beta_{c:s}= 0$ vs $H_1: \beta_c + \beta_{c:s}\neq 0$
+$$
+
+H_0: \beta_c + \beta_{c:s}= 0 \text { vs } H_1: \beta_c + \beta_{c:s}\neq 0
+$$
 
 3. the association between velocity and the concentration is different between treated and untreated group 
 
-$H_0: \beta_{c:s}= 0$ vs $H_1: \beta_{c:s}\neq 0$
+$$
+H_0: \beta_{c:s}= 0\text{ vs }H_1: \beta_{c:s}\neq 0
+$$
 
 We can assess all these hypotheses using multcomp while correcting for multiple testing. 
 
@@ -216,7 +227,7 @@ confint(mcp1)
 
 ### Conclusion
 
-There is an extremely significant effect of the substrate concentration and the reaction rate (p<<0.001). 
+There is an extremely significant effect of the substrate concentration on the reaction rate (p<<0.001). 
 The effect of the substrate concentration on the reaction rate is extremely significant for reactions catalysed with untreated enzymes. A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average  `r round(confint(mcp1)$confint[1,1],1)` counts/min higher (95% CI [`r round(confint(mcp1)$confint[1,-1],1)`] counts/min) (p << 0.001). 
 The effect of the substrate concentration on the reaction rate is extremely significant for reactions catalysed puromycin treated enzymes  (p << 0.001). A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average  `r round(confint(mcp1)$confint[2,1],1)` counts/min higher (95% CI [`r round(confint(mcp1)$confint[2,-1],1)`] counts/min).
 The effect of the substrate concentration on the reaction rate is very significantly higher for reactions catalysed with Puromycin treated enzymes than when catalysed with non-treated enzymes  (p = `r round(summary(mcp1)$test$pvalue[3],3)`). A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average `r round(confint(mcp1)$confint[3,1],1)` counts/min higher for reactions that are catalysed with Puromycin treated enzymes than with untreated enzymes (95% CI [`r round(confint(mcp1)$confint[3,-1],1)`] counts/min). 

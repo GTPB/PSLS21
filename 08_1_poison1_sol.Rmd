@@ -111,7 +111,7 @@ poison %>%
   theme_bw() + 
   stat_summary(
     geom = "point",
-    fun.y = "mean",
+    fun = "mean",
     col = "black",
     size = 4,
     shape = 24,
@@ -157,14 +157,8 @@ minutes):
 There is a very significant effect of the poison on survival of Dojofish 
 (p< 0.001). Dojofish that are exposed to a higher dose of the poison will 
 have a survival time that decrease on average with a factor 
-`r lm_simple$coef[2] %>% 2^. %>% round(.,3)` per gram of poison that 
-is added (95% CI [`r confint(lm_simple)[2,] %>% 2^. %>% round(.,3)`]).
-
-There is a very significant effect of the poison on survival of Dojofish 
-(p< 0.001). Dojofish that are exposed to a higher dose of the poison will 
-have a survival time that decrease on average with a factor 
-`r lm_simple$coef[2] %>% abs %>% 10^. %>% round(.,2)` per gram of poison that 
-is added (95% CI [`r confint(lm_simple)[2,] %>% abs %>% 10^. %>% round(.,2)`]).
+`r lm_simple$coef[2] %>% 2^. %>% round(.,2)` per gram of poison that 
+is added (95% CI [`r confint(lm_simple)[2,] %>% 2^. %>% round(.,2)`]).
 
 # Analysis with additive effect for weight
 
@@ -231,7 +225,9 @@ summary(lm_additive)
 We see that the effect of dose on survival time remains similar, however, it 
 has become more significant after we have incorporated weight in our model. 
 Indeed, from the data exploration, we learned that weight is associated with 
-survival. As such, by incorporating weight in our model, we are able to
+survival. 
+
+1. As such, by incorporating weight in our model, we are able to
 explain a larger part of the variability in the response variable survival time.
 As a consequence, the variability in the residuals of the model will decrease,
 which in turn will lead to smaller standard error estimates for the different
@@ -262,22 +258,21 @@ that are exposed to a poison dosage that differs 1 mg/L. In symbols:
 
 The dose of the poison has an extremely significant effect on the log2
 transformed survival time of dojofish 
-(p-value = `r format(summary(lm_additive)$coefficients[2,4],digits=3)`). The 
+(p-value = `r format(summary(lm_additive)$coefficients[2,4],digits=1)`). The 
 geometric average of the survival time for dojofish that are exposed to a 
-poison dose that is 1mg/L larger is approximately halved, 
-factor = $2^{\beta_d}=$ `r format(2^(lm_additive$coef["Dose"]),digits=3)`) .
+poison dose that is 1mg/L larger is approximately halved (factor = $2^{\beta_d}=$ `r format(2^(lm_additive$coef["Dose"]),digits=2)`) .
 
 The effect of weight on the survival time of dojofish is also extremely 
 significant 
-(p-value = `r format(summary(lm_additive)$coefficients[3,4],digits=3)`). The
+(p-value = `r format(summary(lm_additive)$coefficients[3,4],digits=1)`). The
 geometric average of the survival time of a dojofish that weighs 1 gram more 
 than another dojofish is approximately twice as long 
-(factor = $2^{ \beta_g}$= `r format(2^(lm_additive$coef["Weight"]),digits=3)`, 
-95% BI [`r paste(format(2^(confint(lm_additive)["Weight",]),digits=3),collapse=",")`]).
+(factor = $2^{ \beta_g}$= `r format(2^(lm_additive$coef["Weight"]),digits=2)`, 
+95% BI [`r paste(format(2^(confint(lm_additive)["Weight",]),digits=2),collapse=",")`]).
 
 ## Remarks
 
 In the `lm_additive` model, we included only a *main effect* for weight. 
 However, there could also be an *interaction effect* between weight and
-dose. A interaction between weight and dose implies that the dose effect on 
+dose. An interaction between weight and dose implies that the dose effect on 
 the survival time changes according to the weight of the fish.
