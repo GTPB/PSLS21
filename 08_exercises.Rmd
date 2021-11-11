@@ -65,6 +65,9 @@ Assess if there is an association between the substrate concentration and rate
 includes a main effect for concentration, a main effect for enzyme state, and
 an interaction term between these two variables.
 
+- Exercise: [Exercise3](./08_3_puromycin.html)
+- Data path: Not required
+
 ---
 
 # The KPNA2 dataset
@@ -80,5 +83,6 @@ cancer prognosis. The patients, however, do not only differ in the histologic
 grade, but also on their lymph node status. The lymph nodes were
 not affected (0) or surgically removed (1).
 
-
+- Exercise: [Exercise4](./08_4_kpna2.html)
+- Data path: "https://raw.githubusercontent.com/statOmics/SGA21/master/data/kpna2.txt"
 
