@@ -1,5 +1,5 @@
 ---
-title: "Experimental Design II: replication and power"
+title: "Exercise 6.1: Linear regression on puromycin data"
 author: "Lieven Clement & Alexandre Segers"
 date: "statOmics, Ghent University (https://statomics.github.io)"
 output:

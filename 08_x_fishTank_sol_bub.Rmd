@@ -1,0 +1,222 @@
+---
+title: "Exercise 8.x: Blocking on the fish tank dataset - solution"   
+author: "Lieven Clement and Jeroen Gilis"
+date: "statOmics, Ghent University (https://statomics.github.io)"  
+output:
+    html_document:
+      code_download: true    
+      theme: cosmo
+      toc: true
+      toc_float: true
+      highlight: tango
+      number_sections: true
+---
+
+# Background 
+
+Researchers want to assess the effect of three different diets on the weight 
+gain of fish. They have set up an experiment with 12 different tanks of fish. 
+Each tank contains the same number of fish. The weight of 6 fish in each tank 
+was measured at the beginning and the end of the experiment. The researchers 
+recorded the weight gain.
+
+# Experimental design
+
+- The explanatory variable in the experiment is the factor type of diet
+
+- There are 3 diet types: diet 1, diet 2, and diet 3.
+
+- The experimental unit is the tank: the diet treatments are adopted on the 
+tanks, i.e., the tanks are randomized to the diet treatments.
+
+- The weight gain is the response and it is measured on each fish which are 
+the observational units.
+
+Import libraries
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+# Data import
+
+```{r}
+fish <- read.table("https://raw.githubusercontent.com/statOmics/PSLS21/data/fishTank.txt",header=TRUE)
+head(fish)
+```
+
+# Tidy data
+
+```{r}
+fish <- fish %>%
+    mutate(Tank = as.factor(Tank), Diet = as.factor(Diet))
+```
+
+# Data exploration
+
+```{r}
+fish %>%
+  ggplot(aes(x = Tank, y = WtGain, fill=Diet)) +
+    geom_boxplot(outlier.shape=NA) + 
+    geom_jitter(width = 0.2) +
+    ggtitle("Weight gain per tank") +
+    ylab("Weigth gain (g)") + 
+    stat_summary(fun = mean, geom="point", shape=5, size=3, color="black", fill="black") +
+    scale_fill_brewer(palette="RdGy") +
+    theme_bw()
+```
+
+# Analysis
+
+## Pseudoreplication
+
+Given the experimental design, we may consider the fish kept in the same tank
+as **pseudoreplicates**. Intuitively, we can imagine fish the fish that are kept
+in the same tank may have a more similar response to the diet treatment than
+fish kept in different tanks. In other words, while having multiple fish in each
+tank inflates the number of replicates in the dataset, these replicates are not 
+statistically independent. If we do not account for this in 
+**pseudoreplication** our (regression) analysis and consider all fish as true 
+replicates, the standard error on the estimate for the diet effect will be 
+artificially low, resulting in overly liberal inference.
+
+To account for pseudoreplication in the data, we can average over 
+the pseudoreplicates because we assess the same number fish in each tank. 
+Hence the tank averages will have an equal precision. 
+
+Note that prior to averaging, the experimental unit was the tank, while the
+observational unit was the fish inside the tank. After averaging, the tank
+will be both the experiental and the observational unit of the experiment.
+ 
+Averaging can be achieved with the `group_by` and `summarise` functions of 
+the `dplyr` R package.
+
+```{r}
+fish <- fish %>% 
+    group_by(Tank, Diet) %>%
+    summarise(aveWtGain = mean(WtGain))
+fish
+```
+
+Now, the weight gain values are averaged over de six fish in each of the tanks.
+
+## Model assumptions
+
+List assumptions:
+
+1. The observations are independent of each other
+2. Linearity between the response and predictor variable
+3. The residues of the model must be normally distributed
+4. Homoscedasticity of the data
+
+After averaging the weight gain values over de six fish in each of the tanks,
+the first assumption is met. Indeed, we do not expect any pair of tanks (within
+one diet treatment) to be more similar than another pair of tanks.
+
+To assess the remaining assumptions, we first fit a linear regression model.
+
+```{r}
+lmDiet <- lm(aveWtGain ~ Diet, fish)
+
+par(mfrow=c(2,2))
+plot(lmDiet)
+```
+
+We see some undesirable patterns in the diagnostic plots of the linear model.
+
+While the smoother for assessing linearity in the data is flat and centered
+around zero, there is a much larger spread around the smoother for the 
+observations (tanks) of the second diet type (tanks 5-8). These tanks are
+also flagged in the QQ-plot, with all tanks appearing in the heavy tails of the 
+plot. Finally, the same tanks seam to introduce heteroscedasticity in the data,
+as displayed in the third diagnostic plot.
+
+One potential solution is to perform a log-transformation on the data; however,
+violation of the assumptions was still present upon such transformation (not
+shown).
+
+**For demonstrational purposes, we will continue the analysis, but keep in**
+**mind that the assumptions of the model are violated! We will come back to**
+**this in the `conclusion` section.**
+
+## Overall effect of diet
+
+### Hypotheses
+
+The null hypothesis of ANOVA states that:
+$H0$: The mean of the average weight gain is equal between the different diet 
+treatments.
+
+The alternative hypothesis of ANOVA states that:
+$HA$: The mean of the average weight gain is different for at least one diet 
+treatment from the mean of the average weight gain in at least one other diet 
+treatment.
+
+### Test (ANOVA)
+
+```{r, message=FALSE, warning=FALSE}
+lmDiet <- lm(aveWtGain ~ Diet, fish)
+
+library(car)
+anova_diet <- Anova(lmDiet, type=3)
+anova_diet
+```
+
+The p-value of the ANOVA analysis is extremely significant
+(p-value = `r format(anova_diet[[4]][2],digits=4)`), 
+so we reject the null hypothesis that the mean of the average weight gain is 
+equal between the different diet treatments. We can say that the average weight
+gain is significantly different between at least two diet treatments types on 
+the 5% significance level.
+
+Based on this analysis, we do not yet know between which particular
+diet treatments there is a significant difference. To study this, we will
+perform the Tuckey post-hoc analysis.
+
+## Post-hoc analysis
+
+```{r, message=FALSE, warning=FALSE}
+library(multcomp)
+multComp <- glht(model = lmDiet, 
+                 linfct = mcp(Diet = "Tukey"))
+sumDiet <- summary(multComp)
+sumDiet
+```
+
+```{r}
+confDiet <- confint(multComp)
+confDiet$confint[1,2]
+```
+
+## Conclusion
+
+The mean average weight gain is significantly different between all the 
+different diet treatments. The effect sizes and significance levels are as
+follows:
+
+- Higher weight gain in diet 2 than in diet 1 (mean difference = 
+`r format(sumDiet$test$coefficients[1],digits=4)`, adjusted p-value = 
+`r format(sumDiet$test$pvalues[1],digits=4)`, 95% CI
+[`r format(confDiet$confint[1,2],digits=4)`, 
+`r format(confDiet$confint[1,3],digits=4)`])
+
+- Higher weight gain in diet 3 than in diet 1 (mean difference = 
+`r format(sumDiet$test$coefficients[2],digits=4)`, adjusted p-value = 
+`r format(sumDiet$test$pvalues[2],digits=4)`, 95% CI
+[`r format(confDiet$confint[2,2],digits=4)`, 
+`r format(confDiet$confint[2,3],digits=4)`])
+
+- Higher weight gain in diet 3 than in diet 2 (mean difference = 
+`r format(sumDiet$test$coefficients[3],digits=4)`, adjusted p-value = 
+`r format(sumDiet$test$pvalues[3],digits=4)`, 95% CI
+[`r format(confDiet$confint[3,2],digits=4)`, 
+`r format(confDiet$confint[3,3],digits=4)`])
+
+**Note, however, that the assumptions of test are violated,** i.e. larger 
+variability in Diet 2 and/or additional tank/batch effects in Diet 2. The tanks 
+seem to cluster per two tanks, which may suggest a hidden level of dependence 
+between the tanks of this second diet treatment level. 
+**We therefore have to be very careful with the interpretation of the results.**
+
+
+

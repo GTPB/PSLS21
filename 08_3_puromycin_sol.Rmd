@@ -1,6 +1,6 @@
 ---
-title: "Experimental Design II: replication and power"
-author: "Lieven Clement & Alexandre Segers"
+title: "8.3. Multiple regression with interaction: puromycin example - solution"
+author: "Lieven Clement & Jeroen Gilis"
 date: "statOmics, Ghent University (https://statomics.github.io)"
 output:
   html_document:
@@ -11,7 +11,6 @@ output:
     highlight: tango
     number_sections: yes
 ---
-
 
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
 
@@ -86,7 +85,7 @@ seems to be linear.
 
 We will fit the following model to the data 
 
-$Y_i = \beta_0 + \beta_c log_{10}(x_c)+ \beta_s(x_s) + +\beta_{c:s}x_{c}x_{s} + \epsilon_i$
+$Y_i = \beta_0 + \beta_c x_c+ \beta_s x_s +\beta_{c:s}x_{c}x_{s} + \epsilon_i$
 
 with 
 
@@ -96,14 +95,14 @@ with
 
 - $\beta_{c}$ the main effect for log10 concentration,
 
-- $x_c$ the adopted concentration,
+- $x_c$ the log10 concentration,
 
-- $\beta_{s}$ the main effect treatment state,
+- $\beta_{p}$ the main effect for treatment ,
 
-- $x_s$ a dummy variable that is 0 for the enzymes that are untreated and 1 for
+- $x_p$ a dummy variable that is 0 for the enzymes that are untreated and 1 for
 the treated enzymes,
 
-- $\beta_{cs}$ the interaction effect between concentration and treatment state,
+- $\beta_{c:s}$ the interaction effect between concentration and treatment state,
 
 - $\epsilon_i$ i.i.d. normally distributed with mean 0 and variance $\sigma^2$.
 
@@ -111,8 +110,26 @@ Note, that we write the substrate concentration with a small letter because
 the predictor is not random. The researchers have chosen the substrate 
 concentrations in the design phase and it is thus no random variable.
 
+The model implies to different regression lines
+
+- no treatment ($x_s = 0$) 
+$$
+Y_i = \beta_0 + \beta_c x_c + \epsilon  
+$$
+- treatment (x_s = 1)
+
+$$
+Y_i = (\beta_0 + \beta_t)  + (\beta_c+\beta_{c:s}) x_c + \epsilon  
+$$
+
+So the main effect for treatment has the interpretation as the change in intercept between treated and untreated samples. 
+
+The interaction term has the interpretation as the change in slope between treated and untreated samples. 
+
 ```{r}
-mod1 <- lm(rate ~ conc %>% log10 * state, Puromycin)
+Puromycin <-Puromycin %>% 
+  mutate(log10conc = conc %>% log10)
+mod1 <- lm(rate ~ log10conc * state, Puromycin)
 summary(mod1)
 ```
 
@@ -156,35 +173,55 @@ plot(mod1, which=3)
 ```
 
 We see that the spread of the majority of the residuals is more or less similar.
-As such, we may assume homoscedaticity of the data.
+As such, we may assume homoscedasticity of the data.
 
 ## Inference 
 
 ### hypotheses 
 
-We want to assess if there is a linear association between the reaction rate and
-the log$_{10}$ transformed concentration. 
-
-So we will assess 
-
-$H_0$: $\beta_1 = 0$
- 
-agains 
-
-$H_A$: $\beta_1 \ne 0$ 
-
-using a t-test on the slope parameter. 
+We want can first do an omnibus test to assess is there is an effect of the log10 concentration on the velocity. 
 
 ```{r}
-summary(mod1)
-confint(mod1)
+mod0 <- lm(rate ~ state, data = Puromycin)
+anova(mod0,mod1)
+```
+```{r}
+car::Anova(mod1)
+```
+
+We see that we cannot remove the interaction of the model. 
+We are now interested in assessing if 
+
+1. the association between velocity and the concentration is significant in the untreated group 
+
+$H_0: \beta_c = 0$ vs $H_1: \beta_c \neq 0$
+
+2. the association between velocity and the concentration is significant in the treated group
+
+$H_0: \beta_c + \beta_{c:s}= 0$ vs $H_1: \beta_c + \beta_{c:s}\neq 0$
+
+3. the association between velocity and the concentration is different between treated and untreated group 
+
+$H_0: \beta_{c:s}= 0$ vs $H_1: \beta_{c:s}\neq 0$
+
+We can assess all these hypotheses using multcomp while correcting for multiple testing. 
+
+```{r}
+library(multcomp)
+mcp1 <- glht(mod1, linfct = c("log10conc = 0", "log10conc + log10conc:statetreated = 0", "log10conc:statetreated = 0"))
+summary(mcp1)
+confint(mcp1)
 ```
 
 
 ### Conclusion
 
-There is an extremely significant linear association between the substrate concentration on the log-scale and the reaction rate (p<<0.001). 
-A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average  `r round(mod1$coef[2],1)` counts/min higher (95% CI [`r round(confint(mod1)[2,],1)`] counts/min). 
+There is an extremely significant effect of the substrate concentration and the reaction rate (p<<0.001). 
+The effect of the substrate concentration on the reaction rate is extremely significant for reactions catalysed with untreated enzymes. A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average  `r round(confint(mcp1)$confint[1,1],1)` counts/min higher (95% CI [`r round(confint(mcp1)$confint[1,-1],1)`] counts/min) (p << 0.001). 
+The effect of the substrate concentration on the reaction rate is extremely significant for reactions catalysed puromycin treated enzymes  (p << 0.001). A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average  `r round(confint(mcp1)$confint[2,1],1)` counts/min higher (95% CI [`r round(confint(mcp1)$confint[2,-1],1)`] counts/min).
+The effect of the substrate concentration on the reaction rate is very significantly higher for reactions catalysed with Puromycin treated enzymes than when catalysed with non-treated enzymes  (p = `r round(summary(mcp1)$test$pvalue[3],3)`). A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average `r round(confint(mcp1)$confint[3,1],1)` counts/min higher for reactions that are catalysed with Puromycin treated enzymes than with untreated enzymes (95% CI [`r round(confint(mcp1)$confint[3,-1],1)`] counts/min). 
+
+
 
 
 
