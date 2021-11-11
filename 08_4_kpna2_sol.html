@@ -724,9 +724,9 @@ Linear Hypotheses:
                            Estimate Std. Error t value Pr(&gt;|t|)    
 grade3 == 0                  1.6675     0.1827   9.127  &lt; 0.001 ***
 grade3 + grade3:node1 == 0   0.8928     0.1827   4.886  &lt; 0.001 ***
-node1 == 0                   0.6577     0.1827   3.600  0.00696 ** 
-node1 + grade3:node1 == 0   -0.1170     0.1827  -0.640  0.89818    
-grade3:node1 == 0           -0.7748     0.2584  -2.998  0.02669 *  
+node1 == 0                   0.6577     0.1827   3.600  0.00716 ** 
+node1 + grade3:node1 == 0   -0.1170     0.1827  -0.640  0.89821    
+grade3:node1 == 0           -0.7748     0.2584  -2.998  0.02652 *  
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 (Adjusted p values reported -- single-step method)</code></pre>
@@ -736,31 +736,31 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 
 Fit: lm(formula = gene %&gt;% log2 ~ grade * node, data = kpna2)
 
-Quantile = 2.6965
+Quantile = 2.6989
 95% family-wise confidence level
  
 
 Linear Hypotheses:
                            Estimate lwr      upr     
-grade3 == 0                 1.66754  1.17485  2.16022
-grade3 + grade3:node1 == 0  0.89279  0.40010  1.38547
-node1 == 0                  0.65773  0.16504  1.15042
-node1 + grade3:node1 == 0  -0.11702 -0.60971  0.37567
-grade3:node1 == 0          -0.77475 -1.47151 -0.07799</code></pre>
+grade3 == 0                 1.66754  1.17442  2.16066
+grade3 + grade3:node1 == 0  0.89279  0.39966  1.38591
+node1 == 0                  0.65773  0.16461  1.15085
+node1 + grade3:node1 == 0  -0.11702 -0.61014  0.37610
+grade3:node1 == 0          -0.77475 -1.47213 -0.07737</code></pre>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="dv">2</span><span class="op">^</span><span class="kw">confint</span>(fitGlht)<span class="op">$</span>confint</span></code></pre></div>
 <pre><code>                       Estimate       lwr       upr
-grade3                3.1767209 2.2581406 4.4689670
-grade3 + grade3:node1 1.8567602 1.3198596 2.6120646
-node1                 1.5775997 1.1214212 2.2193455
-node1 + grade3:node1  0.9220906 0.6554590 1.2971843
-grade3:node1          0.5844896 0.3607037 0.9471155
+grade3                3.1767209 2.2571906 4.4708480
+grade3 + grade3:node1 1.8567602 1.3193043 2.6131640
+node1                 1.5775997 1.1209494 2.2202796
+node1 + grade3:node1  0.9220906 0.6551832 1.2977303
+grade3:node1          0.5844896 0.3604891 0.9476793
 attr(,&quot;conf.level&quot;)
 [1] 0.95
 attr(,&quot;calpha&quot;)
-[1] 2.694967</code></pre>
+[1] 2.698289</code></pre>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="dv">2</span><span class="op">^-</span><span class="kw">confint</span>(fitGlht)<span class="op">$</span>confint[<span class="st">&quot;grade3:node1&quot;</span>,]</span></code></pre></div>
 <pre><code>Estimate      lwr      upr 
-1.710895 2.773642 1.055349 </code></pre>
+1.710895 2.774169 1.055148 </code></pre>
 </div>
 <div id="conclusion" class="section level1">
 <h1><span class="header-section-number">5</span> Conclusion</h1>
