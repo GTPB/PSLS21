@@ -508,6 +508,9 @@ div.tocify {
       <a href="07_exercises.html">7. ANOVA</a>
     </li>
     <li>
+      <a href="08_exercises.html">8. Multiple linear regression</a>
+    </li>
+    <li>
       <a href="09_exercises.html">9. Non-parametric statistics</a>
     </li>
   </ul>
@@ -584,7 +587,14 @@ div.tocify {
 <h1><span class="header-section-number">3</span> Data tidying</h1>
 <p>It seems that the <code>tpye</code> column is a <code>double</code> rather than a <code>factor</code>. Let’s fix this:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>Cuckoo &lt;-<span class="st"> </span>Cuckoo <span class="op">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="kw">as.factor</span>(type))</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="kw">as.factor</span>(type)) <span class="op">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="kw">recode</span>(type, </span>
+<span id="cb3-4"><a href="#cb3-4"></a>           <span class="st">&quot;1&quot;</span> =<span class="st"> &quot;meadow&quot;</span>, </span>
+<span id="cb3-5"><a href="#cb3-5"></a>           <span class="st">&quot;2&quot;</span> =<span class="st"> &quot;tree&quot;</span>, </span>
+<span id="cb3-6"><a href="#cb3-6"></a>           <span class="st">&quot;3&quot;</span> =<span class="st"> &quot;dunnock&quot;</span>,  </span>
+<span id="cb3-7"><a href="#cb3-7"></a>           <span class="st">&quot;4&quot;</span> =<span class="st"> &quot;robin&quot;</span>, </span>
+<span id="cb3-8"><a href="#cb3-8"></a>           <span class="st">&quot;5&quot;</span> =<span class="st"> &quot;wagtail&quot;</span>, </span>
+<span id="cb3-9"><a href="#cb3-9"></a>           <span class="st">&quot;6&quot;</span> =<span class="st"> &quot;wren&quot;</span>))</span></code></pre></div>
 </div>
 <div id="data-exploration" class="section level1">
 <h1><span class="header-section-number">4</span> Data exploration</h1>
@@ -593,7 +603,7 @@ div.tocify {
 <span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw">count</span>(type)</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["type"],"name":[1],"type":["fct"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"45"},{"1":"2","2":"15"},{"1":"3","2":"14"},{"1":"4","2":"16"},{"1":"5","2":"15"},{"1":"6","2":"15"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["type"],"name":[1],"type":["fct"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"meadow","2":"45"},{"1":"tree","2":"15"},{"1":"dunnock","2":"14"},{"1":"robin","2":"16"},{"1":"wagtail","2":"15"},{"1":"wren","2":"15"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>Visualize the data</p>
@@ -605,8 +615,7 @@ div.tocify {
 <span id="cb5-6"><a href="#cb5-6"></a><span class="st">    </span><span class="kw">geom_jitter</span>(<span class="dt">width =</span> <span class="fl">0.2</span>) <span class="op">+</span></span>
 <span id="cb5-7"><a href="#cb5-7"></a><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Boxplot of the length of eggs per type&quot;</span>) <span class="op">+</span></span>
 <span id="cb5-8"><a href="#cb5-8"></a><span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;length (mm)&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="st">    </span><span class="kw">stat_summary</span>(<span class="dt">fun.y=</span>mean, <span class="dt">geom=</span><span class="st">&quot;point&quot;</span>, <span class="dt">shape=</span><span class="dv">5</span>, <span class="dt">size=</span><span class="dv">3</span>, <span class="dt">color=</span><span class="st">&quot;black&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;black&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning: `fun.y` is deprecated. Use `fun` instead.</code></pre>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="st">    </span><span class="kw">stat_summary</span>(<span class="dt">fun=</span>mean, <span class="dt">geom=</span><span class="st">&quot;point&quot;</span>, <span class="dt">shape=</span><span class="dv">5</span>, <span class="dt">size=</span><span class="dv">3</span>, <span class="dt">color=</span><span class="st">&quot;black&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;black&quot;</span>)</span></code></pre></div>
 <p><img src="07_2_cuckoo_sol_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="anova" class="section level1">
@@ -617,8 +626,12 @@ div.tocify {
 <p>The null hypothesis of ANOVA states that: <span class="math inline">\(H0\)</span>: The mean egg length is equal between the different bird types.</p>
 <p>The alternative hypothesis of ANOVA states that: <span class="math inline">\(HA\)</span>: The mean egg length for at least one bird type is different from the mean egg length in at least one other bird type.</p>
 </div>
+<div id="parameter-estimation" class="section level2">
+<h2><span class="header-section-number">5.2</span> Parameter estimation</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(length<span class="op">~</span>type, Cuckoo)</span></code></pre></div>
+</div>
 <div id="check-assumptions" class="section level2">
-<h2><span class="header-section-number">5.2</span> Check assumptions</h2>
+<h2><span class="header-section-number">5.3</span> Check assumptions</h2>
 <p>Before we may proceed with the analysis, we must make sure that all assumptions for ANOVA are met. ANOVA has three assumptions:</p>
 <ol style="list-style-type: decimal">
 <li>The observations are independent of each other (in all groups)</li>
@@ -627,38 +640,77 @@ div.tocify {
 </ol>
 <p>The first assumption is met, as we may assume that there are no specific patterns of correlation between the randomly selected nests.</p>
 <p>To check the normality assumption, we will use QQ plots.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>Cuckoo <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">sample=</span>length)) <span class="op">+</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span><span class="kw">geom_qq_line</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="op">~</span>type)</span></code></pre></div>
-<p><img src="07_2_cuckoo_sol_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">plot</span>(mod1, <span class="dt">which =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img src="07_2_cuckoo_sol_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>Cuckoo <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">sample=</span>length)) <span class="op">+</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="st">  </span><span class="kw">geom_qq_line</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="op">~</span>type)</span></code></pre></div>
+<p><img src="07_2_cuckoo_sol_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>There seem to be no clear deviations from normality.</p>
 <p>The third assumption of equal variances seems to be met based on the visualization with the boxplots (see above).</p>
 <p>As such, we may proceed with the ANOVA analysis.</p>
+<div id="simulate-to-train-your-skills-in-assessing-assumptions" class="section level3">
+<h3><span class="header-section-number">5.3.1</span> Simulate to train your skills in assessing assumptions</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">set.seed</span>(<span class="dv">1031</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a>sigma &lt;-<span class="st"> </span>mod1 <span class="op">%&gt;%</span><span class="st"> </span>sigma </span>
+<span id="cb9-3"><a href="#cb9-3"></a>dataHlp &lt;-<span class="st"> </span>Cuckoo</span>
+<span id="cb9-4"><a href="#cb9-4"></a></span>
+<span id="cb9-5"><a href="#cb9-5"></a>simModels &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb9-6"><a href="#cb9-6"></a>plotList &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb9-7"><a href="#cb9-7"></a>plotListQQ1 &lt;-<span class="st"> </span><span class="kw">list</span>() </span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>))</span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">9</span>)</span>
+<span id="cb9-11"><a href="#cb9-11"></a>{</span>
+<span id="cb9-12"><a href="#cb9-12"></a>  nobs &lt;-<span class="st"> </span>Cuckoo <span class="op">%&gt;%</span><span class="st"> </span>nrow</span>
+<span id="cb9-13"><a href="#cb9-13"></a>  dataHlp<span class="op">$</span>ySim &lt;-<span class="st"> </span>mod1<span class="op">$</span>fit <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(nobs, <span class="dt">sd =</span> sigma)</span>
+<span id="cb9-14"><a href="#cb9-14"></a>  simModels[[i]] &lt;-<span class="st"> </span><span class="kw">lm</span>(ySim<span class="op">~</span>type, dataHlp)</span>
+<span id="cb9-15"><a href="#cb9-15"></a>  <span class="kw">plot</span>(simModels[[i]], <span class="dt">which =</span> <span class="dv">2</span>)</span>
+<span id="cb9-16"><a href="#cb9-16"></a>  plotList[[i]] &lt;-<span class="st"> </span>dataHlp <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(type,ySim)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="st">    </span><span class="kw">geom_boxplot</span>(<span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="st">    </span><span class="kw">geom_jitter</span>()</span>
+<span id="cb9-20"><a href="#cb9-20"></a>  plotListQQ1[[i]] &lt;-<span class="st"> </span>dataHlp <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb9-21"><a href="#cb9-21"></a><span class="st">    </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;meadow&quot;</span>)  <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">sample =</span> ySim)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-23"><a href="#cb9-23"></a><span class="st">    </span><span class="kw">geom_qq</span>() <span class="op">+</span></span>
+<span id="cb9-24"><a href="#cb9-24"></a><span class="st">    </span><span class="kw">geom_qq_line</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;QQ for meadow&quot;</span>)</span>
+<span id="cb9-26"><a href="#cb9-26"></a>}</span></code></pre></div>
+<p><img src="07_2_cuckoo_sol_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">do.call</span>(gridExtra<span class="op">::</span>grid.arrange, plotList)</span></code></pre></div>
+<p><img src="07_2_cuckoo_sol_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">do.call</span>(gridExtra<span class="op">::</span>grid.arrange, plotListQQ1)</span></code></pre></div>
+<p><img src="07_2_cuckoo_sol_files/figure-html/unnamed-chunk-9-3.png" width="672" /></p>
+<p>The most deviating QQ-plot of the residuals in the nine simulation runs:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">plot</span>(simModels[[<span class="dv">8</span>]], <span class="dt">which =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img src="07_2_cuckoo_sol_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
 </div>
 <div id="anova-model" class="section level2">
-<h2><span class="header-section-number">5.3</span> ANOVA model</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>fit &lt;-<span class="st"> </span><span class="kw">lm</span>(length<span class="op">~</span>type, Cuckoo)</span>
-<span id="cb8-2"><a href="#cb8-2"></a>fit_anova &lt;-<span class="st"> </span><span class="kw">anova</span>(fit)</span>
-<span id="cb8-3"><a href="#cb8-3"></a>fit_anova</span></code></pre></div>
+<h2><span class="header-section-number">5.4</span> ANOVA model</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>mod1_anova &lt;-<span class="st"> </span><span class="kw">anova</span>(mod1)</span>
+<span id="cb13-2"><a href="#cb13-2"></a>mod1_anova</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Df"],"name":[1],"type":["int"],"align":["right"]},{"label":["Sum Sq"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Mean Sq"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["F value"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Pr(>F)"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"5","2":"41.16107","3":"8.232215","4":"4.746715","5":"0.0005621103","_rn_":"type"},{"1":"114","2":"197.70990","3":"1.734297","4":"NA","5":"NA","_rn_":"Residuals"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<p>The p-value of the ANOVA analysis is extremely significant (p-value = 0.0005621), so we reject the null hypothesis that the mean egg length is equal between the different bird types. We can say that the mean egg length is significantly different between at least two bird types on the 5% significance level.</p>
+<p>The p-value of the ANOVA analysis is extremely significant (p-value &lt; 0.001), so we reject the null hypothesis that the mean egg length is equal between the different bird types. We can say that the mean egg length is significantly different between at least two bird types on the 5% significance level.</p>
 <p>Based on this analysis, we do not yet know between which particular bird types there is a significant difference. To study this, we will perform the Tuckey post-hoc analysis.</p>
 </div>
 <div id="post-hoc-analysis" class="section level2">
-<h2><span class="header-section-number">5.4</span> Post-hoc analysis</h2>
+<h2><span class="header-section-number">5.5</span> Post-hoc analysis</h2>
 <p>We will perform a post-hoc analysis, to look at the difference in egg length between each pairwise comparison of bird types. Importantly, with this strategy, the p-values will be correctly adjusted for multiple testing.</p>
 <p>The null hypothesis for each pairwise test is that there is no difference in the mean egg length between both bird types.</p>
 <p>The alternative hypothesis for each pairwise test states that there is indeed a difference in the mean egg length between both bird types.</p>
 <p>We will also calculate the confidence interval on the mean differences.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">library</span>(multcomp, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb9-2"><a href="#cb9-2"></a>mcp &lt;-<span class="st"> </span><span class="kw">glht</span>(fit, <span class="dt">linfct =</span> <span class="kw">mcp</span>(<span class="dt">type =</span> <span class="st">&quot;Tukey&quot;</span>))</span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="kw">summary</span>(mcp)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">library</span>(multcomp, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb14-2"><a href="#cb14-2"></a>mcp &lt;-<span class="st"> </span><span class="kw">glht</span>(mod1, <span class="dt">linfct =</span> <span class="kw">mcp</span>(<span class="dt">type =</span> <span class="st">&quot;Tukey&quot;</span>))</span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="kw">summary</span>(mcp)</span></code></pre></div>
 <pre><code>## 
 ##   Simultaneous Tests for General Linear Hypotheses
 ## 
@@ -668,26 +720,26 @@ div.tocify {
 ## Fit: lm(formula = length ~ type, data = Cuckoo)
 ## 
 ## Linear Hypotheses:
-##            Estimate Std. Error t value Pr(&gt;|t|)   
-## 2 - 1 == 0  0.59000    0.39263   1.503  0.65701   
-## 3 - 1 == 0  0.62143    0.40301   1.542  0.63159   
-## 4 - 1 == 0  0.07500    0.38332   0.196  0.99996   
-## 5 - 1 == 0  0.40333    0.39263   1.027  0.90519   
-## 6 - 1 == 0 -1.37000    0.39263  -3.489  0.00854 **
-## 3 - 2 == 0  0.03143    0.48939   0.064  1.00000   
-## 4 - 2 == 0 -0.51500    0.47330  -1.088  0.88205   
-## 5 - 2 == 0 -0.18667    0.48087  -0.388  0.99878   
-## 6 - 2 == 0 -1.96000    0.48087  -4.076  0.00115 **
-## 4 - 3 == 0 -0.54643    0.48195  -1.134  0.86268   
-## 5 - 3 == 0 -0.21810    0.48939  -0.446  0.99764   
-## 6 - 3 == 0 -1.99143    0.48939  -4.069  0.00116 **
-## 5 - 4 == 0  0.32833    0.47330   0.694  0.98169   
-## 6 - 4 == 0 -1.44500    0.47330  -3.053  0.03184 * 
-## 6 - 5 == 0 -1.77333    0.48087  -3.688  0.00450 **
+##                        Estimate Std. Error t value Pr(&gt;|t|)   
+## tree - meadow == 0      0.59000    0.39263   1.503  0.65686   
+## dunnock - meadow == 0   0.62143    0.40301   1.542  0.63147   
+## robin - meadow == 0     0.07500    0.38332   0.196  0.99996   
+## wagtail - meadow == 0   0.40333    0.39263   1.027  0.90518   
+## wren - meadow == 0     -1.37000    0.39263  -3.489  0.00847 **
+## dunnock - tree == 0     0.03143    0.48939   0.064  1.00000   
+## robin - tree == 0      -0.51500    0.47330  -1.088  0.88202   
+## wagtail - tree == 0    -0.18667    0.48087  -0.388  0.99878   
+## wren - tree == 0       -1.96000    0.48087  -4.076  0.00114 **
+## robin - dunnock == 0   -0.54643    0.48195  -1.134  0.86268   
+## wagtail - dunnock == 0 -0.21810    0.48939  -0.446  0.99764   
+## wren - dunnock == 0    -1.99143    0.48939  -4.069  0.00115 **
+## wagtail - robin == 0    0.32833    0.47330   0.694  0.98170   
+## wren - robin == 0      -1.44500    0.47330  -3.053  0.03198 * 
+## wren - wagtail == 0    -1.77333    0.48087  -3.688  0.00433 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## (Adjusted p values reported -- single-step method)</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">confint</span>(mcp)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">confint</span>(mcp)</span></code></pre></div>
 <pre><code>## 
 ##   Simultaneous Confidence Intervals
 ## 
@@ -696,44 +748,44 @@ div.tocify {
 ## 
 ## Fit: lm(formula = length ~ type, data = Cuckoo)
 ## 
-## Quantile = 2.8883
+## Quantile = 2.8889
 ## 95% family-wise confidence level
 ##  
 ## 
 ## Linear Hypotheses:
-##            Estimate lwr      upr     
-## 2 - 1 == 0  0.59000 -0.54406  1.72406
-## 3 - 1 == 0  0.62143 -0.54261  1.78546
-## 4 - 1 == 0  0.07500 -1.03216  1.18216
-## 5 - 1 == 0  0.40333 -0.73072  1.53739
-## 6 - 1 == 0 -1.37000 -2.50406 -0.23594
-## 3 - 2 == 0  0.03143 -1.38209  1.44494
-## 4 - 2 == 0 -0.51500 -1.88206  0.85206
-## 5 - 2 == 0 -0.18667 -1.57560  1.20226
-## 6 - 2 == 0 -1.96000 -3.34893 -0.57107
-## 4 - 3 == 0 -0.54643 -1.93845  0.84560
-## 5 - 3 == 0 -0.21810 -1.63161  1.19542
-## 6 - 3 == 0 -1.99143 -3.40494 -0.57791
-## 5 - 4 == 0  0.32833 -1.03872  1.69539
-## 6 - 4 == 0 -1.44500 -2.81206 -0.07794
-## 6 - 5 == 0 -1.77333 -3.16226 -0.38440</code></pre>
+##                        Estimate lwr      upr     
+## tree - meadow == 0      0.59000 -0.54429  1.72429
+## dunnock - meadow == 0   0.62143 -0.54285  1.78571
+## robin - meadow == 0     0.07500 -1.03239  1.18239
+## wagtail - meadow == 0   0.40333 -0.73096  1.53763
+## wren - meadow == 0     -1.37000 -2.50429 -0.23571
+## dunnock - tree == 0     0.03143 -1.38238  1.44524
+## robin - tree == 0      -0.51500 -1.88234  0.85234
+## wagtail - tree == 0    -0.18667 -1.57589  1.20255
+## wren - tree == 0       -1.96000 -3.34922 -0.57078
+## robin - dunnock == 0   -0.54643 -1.93875  0.84589
+## wagtail - dunnock == 0 -0.21810 -1.63190  1.19571
+## wren - dunnock == 0    -1.99143 -3.40524 -0.57762
+## wagtail - robin == 0    0.32833 -1.03901  1.69567
+## wren - robin == 0      -1.44500 -2.81234 -0.07766
+## wren - wagtail == 0    -1.77333 -3.16255 -0.38411</code></pre>
 </div>
 <div id="conclusion" class="section level2">
-<h2><span class="header-section-number">5.5</span> Conclusion</h2>
-<p>We have found an extremely significant dependence (p-value = 0.0005621) between the mean egg length and bird type on the global 5% significance level.</p>
-<p>The mean length of cuckoo’s eggs in nests of the Eurasian wern are smaller as compared to those from all other bird types in the dataset:</p>
+<h2><span class="header-section-number">5.6</span> Conclusion</h2>
+<p>There association between the mean length of a cuckoo’s egg and the foster bird species is an extremely significant (p &lt;&lt; 0.001).</p>
+<p>The mean length of cuckoo’s eggs in nests of the Eurasian wern are smaller as compared to those from all other bird species in the study:</p>
 <ul>
-<li>the meadow pipit (adjusted p-value = 0.00856, mean difference = -1.37 mm, 95% CI [-2.50323; -0.23677])</li>
-<li>the tree pipit (adjusted p-value = 0.00112, mean difference = -1.96 mm, 95% CI [-3.34792; -0.57208])</li>
-<li>the dunnock (adjusted p-value = 0.00115, mean difference = -1.99 mm, 95% CI [-3.40513; -0.57773])</li>
-<li>the European robin (adjusted p-value = 0.03184, mean difference = -1.45 mm, 95% CI [-2.81223; -0.07777])</li>
-<li>the white wagtail (adjusted p-value = 0.03184, mean difference = -1.77 mm, 95% CI [-3.16244; -0.38422])</li>
+<li>the meadow pipit (adjusted p-value = 0.009, mean difference = -1.4mm, 95% CI [-2.5, -0.2])</li>
+<li>the tree pipit (adjusted p-value = 0.001, mean difference = -2mm, 95% CI [-3.3, -0.6])</li>
+<li>the dunnock (adjusted p-value = 0.001, mean difference = -2mm, 95% CI [-3.4, -0.6])</li>
+<li>the European robin (adjusted p-value = 0.03, mean difference = -1.4mm, 95% CI [-2.8, -0.1])</li>
+<li>the white wagtail (adjusted p-value = 0.004, mean difference = -1.8mm, 95% CI [-3.2, -0.4])</li>
 </ul>
-<p>For the other bird types, we have insufficient evidence to suggest differences in mean length of the cuckoo bird’s eggs.</p>
+<p>The mean length of the cuckoo bird’s eggs for all other pairwise comparisons between foster bird species are not statistically significantly different at the 5% level.</p>
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhlcmNpc2UgNy4yOiBBTk9WQSBvbiB0aGUgY3Vja29vIGRhdGFzZXQgLSBzb2x1dGlvbiIgICAKYXV0aG9yOiAiTGlldmVuIENsZW1lbnQgYW5kIEplcm9lbiBHaWxpcyIKZGF0ZTogInN0YXRPbWljcywgR2hlbnQgVW5pdmVyc2l0eSAoaHR0cHM6Ly9zdGF0b21pY3MuZ2l0aHViLmlvKSIgIApvdXRwdXQ6CiAgICBodG1sX2RvY3VtZW50OgogICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlICAgIAogICAgICB0aGVtZTogY29zbW8KICAgICAgdG9jOiB0cnVlCiAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICBoaWdobGlnaHQ6IHRhbmdvCiAgICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQotLS0KCiMgQ3Vja29vIGRhdGFzZXQKClRoZSBjb21tb24gY3Vja29vIGRvZXMgbm90IGJ1aWxkIGl0cyBvd24gbmVzdDogaXQgcHJlZmVycwp0byBsYXkgaXRzIGVnZ3MgaW4gYW5vdGhlciBiaXJkcycgbmVzdC4gSXQgaXMga25vd24sIHNpbmNlIDE4OTIsCnRoYXQgdGhlIHR5cGUgb2YgY3Vja29vIGJpcmQgZWdncyBhcmUgZGlmZmVyZW50IGJldHdlZW4gZGlmZmVyZW50CmxvY2F0aW9ucy4gSW4gYSBzdHVkeSBmcm9tIDE5NDAsIGl0IHdhcyBzaG93biB0aGF0IGN1Y2tvb3MgcmV0dXJuCnRvIHRoZSBzYW1lIG5lc3RpbmcgYXJlYSBlYWNoIHllYXIsIGFuZCB0aGF0IHRoZXkgYWx3YXlzIHBpY2sKdGhlIHNhbWUgYmlyZCBzcGVjaWVzIHRvIGJlIGEgImZvc3RlciBwYXJlbnQiIGZvciB0aGVpciBlZ2dzLgoKT3ZlciB0aGUgeWVhcnMsIHRoaXMgaGFzIGxlYWQgdG8gdGhlIGRldmVsb3BtZW50IG9mIGdlb2dyYXBoaWNhbGx5CmRldGVybWluZWQgc3Vic3BlY2llcyBvZiBjdWNrb29zLiBUaGVzZSBzdWJzcGVjaWVzIGhhdmUgZXZvbHZlZCBpbgpzdWNoIGEgd2F5IHRoYXQgdGhlaXIgZWdncyBsb29rIGFzIHNpbWlsYXIgYXMgcG9zc2libGUgYXMgdGhvc2UKb2YgdGhlaXIgZm9zdGVyIHBhcmVudHMuCgpUaGUgY3Vja29vIGRhdGFzZXQgY29udGFpbnMgaW5mb3JtYXRpb24gb24gMTIwIEN1Y2tvbyBlZ2dzLApvYnRhaW5lZCBmcm9tIHJhbmRvbWx5IHNlbGVjdGVkICJmb3N0ZXIiIG5lc3RzLgpGb3IgdGhlc2UgZWdncywgcmVzZWFyY2hlcnMgaGF2ZSBtZWFzdXJlZCB0aGUgYGxlbmd0aGAgKGluIG1tKQphbmQgZXN0YWJsaXNoZWQgdGhlIGB0eXBlYCAoc3BlY2llcykgb2YgZm9zdGVyIHBhcmVudC4KVGhlIHR5cGUgY29sdW1uIGlzIGNvZGVkIGFzIGZvbGxvd3M6CgotIGB0eXBlPTFgOiBNZWFkb3cgcGlwaXQKLSBgdHlwZT0yYDogVHJlZSBwaXBpdAotIGB0eXBlPTNgOiBEdW5ub2NrCi0gYHR5cGU9NGA6IEV1cm9wZWFuIHJvYmluCi0gYHR5cGU9NWA6IFdoaXRlIHdhZ3RhaWwKLSBgdHlwZT02YDogRXVyYXNpYW4gd3JlbgoKIyBHb2FsCgpUaGUgcmVzZWFyY2hlcnMgd2FudCB0b3Rlc3QgaWYgdGhlIHR5cGUgb2YgZm9zdGVyIHBhcmVudApoYXMgYW4gZWZmZWN0IG9uIHRoZSBhdmVyYWdlIGxlbmd0aCBvZiB0aGUgY3Vja29vIGVnZ3MuCgpJbiB0aGVvcnksIHRoZXkgd2FudCB0byBzdHVkeSB0aGlzIGZvciBhbGwgc2l4IHNwZWNpZXMuClByZXZpb3VzbHksIHdlIGxvb2tlZCBhdCBhIHNpbmdsZSBwYWlyd2lzZSBjb21wYXJpc29uCmJldHdlZW4gdGhlIEV1cm9wZWFuIHJvYmluIGFuZCB0aGUgRXVyYXNpYW4gd3JlbiB3aXRoIGEKdC10ZXN0LiBIZXJlLCB3ZSB3aWxsIGFuYWx5c2UgYWxsIHR5cGVzIHNpbXVsdGFuZW91c2x5CndpdGggQU5PVkEuCgpMb2FkIHRoZSByZXF1aXJlZCBsaWJyYXJpZXMKCmBgYHtyLCBtZXNzYWdlPUZBTFNFfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgojIyBJbXBvcnQgdGhlIGRhdGEKCmBgYHtyLCBtZXNzYWdlPUZBTFNFfQpDdWNrb28gPC0gcmVhZF90c3YoImh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9zdGF0T21pY3MvUFNMUzIxL2RhdGEvQ3Vja29vLnR4dCIpCmhlYWQoQ3Vja29vKQpgYGAKCiMgRGF0YSB0aWR5aW5nCgpJdCBzZWVtcyB0aGF0IHRoZSBgdHB5ZWAgY29sdW1uIGlzIGEgYGRvdWJsZWAgcmF0aGVyIHRoYW4gYSBgZmFjdG9yYC4gCkxldCdzIGZpeCB0aGlzOgoKYGBge3J9CkN1Y2tvbyA8LSBDdWNrb28gJT4lCiAgbXV0YXRlKHR5cGUgPSBhcy5mYWN0b3IodHlwZSkpCmBgYAoKCiMgRGF0YSBleHBsb3JhdGlvbgoKSG93IG1hbnkgYmlyZHMgZG8gd2UgaGF2ZSBmb3IgZWFjaCB0eXBlPwoKYGBge3J9CkN1Y2tvbyAlPiUKICBjb3VudCh0eXBlKQpgYGAKClZpc3VhbGl6ZSB0aGUgZGF0YQoKYGBge3J9CkN1Y2tvbyAlPiUKICBnZ3Bsb3QoYWVzKHg9dHlwZSx5PWxlbmd0aCxmaWxsPXR5cGUpKSArCiAgICB0aGVtZV9idygpICsKICAgIHNjYWxlX2ZpbGxfYnJld2VyKHBhbGV0dGU9IlJkR3kiKSArCiAgICBnZW9tX2JveHBsb3QoKSArCiAgICBnZW9tX2ppdHRlcih3aWR0aCA9IDAuMikgKwogICAgZ2d0aXRsZSgiQm94cGxvdCBvZiB0aGUgbGVuZ3RoIG9mIGVnZ3MgcGVyIHR5cGUiKSArCiAgICB5bGFiKCJsZW5ndGggKG1tKSIpICsgCiAgICBzdGF0X3N1bW1hcnkoZnVuLnk9bWVhbiwgZ2VvbT0icG9pbnQiLCBzaGFwZT01LCBzaXplPTMsIGNvbG9yPSJibGFjayIsIGZpbGw9ImJsYWNrIikKYGBgCgojIEFOT1ZBCgpUbyBzdHVkeSBpZiB0aGUgb2JzZXJ2ZWQgZGlmZmVyZW5jZXMgaW4gYXZlcmFnZSBlZ2cgbGVuZ3RoIApiZXR3ZWVuIHRoZSBkaWZmZXJlbnQgZm9zdGVyIGJpcmQgdHlwZXMgYXJlIHNpZ25pZmljYW50LCB3ZSBtYXkgcGVyZm9ybSAKYW4gQU5PVkEuCgojIyBGb3JtdWxhdGUgbnVsbCBhbmQgYWx0ZXJuYXRpdmUgaHlwb3RoZXNpcwoKVGhlIG51bGwgaHlwb3RoZXNpcyBvZiBBTk9WQSBzdGF0ZXMgdGhhdDoKJEgwJDogVGhlIG1lYW4gZWdnIGxlbmd0aCBpcyBlcXVhbCBiZXR3ZWVuIHRoZSBkaWZmZXJlbnQgYmlyZCB0eXBlcy4KClRoZSBhbHRlcm5hdGl2ZSBoeXBvdGhlc2lzIG9mIEFOT1ZBIHN0YXRlcyB0aGF0OgokSEEkOiBUaGUgbWVhbiBlZ2cgbGVuZ3RoIGZvciBhdCBsZWFzdCBvbmUgYmlyZCB0eXBlIGlzIGRpZmZlcmVudCAKZnJvbSB0aGUgbWVhbiBlZ2cgbGVuZ3RoIGluIGF0IGxlYXN0IG9uZSBvdGhlciBiaXJkIHR5cGUuCgojIyBDaGVjayBhc3N1bXB0aW9ucwoKQmVmb3JlIHdlIG1heSBwcm9jZWVkIHdpdGggdGhlIGFuYWx5c2lzLCB3ZSBtdXN0IG1ha2Ugc3VyZSB0aGF0IGFsbAphc3N1bXB0aW9ucyBmb3IgQU5PVkEgYXJlIG1ldC4gQU5PVkEgaGFzIHRocmVlIGFzc3VtcHRpb25zOgoKMS4gVGhlIG9ic2VydmF0aW9ucyBhcmUgaW5kZXBlbmRlbnQgb2YgZWFjaCBvdGhlciAoaW4gYWxsIGdyb3VwcykKMi4gVGhlIGRhdGEgKGxlbmd0aCkgbXVzdCBiZSBub3JtYWxseSBkaXN0cmlidXRlZCAoaW4gYWxsIGdyb3VwcykKMy4gVGhlIHZhcmlhYmlsaXR5IHdpdGhpbiBhbGwgZ3JvdXBzIGlzIHNpbWlsYXIKClRoZSBmaXJzdCBhc3N1bXB0aW9uIGlzIG1ldCwgYXMgd2UgbWF5IGFzc3VtZSB0aGF0IHRoZXJlIGFyZSBubwpzcGVjaWZpYyBwYXR0ZXJucyBvZiBjb3JyZWxhdGlvbiBiZXR3ZWVuIHRoZSByYW5kb21seSBzZWxlY3RlZCBuZXN0cy4KClRvIGNoZWNrIHRoZSBub3JtYWxpdHkgYXNzdW1wdGlvbiwgd2Ugd2lsbCB1c2UgUVEgcGxvdHMuCgpgYGB7cn0KQ3Vja29vICU+JSAKICBnZ3Bsb3QoYWVzKHNhbXBsZT1sZW5ndGgpKSArCiAgZ2VvbV9xcSgpICsKICBnZW9tX3FxX2xpbmUoKSArIAogIGZhY2V0X2dyaWQofnR5cGUpCmBgYAoKVGhlcmUgc2VlbSB0byBiZSBubyBjbGVhciBkZXZpYXRpb25zIGZyb20gbm9ybWFsaXR5LgoKVGhlIHRoaXJkIGFzc3VtcHRpb24gb2YgZXF1YWwgdmFyaWFuY2VzIHNlZW1zIHRvIGJlIG1ldCBiYXNlZCBvbiB0aGUKdmlzdWFsaXphdGlvbiB3aXRoIHRoZSBib3hwbG90cyAoc2VlIGFib3ZlKS4KCkFzIHN1Y2gsIHdlIG1heSBwcm9jZWVkIHdpdGggdGhlIEFOT1ZBIGFuYWx5c2lzLgoKIyMgQU5PVkEgbW9kZWwKCmBgYHtyfQpmaXQgPC0gbG0obGVuZ3RofnR5cGUsIEN1Y2tvbykKZml0X2Fub3ZhIDwtIGFub3ZhKGZpdCkKZml0X2Fub3ZhCmBgYAoKVGhlIHAtdmFsdWUgb2YgdGhlIEFOT1ZBIGFuYWx5c2lzIGlzIGV4dHJlbWVseSBzaWduaWZpY2FudAoocC12YWx1ZSA9IGByIGZvcm1hdChmaXRfYW5vdmEkIlByKD5GKSJbMV0sZGlnaXRzPTQpYCksIApzbyB3ZSByZWplY3QgdGhlIG51bGwgaHlwb3RoZXNpcyB0aGF0IHRoZSBtZWFuIAplZ2cgbGVuZ3RoIGlzIGVxdWFsIGJldHdlZW4gdGhlIGRpZmZlcmVudCBiaXJkIHR5cGVzLgpXZSBjYW4gc2F5IHRoYXQgdGhlIG1lYW4gZWdnIGxlbmd0aCBpcyBzaWduaWZpY2FudGx5IGRpZmZlcmVudApiZXR3ZWVuIGF0IGxlYXN0IHR3byBiaXJkIHR5cGVzIG9uIHRoZSA1JSBzaWduaWZpY2FuY2UgbGV2ZWwuCgpCYXNlZCBvbiB0aGlzIGFuYWx5c2lzLCB3ZSBkbyBub3QgeWV0IGtub3cgYmV0d2VlbiB3aGljaCBwYXJ0aWN1bGFyCmJpcmQgdHlwZXMgdGhlcmUgaXMgYSBzaWduaWZpY2FudCBkaWZmZXJlbmNlLiBUbyBzdHVkeSB0aGlzLCB3ZSB3aWxsCnBlcmZvcm0gdGhlIFR1Y2tleSBwb3N0LWhvYyBhbmFseXNpcy4KCiMjIFBvc3QtaG9jIGFuYWx5c2lzCgpXZSB3aWxsIHBlcmZvcm0gYSBwb3N0LWhvYyBhbmFseXNpcywgdG8gbG9vayBhdCB0aGUgZGlmZmVyZW5jZSAKaW4gZWdnIGxlbmd0aCBiZXR3ZWVuIGVhY2ggcGFpcndpc2UgY29tcGFyaXNvbiBvZiBiaXJkIHR5cGVzLgpJbXBvcnRhbnRseSwgd2l0aCB0aGlzIHN0cmF0ZWd5LCB0aGUgcC12YWx1ZXMgd2lsbCBiZSBjb3JyZWN0bHkKYWRqdXN0ZWQgZm9yIG11bHRpcGxlIHRlc3RpbmcuCgpUaGUgbnVsbCBoeXBvdGhlc2lzIGZvciBlYWNoIHBhaXJ3aXNlIHRlc3QgaXMgdGhhdCB0aGVyZSBpcyBubwpkaWZmZXJlbmNlIGluIHRoZSBtZWFuIGVnZyBsZW5ndGggYmV0d2VlbiBib3RoIGJpcmQgdHlwZXMuCgpUaGUgYWx0ZXJuYXRpdmUgaHlwb3RoZXNpcyBmb3IgZWFjaCBwYWlyd2lzZSB0ZXN0IHN0YXRlcyB0aGF0IHRoZXJlCmlzIGluZGVlZCBhIGRpZmZlcmVuY2UgaW4gdGhlIG1lYW4gZWdnIGxlbmd0aCBiZXR3ZWVuIGJvdGggYmlyZCB0eXBlcy4KCldlIHdpbGwgYWxzbyBjYWxjdWxhdGUgdGhlIGNvbmZpZGVuY2UgaW50ZXJ2YWwgb24gdGhlIG1lYW4gZGlmZmVyZW5jZXMuCgpgYGB7cixtZXNzYWdlPUZBTFNFfQpsaWJyYXJ5KG11bHRjb21wLCBxdWlldGx5ID0gVFJVRSkKbWNwIDwtIGdsaHQoZml0LCBsaW5mY3QgPSBtY3AodHlwZSA9ICJUdWtleSIpKQpzdW1tYXJ5KG1jcCkKY29uZmludChtY3ApCmBgYAoKIyMgQ29uY2x1c2lvbgoKV2UgaGF2ZSBmb3VuZCBhbiBleHRyZW1lbHkgc2lnbmlmaWNhbnQgZGVwZW5kZW5jZSAKKHAtdmFsdWUgPSBgciBmb3JtYXQoZml0X2Fub3ZhJCJQcig+RikiWzFdLGRpZ2l0cz00KWApCmJldHdlZW4gdGhlIG1lYW4gZWdnIGxlbmd0aCBhbmQgYmlyZCB0eXBlIG9uIHRoZSBnbG9iYWwgCjUlIHNpZ25pZmljYW5jZSBsZXZlbC4KClRoZSBtZWFuIGxlbmd0aCBvZiBjdWNrb28ncyBlZ2dzIGluIG5lc3RzIG9mIHRoZSBFdXJhc2lhbgp3ZXJuIGFyZSBzbWFsbGVyIGFzIGNvbXBhcmVkIHRvIHRob3NlIGZyb20gYWxsIG90aGVyIGJpcmQKdHlwZXMgaW4gdGhlIGRhdGFzZXQ6CgotIHRoZSBtZWFkb3cgcGlwaXQgKGFkanVzdGVkIHAtdmFsdWUgPSAwLjAwODU2LCBtZWFuIGRpZmZlcmVuY2UgPSAtMS4zNyBtbSwgOTUlIENJIFstMi41MDMyMzsgLTAuMjM2NzddKQotIHRoZSB0cmVlIHBpcGl0IChhZGp1c3RlZCBwLXZhbHVlID0gMC4wMDExMiwgbWVhbiBkaWZmZXJlbmNlID0gLTEuOTYgbW0sIDk1JSBDSSBbLTMuMzQ3OTI7IC0wLjU3MjA4XSkKLSB0aGUgZHVubm9jayAoYWRqdXN0ZWQgcC12YWx1ZSA9IDAuMDAxMTUsIG1lYW4gZGlmZmVyZW5jZSA9IC0xLjk5IG1tLCA5NSUgQ0kgWy0zLjQwNTEzOyAtMC41Nzc3M10pCi0gdGhlIEV1cm9wZWFuIHJvYmluIChhZGp1c3RlZCBwLXZhbHVlID0gMC4wMzE4NCwgbWVhbiBkaWZmZXJlbmNlID0gLTEuNDUgbW0sIDk1JSBDSSBbLTIuODEyMjM7IC0wLjA3Nzc3XSkKLSB0aGUgd2hpdGUgd2FndGFpbCAoYWRqdXN0ZWQgcC12YWx1ZSA9IDAuMDMxODQsIG1lYW4gZGlmZmVyZW5jZSA9IC0xLjc3IG1tLCA5NSUgQ0kgWy0zLjE2MjQ0OyAtMC4zODQyMl0pCgpGb3IgdGhlIG90aGVyIGJpcmQgdHlwZXMsIHdlIGhhdmUgaW5zdWZmaWNpZW50IGV2aWRlbmNlIHRvIHN1Z2dlc3QKZGlmZmVyZW5jZXMgaW4gbWVhbiBsZW5ndGggb2YgdGhlIGN1Y2tvbyBiaXJkJ3MgZWdncy4KCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhlcmNpc2UgNy4yOiBBTk9WQSBvbiB0aGUgY3Vja29vIGRhdGFzZXQgLSBzb2x1dGlvbiIgICAKYXV0aG9yOiAiTGlldmVuIENsZW1lbnQgYW5kIEplcm9lbiBHaWxpcyIKZGF0ZTogInN0YXRPbWljcywgR2hlbnQgVW5pdmVyc2l0eSAoaHR0cHM6Ly9zdGF0b21pY3MuZ2l0aHViLmlvKSIgIApvdXRwdXQ6CiAgICBodG1sX2RvY3VtZW50OgogICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlICAgIAogICAgICB0aGVtZTogY29zbW8KICAgICAgdG9jOiB0cnVlCiAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICBoaWdobGlnaHQ6IHRhbmdvCiAgICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQotLS0KCiMgQ3Vja29vIGRhdGFzZXQKClRoZSBjb21tb24gY3Vja29vIGRvZXMgbm90IGJ1aWxkIGl0cyBvd24gbmVzdDogaXQgcHJlZmVycwp0byBsYXkgaXRzIGVnZ3MgaW4gYW5vdGhlciBiaXJkcycgbmVzdC4gSXQgaXMga25vd24sIHNpbmNlIDE4OTIsCnRoYXQgdGhlIHR5cGUgb2YgY3Vja29vIGJpcmQgZWdncyBhcmUgZGlmZmVyZW50IGJldHdlZW4gZGlmZmVyZW50CmxvY2F0aW9ucy4gSW4gYSBzdHVkeSBmcm9tIDE5NDAsIGl0IHdhcyBzaG93biB0aGF0IGN1Y2tvb3MgcmV0dXJuCnRvIHRoZSBzYW1lIG5lc3RpbmcgYXJlYSBlYWNoIHllYXIsIGFuZCB0aGF0IHRoZXkgYWx3YXlzIHBpY2sKdGhlIHNhbWUgYmlyZCBzcGVjaWVzIHRvIGJlIGEgImZvc3RlciBwYXJlbnQiIGZvciB0aGVpciBlZ2dzLgoKT3ZlciB0aGUgeWVhcnMsIHRoaXMgaGFzIGxlYWQgdG8gdGhlIGRldmVsb3BtZW50IG9mIGdlb2dyYXBoaWNhbGx5CmRldGVybWluZWQgc3Vic3BlY2llcyBvZiBjdWNrb29zLiBUaGVzZSBzdWJzcGVjaWVzIGhhdmUgZXZvbHZlZCBpbgpzdWNoIGEgd2F5IHRoYXQgdGhlaXIgZWdncyBsb29rIGFzIHNpbWlsYXIgYXMgcG9zc2libGUgYXMgdGhvc2UKb2YgdGhlaXIgZm9zdGVyIHBhcmVudHMuCgpUaGUgY3Vja29vIGRhdGFzZXQgY29udGFpbnMgaW5mb3JtYXRpb24gb24gMTIwIEN1Y2tvbyBlZ2dzLApvYnRhaW5lZCBmcm9tIHJhbmRvbWx5IHNlbGVjdGVkICJmb3N0ZXIiIG5lc3RzLgpGb3IgdGhlc2UgZWdncywgcmVzZWFyY2hlcnMgaGF2ZSBtZWFzdXJlZCB0aGUgYGxlbmd0aGAgKGluIG1tKQphbmQgZXN0YWJsaXNoZWQgdGhlIGB0eXBlYCAoc3BlY2llcykgb2YgZm9zdGVyIHBhcmVudC4KVGhlIHR5cGUgY29sdW1uIGlzIGNvZGVkIGFzIGZvbGxvd3M6CgotIGB0eXBlPTFgOiBNZWFkb3cgcGlwaXQKLSBgdHlwZT0yYDogVHJlZSBwaXBpdAotIGB0eXBlPTNgOiBEdW5ub2NrCi0gYHR5cGU9NGA6IEV1cm9wZWFuIHJvYmluCi0gYHR5cGU9NWA6IFdoaXRlIHdhZ3RhaWwKLSBgdHlwZT02YDogRXVyYXNpYW4gd3JlbgoKIyBHb2FsCgpUaGUgcmVzZWFyY2hlcnMgd2FudCB0b3Rlc3QgaWYgdGhlIHR5cGUgb2YgZm9zdGVyIHBhcmVudApoYXMgYW4gZWZmZWN0IG9uIHRoZSBhdmVyYWdlIGxlbmd0aCBvZiB0aGUgY3Vja29vIGVnZ3MuCgpJbiB0aGVvcnksIHRoZXkgd2FudCB0byBzdHVkeSB0aGlzIGZvciBhbGwgc2l4IHNwZWNpZXMuClByZXZpb3VzbHksIHdlIGxvb2tlZCBhdCBhIHNpbmdsZSBwYWlyd2lzZSBjb21wYXJpc29uCmJldHdlZW4gdGhlIEV1cm9wZWFuIHJvYmluIGFuZCB0aGUgRXVyYXNpYW4gd3JlbiB3aXRoIGEKdC10ZXN0LiBIZXJlLCB3ZSB3aWxsIGFuYWx5c2UgYWxsIHR5cGVzIHNpbXVsdGFuZW91c2x5CndpdGggQU5PVkEuCgpMb2FkIHRoZSByZXF1aXJlZCBsaWJyYXJpZXMKCmBgYHtyLCBtZXNzYWdlPUZBTFNFfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgojIyBJbXBvcnQgdGhlIGRhdGEKCmBgYHtyLCBtZXNzYWdlPUZBTFNFfQpDdWNrb28gPC0gcmVhZF90c3YoImh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9zdGF0T21pY3MvUFNMUzIxL2RhdGEvQ3Vja29vLnR4dCIpCmhlYWQoQ3Vja29vKQpgYGAKCiMgRGF0YSB0aWR5aW5nCgpJdCBzZWVtcyB0aGF0IHRoZSBgdHB5ZWAgY29sdW1uIGlzIGEgYGRvdWJsZWAgcmF0aGVyIHRoYW4gYSBgZmFjdG9yYC4gCkxldCdzIGZpeCB0aGlzOgoKYGBge3J9CkN1Y2tvbyA8LSBDdWNrb28gJT4lCiAgbXV0YXRlKHR5cGUgPSBhcy5mYWN0b3IodHlwZSkpICU+JQogIG11dGF0ZSh0eXBlID0gcmVjb2RlKHR5cGUsIAogICAgICAgICAgICIxIiA9ICJtZWFkb3ciLCAKICAgICAgICAgICAiMiIgPSAidHJlZSIsIAogICAgICAgICAgICIzIiA9ICJkdW5ub2NrIiwgIAogICAgICAgICAgICI0IiA9ICJyb2JpbiIsIAogICAgICAgICAgICI1IiA9ICJ3YWd0YWlsIiwgCiAgICAgICAgICAgIjYiID0gIndyZW4iKSkKYGBgCgoKIyBEYXRhIGV4cGxvcmF0aW9uCgpIb3cgbWFueSBiaXJkcyBkbyB3ZSBoYXZlIGZvciBlYWNoIHR5cGU/CgpgYGB7cn0KQ3Vja29vICU+JQogIGNvdW50KHR5cGUpCmBgYAoKVmlzdWFsaXplIHRoZSBkYXRhCgpgYGB7cn0KQ3Vja29vICU+JQogIGdncGxvdChhZXMoeD10eXBlLHk9bGVuZ3RoLGZpbGw9dHlwZSkpICsKICAgIHRoZW1lX2J3KCkgKwogICAgc2NhbGVfZmlsbF9icmV3ZXIocGFsZXR0ZT0iUmRHeSIpICsKICAgIGdlb21fYm94cGxvdCgpICsKICAgIGdlb21faml0dGVyKHdpZHRoID0gMC4yKSArCiAgICBnZ3RpdGxlKCJCb3hwbG90IG9mIHRoZSBsZW5ndGggb2YgZWdncyBwZXIgdHlwZSIpICsKICAgIHlsYWIoImxlbmd0aCAobW0pIikgKyAKICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT0icG9pbnQiLCBzaGFwZT01LCBzaXplPTMsIGNvbG9yPSJibGFjayIsIGZpbGw9ImJsYWNrIikKYGBgCgojIEFOT1ZBCgpUbyBzdHVkeSBpZiB0aGUgb2JzZXJ2ZWQgZGlmZmVyZW5jZXMgaW4gYXZlcmFnZSBlZ2cgbGVuZ3RoIApiZXR3ZWVuIHRoZSBkaWZmZXJlbnQgZm9zdGVyIGJpcmQgdHlwZXMgYXJlIHNpZ25pZmljYW50LCB3ZSBtYXkgcGVyZm9ybSAKYW4gQU5PVkEuCgojIyBGb3JtdWxhdGUgbnVsbCBhbmQgYWx0ZXJuYXRpdmUgaHlwb3RoZXNpcwoKVGhlIG51bGwgaHlwb3RoZXNpcyBvZiBBTk9WQSBzdGF0ZXMgdGhhdDoKJEgwJDogVGhlIG1lYW4gZWdnIGxlbmd0aCBpcyBlcXVhbCBiZXR3ZWVuIHRoZSBkaWZmZXJlbnQgYmlyZCB0eXBlcy4KClRoZSBhbHRlcm5hdGl2ZSBoeXBvdGhlc2lzIG9mIEFOT1ZBIHN0YXRlcyB0aGF0OgokSEEkOiBUaGUgbWVhbiBlZ2cgbGVuZ3RoIGZvciBhdCBsZWFzdCBvbmUgYmlyZCB0eXBlIGlzIGRpZmZlcmVudCAKZnJvbSB0aGUgbWVhbiBlZ2cgbGVuZ3RoIGluIGF0IGxlYXN0IG9uZSBvdGhlciBiaXJkIHR5cGUuCgojIyBQYXJhbWV0ZXIgZXN0aW1hdGlvbiAKCmBgYHtyfQptb2QxIDwtIGxtKGxlbmd0aH50eXBlLCBDdWNrb28pCmBgYAoKIyMgQ2hlY2sgYXNzdW1wdGlvbnMKCkJlZm9yZSB3ZSBtYXkgcHJvY2VlZCB3aXRoIHRoZSBhbmFseXNpcywgd2UgbXVzdCBtYWtlIHN1cmUgdGhhdCBhbGwKYXNzdW1wdGlvbnMgZm9yIEFOT1ZBIGFyZSBtZXQuIEFOT1ZBIGhhcyB0aHJlZSBhc3N1bXB0aW9uczoKCjEuIFRoZSBvYnNlcnZhdGlvbnMgYXJlIGluZGVwZW5kZW50IG9mIGVhY2ggb3RoZXIgKGluIGFsbCBncm91cHMpCjIuIFRoZSBkYXRhIChsZW5ndGgpIG11c3QgYmUgbm9ybWFsbHkgZGlzdHJpYnV0ZWQgKGluIGFsbCBncm91cHMpCjMuIFRoZSB2YXJpYWJpbGl0eSB3aXRoaW4gYWxsIGdyb3VwcyBpcyBzaW1pbGFyCgpUaGUgZmlyc3QgYXNzdW1wdGlvbiBpcyBtZXQsIGFzIHdlIG1heSBhc3N1bWUgdGhhdCB0aGVyZSBhcmUgbm8Kc3BlY2lmaWMgcGF0dGVybnMgb2YgY29ycmVsYXRpb24gYmV0d2VlbiB0aGUgcmFuZG9tbHkgc2VsZWN0ZWQgbmVzdHMuCgpUbyBjaGVjayB0aGUgbm9ybWFsaXR5IGFzc3VtcHRpb24sIHdlIHdpbGwgdXNlIFFRIHBsb3RzLgoKYGBge3J9CnBsb3QobW9kMSwgd2hpY2ggPSAyKQpgYGAKCmBgYHtyfQpDdWNrb28gJT4lIAogIGdncGxvdChhZXMoc2FtcGxlPWxlbmd0aCkpICsKICBnZW9tX3FxKCkgKwogIGdlb21fcXFfbGluZSgpICsgCiAgZmFjZXRfZ3JpZCh+dHlwZSkKYGBgCgpUaGVyZSBzZWVtIHRvIGJlIG5vIGNsZWFyIGRldmlhdGlvbnMgZnJvbSBub3JtYWxpdHkuCgpUaGUgdGhpcmQgYXNzdW1wdGlvbiBvZiBlcXVhbCB2YXJpYW5jZXMgc2VlbXMgdG8gYmUgbWV0IGJhc2VkIG9uIHRoZQp2aXN1YWxpemF0aW9uIHdpdGggdGhlIGJveHBsb3RzIChzZWUgYWJvdmUpLgoKQXMgc3VjaCwgd2UgbWF5IHByb2NlZWQgd2l0aCB0aGUgQU5PVkEgYW5hbHlzaXMuCgoKIyMjIFNpbXVsYXRlIHRvIHRyYWluIHlvdXIgc2tpbGxzIGluIGFzc2Vzc2luZyBhc3N1bXB0aW9ucyAKCmBgYHtyfQpzZXQuc2VlZCgxMDMxKQpzaWdtYSA8LSBtb2QxICU+JSBzaWdtYSAKZGF0YUhscCA8LSBDdWNrb28KCnNpbU1vZGVscyA8LSBsaXN0KCkKcGxvdExpc3QgPC0gbGlzdCgpCnBsb3RMaXN0UVExIDwtIGxpc3QoKSAKCnBhcihtZnJvdz1jKDMsMykpCmZvciAoaSBpbiAxOjkpCnsKICBub2JzIDwtIEN1Y2tvbyAlPiUgbnJvdwogIGRhdGFIbHAkeVNpbSA8LSBtb2QxJGZpdCArIHJub3JtKG5vYnMsIHNkID0gc2lnbWEpCiAgc2ltTW9kZWxzW1tpXV0gPC0gbG0oeVNpbX50eXBlLCBkYXRhSGxwKQogIHBsb3Qoc2ltTW9kZWxzW1tpXV0sIHdoaWNoID0gMikKICBwbG90TGlzdFtbaV1dIDwtIGRhdGFIbHAgJT4lICAKICAgIGdncGxvdChhZXModHlwZSx5U2ltKSkgKyAKICAgIGdlb21fYm94cGxvdChvdXRsaWVyLnNoYXBlID0gTkEpICsKICAgIGdlb21faml0dGVyKCkKICBwbG90TGlzdFFRMVtbaV1dIDwtIGRhdGFIbHAgJT4lICAKICAgIGZpbHRlcih0eXBlID09ICJtZWFkb3ciKSAgJT4lIAogICAgZ2dwbG90KGFlcyhzYW1wbGUgPSB5U2ltKSkgKyAKICAgIGdlb21fcXEoKSArCiAgICBnZW9tX3FxX2xpbmUoKSArIAogICAgeGxhYigiUVEgZm9yIG1lYWRvdyIpCn0KCmRvLmNhbGwoZ3JpZEV4dHJhOjpncmlkLmFycmFuZ2UsIHBsb3RMaXN0KQpkby5jYWxsKGdyaWRFeHRyYTo6Z3JpZC5hcnJhbmdlLCBwbG90TGlzdFFRMSkKYGBgCgpUaGUgbW9zdCBkZXZpYXRpbmcgUVEtcGxvdCBvZiB0aGUgcmVzaWR1YWxzIGluIHRoZSBuaW5lIHNpbXVsYXRpb24gcnVuczogCmBgYHtyfQpwYXIobWZyb3c9YygxLDEpKQpwbG90KHNpbU1vZGVsc1tbOF1dLCB3aGljaCA9IDIpCmBgYAoKCiMjIEFOT1ZBIG1vZGVsCgpgYGB7cn0KbW9kMV9hbm92YSA8LSBhbm92YShtb2QxKQptb2QxX2Fub3ZhCmBgYAoKVGhlIHAtdmFsdWUgb2YgdGhlIEFOT1ZBIGFuYWx5c2lzIGlzIGV4dHJlbWVseSBzaWduaWZpY2FudAoocC12YWx1ZSA8IDAuMDAxKSwgCnNvIHdlIHJlamVjdCB0aGUgbnVsbCBoeXBvdGhlc2lzIHRoYXQgdGhlIG1lYW4gCmVnZyBsZW5ndGggaXMgZXF1YWwgYmV0d2VlbiB0aGUgZGlmZmVyZW50IGJpcmQgdHlwZXMuCldlIGNhbiBzYXkgdGhhdCB0aGUgbWVhbiBlZ2cgbGVuZ3RoIGlzIHNpZ25pZmljYW50bHkgZGlmZmVyZW50CmJldHdlZW4gYXQgbGVhc3QgdHdvIGJpcmQgdHlwZXMgb24gdGhlIDUlIHNpZ25pZmljYW5jZSBsZXZlbC4KCkJhc2VkIG9uIHRoaXMgYW5hbHlzaXMsIHdlIGRvIG5vdCB5ZXQga25vdyBiZXR3ZWVuIHdoaWNoIHBhcnRpY3VsYXIKYmlyZCB0eXBlcyB0aGVyZSBpcyBhIHNpZ25pZmljYW50IGRpZmZlcmVuY2UuIFRvIHN0dWR5IHRoaXMsIHdlIHdpbGwKcGVyZm9ybSB0aGUgVHVja2V5IHBvc3QtaG9jIGFuYWx5c2lzLgoKIyMgUG9zdC1ob2MgYW5hbHlzaXMKCldlIHdpbGwgcGVyZm9ybSBhIHBvc3QtaG9jIGFuYWx5c2lzLCB0byBsb29rIGF0IHRoZSBkaWZmZXJlbmNlIAppbiBlZ2cgbGVuZ3RoIGJldHdlZW4gZWFjaCBwYWlyd2lzZSBjb21wYXJpc29uIG9mIGJpcmQgdHlwZXMuCkltcG9ydGFudGx5LCB3aXRoIHRoaXMgc3RyYXRlZ3ksIHRoZSBwLXZhbHVlcyB3aWxsIGJlIGNvcnJlY3RseQphZGp1c3RlZCBmb3IgbXVsdGlwbGUgdGVzdGluZy4KClRoZSBudWxsIGh5cG90aGVzaXMgZm9yIGVhY2ggcGFpcndpc2UgdGVzdCBpcyB0aGF0IHRoZXJlIGlzIG5vCmRpZmZlcmVuY2UgaW4gdGhlIG1lYW4gZWdnIGxlbmd0aCBiZXR3ZWVuIGJvdGggYmlyZCB0eXBlcy4KClRoZSBhbHRlcm5hdGl2ZSBoeXBvdGhlc2lzIGZvciBlYWNoIHBhaXJ3aXNlIHRlc3Qgc3RhdGVzIHRoYXQgdGhlcmUKaXMgaW5kZWVkIGEgZGlmZmVyZW5jZSBpbiB0aGUgbWVhbiBlZ2cgbGVuZ3RoIGJldHdlZW4gYm90aCBiaXJkIHR5cGVzLgoKV2Ugd2lsbCBhbHNvIGNhbGN1bGF0ZSB0aGUgY29uZmlkZW5jZSBpbnRlcnZhbCBvbiB0aGUgbWVhbiBkaWZmZXJlbmNlcy4KCmBgYHtyLG1lc3NhZ2U9RkFMU0V9CmxpYnJhcnkobXVsdGNvbXAsIHF1aWV0bHkgPSBUUlVFKQptY3AgPC0gZ2xodChtb2QxLCBsaW5mY3QgPSBtY3AodHlwZSA9ICJUdWtleSIpKQpzdW1tYXJ5KG1jcCkKY29uZmludChtY3ApCmBgYAoKIyMgQ29uY2x1c2lvbgoKVGhlcmUgYXNzb2NpYXRpb24gYmV0d2VlbiB0aGUgbWVhbiBsZW5ndGggb2YgYSBjdWNrb28ncyBlZ2cgYW5kIHRoZSBmb3N0ZXIgYmlyZCBzcGVjaWVzIGlzIGFuIGV4dHJlbWVseSBzaWduaWZpY2FudCAocCA8PCAwLjAwMSkuCgpUaGUgbWVhbiBsZW5ndGggb2YgY3Vja29vJ3MgZWdncyBpbiBuZXN0cyBvZiB0aGUgRXVyYXNpYW4Kd2VybiBhcmUgc21hbGxlciBhcyBjb21wYXJlZCB0byB0aG9zZSBmcm9tIGFsbCBvdGhlciBiaXJkCnNwZWNpZXMgaW4gdGhlIHN0dWR5OgoKLSB0aGUgbWVhZG93IHBpcGl0IChhZGp1c3RlZCBwLXZhbHVlID0gYHIgc3VtbWFyeShtY3ApJHRlc3QkcHZhbHVlc1tuYW1lcyhzdW1tYXJ5KG1jcCkkdGVzdCR0c3RhdCkgPT0gIndyZW4gLSBtZWFkb3ciXSAlPiUgZm9ybWF0KGRpZ2l0cz0xKWAsIG1lYW4gZGlmZmVyZW5jZSA9IGByIHJvdW5kKGNvbmZpbnQobWNwKSRjb25maW50WyJ3cmVuIC0gbWVhZG93IiwxXSwxKWBtbSwgOTUlIENJIFtgciByb3VuZChjb25maW50KG1jcCkkY29uZmludFsid3JlbiAtIG1lYWRvdyIsLTFdLDEpYF0pCi0gdGhlIHRyZWUgcGlwaXQgKGFkanVzdGVkIHAtdmFsdWUgPSBgciBzdW1tYXJ5KG1jcCkkdGVzdCRwdmFsdWVzW25hbWVzKHN1bW1hcnkobWNwKSR0ZXN0JHRzdGF0KSA9PSAid3JlbiAtIHRyZWUiXSAlPiUgZm9ybWF0KGRpZ2l0cz0xKWAsIG1lYW4gZGlmZmVyZW5jZSA9IGByIHJvdW5kKGNvbmZpbnQobWNwKSRjb25maW50WyJ3cmVuIC0gdHJlZSIsMV0sMSlgbW0sIDk1JSBDSSBbYHIgcm91bmQoY29uZmludChtY3ApJGNvbmZpbnRbIndyZW4gLSB0cmVlIiwtMV0sMSlgXSkKLSB0aGUgZHVubm9jayAoYWRqdXN0ZWQgcC12YWx1ZSA9IGByIHN1bW1hcnkobWNwKSR0ZXN0JHB2YWx1ZXNbbmFtZXMoc3VtbWFyeShtY3ApJHRlc3QkdHN0YXQpID09ICJ3cmVuIC0gZHVubm9jayJdICU+JSBmb3JtYXQoZGlnaXRzPTEpYCwgbWVhbiBkaWZmZXJlbmNlID0gYHIgcm91bmQoY29uZmludChtY3ApJGNvbmZpbnRbIndyZW4gLSBkdW5ub2NrIiwxXSwxKWBtbSwgOTUlIENJIFtgciByb3VuZChjb25maW50KG1jcCkkY29uZmludFsid3JlbiAtIGR1bm5vY2siLC0xXSwxKWBdKQotIHRoZSBFdXJvcGVhbiByb2JpbiAoYWRqdXN0ZWQgcC12YWx1ZSA9IGByIHN1bW1hcnkobWNwKSR0ZXN0JHB2YWx1ZXNbbmFtZXMoc3VtbWFyeShtY3ApJHRlc3QkdHN0YXQpID09ICJ3cmVuIC0gcm9iaW4iXSAlPiUgZm9ybWF0KGRpZ2l0cz0xKWAsIG1lYW4gZGlmZmVyZW5jZSA9IGByIHJvdW5kKGNvbmZpbnQobWNwKSRjb25maW50WyJ3cmVuIC0gcm9iaW4iLDFdLDEpYG1tLCA5NSUgQ0kgW2ByIHJvdW5kKGNvbmZpbnQobWNwKSRjb25maW50WyJ3cmVuIC0gcm9iaW4iLC0xXSwxKWBdKQotIHRoZSB3aGl0ZSB3YWd0YWlsIChhZGp1c3RlZCBwLXZhbHVlID0gYHIgc3VtbWFyeShtY3ApJHRlc3QkcHZhbHVlc1tuYW1lcyhzdW1tYXJ5KG1jcCkkdGVzdCR0c3RhdCkgPT0gIndyZW4gLSB3YWd0YWlsIl0gJT4lIGZvcm1hdChkaWdpdHM9MSlgLCBtZWFuIGRpZmZlcmVuY2UgPSBgciByb3VuZChjb25maW50KG1jcCkkY29uZmludFsid3JlbiAtIHdhZ3RhaWwiLDFdLDEpYG1tLCA5NSUgQ0kgW2ByIHJvdW5kKGNvbmZpbnQobWNwKSRjb25maW50WyJ3cmVuIC0gd2FndGFpbCIsLTFdLDEpYF0pCgpUaGUgbWVhbiBsZW5ndGggb2YgdGhlIGN1Y2tvbyBiaXJkJ3MgZWdncyBmb3IgYWxsIG90aGVyIHBhaXJ3aXNlIGNvbXBhcmlzb25zIGJldHdlZW4gZm9zdGVyIGJpcmQgc3BlY2llcyBhcmUgbm90IHN0YXRpc3RpY2FsbHkgc2lnbmlmaWNhbnRseSBkaWZmZXJlbnQgYXQgdGhlIDUlIGxldmVsLgoKCg==</div>
 <div class="footer">
     <hr>
     This work is licensed under the <a href= "https://creativecommons.org/licenses/by-nc-sa/4.0">

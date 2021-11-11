@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Lieven Clement &amp; Alexandre Segers" />
+<meta name="author" content="Lieven Clement &amp; Jeroen Gilis" />
 
 
-<title>Experimental Design II: replication and power</title>
+<title>8.3. Multiple regression with interaction: puromycin example - solution</title>
 
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -508,6 +508,9 @@ div.tocify {
       <a href="07_exercises.html">7. ANOVA</a>
     </li>
     <li>
+      <a href="08_exercises.html">8. Multiple linear regression</a>
+    </li>
+    <li>
       <a href="09_exercises.html">9. Non-parametric statistics</a>
     </li>
   </ul>
@@ -542,8 +545,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Experimental Design II: replication and power</h1>
-<h4 class="author">Lieven Clement &amp; Alexandre Segers</h4>
+<h1 class="title toc-ignore">8.3. Multiple regression with interaction: puromycin example - solution</h1>
+<h4 class="author">Lieven Clement &amp; Jeroen Gilis</h4>
 <h4 class="date">statOmics, Ghent University (<a href="https://statomics.github.io" class="uri">https://statomics.github.io</a>)</h4>
 
 </div>
@@ -579,7 +582,7 @@ The number of counts per minute of radioactive product from the reaction was mea
 <span id="cb4-8"><a href="#cb4-8"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="op">~</span>state)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;
 ## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="08_x_puromycin_sol_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="08_3_puromycin_sol_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>The plot shows that there is a relation between the velocity and the concentration, however, the relation does not seem to be linear.</p>
 <p>We will assess the impact of log-transforming the concentration. Because the concentration is measured in ppm we will log<span class="math inline">\(_{10}\)</span> transform the data.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>Puromycin  <span class="op">%&gt;%</span></span>
@@ -592,42 +595,56 @@ The number of counts per minute of radioactive product from the reaction was mea
 <span id="cb6-8"><a href="#cb6-8"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="op">~</span>state)</span></code></pre></div>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;
 ## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="08_x_puromycin_sol_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="08_3_puromycin_sol_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>The relation between the velocity and the log<span class="math inline">\(_{10}\)</span> transformed concentration seems to be linear.</p>
 </div>
 </div>
 <div id="linear-regression" class="section level1">
 <h1><span class="header-section-number">4</span> Linear regression</h1>
 <p>We will fit the following model to the data</p>
-<p><span class="math inline">\(Y_i = \beta_0 + \beta_c log_{10}(x_c)+ \beta_s(x_s) + +\beta_{c:s}x_{c}x_{s} + \epsilon_i\)</span></p>
+<p><span class="math inline">\(Y_i = \beta_0 + \beta_c x_c+ \beta_s x_s +\beta_{c:s}x_{c}x_{s} + \epsilon_i\)</span></p>
 <p>with</p>
 <ul>
 <li><p><span class="math inline">\(Y_i\)</span> the reaction rate,</p></li>
 <li><p><span class="math inline">\(\beta_0\)</span> the intercept,</p></li>
 <li><p><span class="math inline">\(\beta_{c}\)</span> the main effect for log10 concentration,</p></li>
-<li><p><span class="math inline">\(x_c\)</span> the adopted concentration,</p></li>
-<li><p><span class="math inline">\(\beta_{s}\)</span> the main effect treatment state,</p></li>
-<li><p><span class="math inline">\(x_s\)</span> a dummy variable that is 0 for the enzymes that are untreated and 1 for the treated enzymes,</p></li>
-<li><p><span class="math inline">\(\beta_{cs}\)</span> the interaction effect between concentration and treatment state,</p></li>
+<li><p><span class="math inline">\(x_c\)</span> the log10 concentration,</p></li>
+<li><p><span class="math inline">\(\beta_{p}\)</span> the main effect for treatment ,</p></li>
+<li><p><span class="math inline">\(x_p\)</span> a dummy variable that is 0 for the enzymes that are untreated and 1 for the treated enzymes,</p></li>
+<li><p><span class="math inline">\(\beta_{c:s}\)</span> the interaction effect between concentration and treatment state,</p></li>
 <li><p><span class="math inline">\(\epsilon_i\)</span> i.i.d. normally distributed with mean 0 and variance <span class="math inline">\(\sigma^2\)</span>.</p></li>
 </ul>
 <p>Note, that we write the substrate concentration with a small letter because the predictor is not random. The researchers have chosen the substrate concentrations in the design phase and it is thus no random variable.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(rate <span class="op">~</span><span class="st"> </span>conc <span class="op">%&gt;%</span><span class="st"> </span>log10 <span class="op">*</span><span class="st"> </span>state, Puromycin)</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="kw">summary</span>(mod1)</span></code></pre></div>
+<p>The model implies to different regression lines</p>
+<ul>
+<li>no treatment (<span class="math inline">\(x_s = 0\)</span>) <span class="math display">\[
+Y_i = \beta_0 + \beta_c x_c + \epsilon  
+\]</span></li>
+<li>treatment (x_s = 1)</li>
+</ul>
+<p><span class="math display">\[
+Y_i = (\beta_0 + \beta_t)  + (\beta_c+\beta_{c:s}) x_c + \epsilon  
+\]</span></p>
+<p>So the main effect for treatment has the interpretation as the change in intercept between treated and untreated samples.</p>
+<p>The interaction term has the interpretation as the change in slope between treated and untreated samples.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>Puromycin &lt;-Puromycin <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log10conc =</span> conc <span class="op">%&gt;%</span><span class="st"> </span>log10)</span>
+<span id="cb8-3"><a href="#cb8-3"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(rate <span class="op">~</span><span class="st"> </span>log10conc <span class="op">*</span><span class="st"> </span>state, Puromycin)</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="kw">summary</span>(mod1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## lm(formula = rate ~ conc %&gt;% log10 * state, data = Puromycin)
+## lm(formula = rate ~ log10conc * state, data = Puromycin)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
 ## -17.018  -6.381  -1.005   7.616  13.323 
 ## 
 ## Coefficients:
-##                             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                  164.588      5.153  31.938  &lt; 2e-16 ***
-## conc %&gt;% log10                62.129      5.020  12.375 1.54e-10 ***
-## statetreated                  44.606      6.811   6.549 2.85e-06 ***
-## conc %&gt;% log10:statetreated   23.321      6.763   3.448  0.00269 ** 
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             164.588      5.153  31.938  &lt; 2e-16 ***
+## log10conc                62.129      5.020  12.375 1.54e-10 ***
+## statetreated             44.606      6.811   6.549 2.85e-06 ***
+## log10conc:statetreated   23.321      6.763   3.448  0.00269 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -649,68 +666,112 @@ The number of counts per minute of radioactive product from the reaction was mea
 <h2><span class="header-section-number">4.2</span> Linearity</h2>
 <p>We assess linearity in a residual analysis</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">plot</span>(mod1, <span class="dt">which=</span><span class="dv">1</span>)</span></code></pre></div>
-<p><img src="08_x_puromycin_sol_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="08_3_puromycin_sol_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>The assumption of linearity is met.</p>
 <div id="normality" class="section level3">
 <h3><span class="header-section-number">4.2.1</span> Normality</h3>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">plot</span>(mod1,<span class="dt">which=</span><span class="dv">2</span>)</span></code></pre></div>
-<p><img src="08_x_puromycin_sol_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="08_3_puromycin_sol_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>The QQ-plot does not show large deviations from normality.</p>
 </div>
 <div id="homoscedasticity-equality-of-the-variance" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Homoscedasticity: equality of the variance</h3>
 <p>We can again use the residual plot for assessing this assumption or the plot were we plot the square root of the standardized residuals in function of the fit.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">plot</span>(mod1, <span class="dt">which=</span><span class="dv">3</span>)</span></code></pre></div>
-<p><img src="08_x_puromycin_sol_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>We see that the spread of the majority of the residuals is more or less similar. As such, we may assume homoscedaticity of the data.</p>
+<p><img src="08_3_puromycin_sol_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>We see that the spread of the majority of the residuals is more or less similar. As such, we may assume homoscedasticity of the data.</p>
 </div>
 </div>
 <div id="inference" class="section level2">
 <h2><span class="header-section-number">4.3</span> Inference</h2>
 <div id="hypotheses" class="section level3">
 <h3><span class="header-section-number">4.3.1</span> hypotheses</h3>
-<p>We want to assess if there is a linear association between the reaction rate and the log<span class="math inline">\(_{10}\)</span> transformed concentration.</p>
-<p>So we will assess</p>
-<p><span class="math inline">\(H_0\)</span>: <span class="math inline">\(\beta_1 = 0\)</span></p>
-<p>agains</p>
-<p><span class="math inline">\(H_A\)</span>: <span class="math inline">\(\beta_1 \ne 0\)</span></p>
-<p>using a t-test on the slope parameter.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">summary</span>(mod1)</span></code></pre></div>
+<p>We want can first do an omnibus test to assess is there is an effect of the log10 concentration on the velocity.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>mod0 &lt;-<span class="st"> </span><span class="kw">lm</span>(rate <span class="op">~</span><span class="st"> </span>state, <span class="dt">data =</span> Puromycin)</span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="kw">anova</span>(mod0,mod1)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Res.Df"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["RSS"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Df"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Sum of Sq"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["F"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Pr(>F)"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"21","2":"44201.098","3":"NA","4":"NA","5":"NA","6":"NA","_rn_":"1"},{"1":"19","2":"1591.245","3":"2","4":"42609.85","5":"254.3879","6":"1.927032e-14","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>car<span class="op">::</span><span class="kw">Anova</span>(mod1)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Sum Sq"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Df"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["F value"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Pr(>F)"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"41613.9154","2":"1","3":"496.88400","4":"4.396702e-15","_rn_":"log10conc"},{"1":"3622.8453","2":"1","3":"43.25798","4":"2.694833e-06","_rn_":"state"},{"1":"995.9377","2":"1","3":"11.89183","4":"2.692345e-03","_rn_":"log10conc:state"},{"1":"1591.2454","2":"19","3":"NA","4":"NA","_rn_":"Residuals"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>We see that we cannot remove the interaction of the model. We are now interested in assessing if</p>
+<ol style="list-style-type: decimal">
+<li>the association between velocity and the concentration is significant in the untreated group</li>
+</ol>
+<p><span class="math inline">\(H_0: \beta_c = 0\)</span> vs <span class="math inline">\(H_1: \beta_c \neq 0\)</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li>the association between velocity and the concentration is significant in the treated group</li>
+</ol>
+<p><span class="math inline">\(H_0: \beta_c + \beta_{c:s}= 0\)</span> vs <span class="math inline">\(H_1: \beta_c + \beta_{c:s}\neq 0\)</span></p>
+<ol start="3" style="list-style-type: decimal">
+<li>the association between velocity and the concentration is different between treated and untreated group</li>
+</ol>
+<p><span class="math inline">\(H_0: \beta_{c:s}= 0\)</span> vs <span class="math inline">\(H_1: \beta_{c:s}\neq 0\)</span></p>
+<p>We can assess all these hypotheses using multcomp while correcting for multiple testing.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">library</span>(multcomp)</span></code></pre></div>
+<pre><code>## Loading required package: mvtnorm</code></pre>
+<pre><code>## Loading required package: survival</code></pre>
+<pre><code>## Loading required package: TH.data</code></pre>
+<pre><code>## Loading required package: MASS</code></pre>
 <pre><code>## 
-## Call:
-## lm(formula = rate ~ conc %&gt;% log10 * state, data = Puromycin)
+## Attaching package: &#39;MASS&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
 ## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -17.018  -6.381  -1.005   7.616  13.323 
+##     select</code></pre>
+<pre><code>## 
+## Attaching package: &#39;TH.data&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:MASS&#39;:
 ## 
-## Coefficients:
-##                             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                  164.588      5.153  31.938  &lt; 2e-16 ***
-## conc %&gt;% log10                62.129      5.020  12.375 1.54e-10 ***
-## statetreated                  44.606      6.811   6.549 2.85e-06 ***
-## conc %&gt;% log10:statetreated   23.321      6.763   3.448  0.00269 ** 
+##     geyser</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>mcp1 &lt;-<span class="st"> </span><span class="kw">glht</span>(mod1, <span class="dt">linfct =</span> <span class="kw">c</span>(<span class="st">&quot;log10conc = 0&quot;</span>, <span class="st">&quot;log10conc + log10conc:statetreated = 0&quot;</span>, <span class="st">&quot;log10conc:statetreated = 0&quot;</span>))</span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="kw">summary</span>(mcp1)</span></code></pre></div>
+<pre><code>## 
+##   Simultaneous Tests for General Linear Hypotheses
+## 
+## Fit: lm(formula = rate ~ log10conc * state, data = Puromycin)
+## 
+## Linear Hypotheses:
+##                                         Estimate Std. Error t value Pr(&gt;|t|)
+## log10conc == 0                            62.129      5.020  12.375  &lt; 0.001
+## log10conc + log10conc:statetreated == 0   85.450      4.531  18.858  &lt; 0.001
+## log10conc:statetreated == 0               23.321      6.763   3.448  0.00693
+##                                            
+## log10conc == 0                          ***
+## log10conc + log10conc:statetreated == 0 ***
+## log10conc:statetreated == 0             ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## (Adjusted p values reported -- single-step method)</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">confint</span>(mcp1)</span></code></pre></div>
+<pre><code>## 
+##   Simultaneous Confidence Intervals
 ## 
-## Residual standard error: 9.151 on 19 degrees of freedom
-## Multiple R-squared:  0.968,  Adjusted R-squared:  0.9629 
-## F-statistic: 191.3 on 3 and 19 DF,  p-value: 2.267e-14</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">confint</span>(mod1)</span></code></pre></div>
-<pre><code>##                                  2.5 %    97.5 %
-## (Intercept)                 153.802357 175.37442
-## conc %&gt;% log10               51.620616  72.63640
-## statetreated                 30.350506  58.86171
-## conc %&gt;% log10:statetreated   9.166584  37.47627</code></pre>
+## Fit: lm(formula = rate ~ log10conc * state, data = Puromycin)
+## 
+## Quantile = 2.5082
+## 95% family-wise confidence level
+##  
+## 
+## Linear Hypotheses:
+##                                         Estimate lwr     upr    
+## log10conc == 0                          62.1285  49.5364 74.7206
+## log10conc + log10conc:statetreated == 0 85.4499  74.0850 96.8149
+## log10conc:statetreated == 0             23.3214   6.3590 40.2839</code></pre>
 </div>
 <div id="conclusion" class="section level3">
 <h3><span class="header-section-number">4.3.2</span> Conclusion</h3>
-<p>There is an extremely significant linear association between the substrate concentration on the log-scale and the reaction rate (p&lt;&lt;0.001). A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average 62.1 counts/min higher (95% CI [51.6, 72.6] counts/min).</p>
+<p>There is an extremely significant effect of the substrate concentration and the reaction rate (p&lt;&lt;0.001). The effect of the substrate concentration on the reaction rate is extremely significant for reactions catalysed with untreated enzymes. A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average 62.1 counts/min higher (95% CI [49.5, 74.7] counts/min) (p &lt;&lt; 0.001). The effect of the substrate concentration on the reaction rate is extremely significant for reactions catalysed puromycin treated enzymes (p &lt;&lt; 0.001). A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average 85.4 counts/min higher (95% CI [74.1, 96.8] counts/min). The effect of the substrate concentration on the reaction rate is very significantly higher for reactions catalysed with Puromycin treated enzymes than when catalysed with non-treated enzymes (p = 0.007). A reaction at a substrate concentration that is 10 times higher will have a reaction speed that is on average 23.3 counts/min higher for reactions that are catalysed with Puromycin treated enzymes than with untreated enzymes (95% CI [6.4, 40.3] counts/min).</p>
 </div>
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhwZXJpbWVudGFsIERlc2lnbiBJSTogcmVwbGljYXRpb24gYW5kIHBvd2VyIgphdXRob3I6ICJMaWV2ZW4gQ2xlbWVudCAmIEFsZXhhbmRyZSBTZWdlcnMiCmRhdGU6ICJzdGF0T21pY3MsIEdoZW50IFVuaXZlcnNpdHkgKGh0dHBzOi8vc3RhdG9taWNzLmdpdGh1Yi5pbykiCm91dHB1dDoKICBodG1sX2RvY3VtZW50OgogICAgY29kZV9kb3dubG9hZDogeWVzCiAgICB0aGVtZTogY29zbW8KICAgIHRvYzogeWVzCiAgICB0b2NfZmxvYXQ6IHllcwogICAgaGlnaGxpZ2h0OiB0YW5nbwogICAgbnVtYmVyX3NlY3Rpb25zOiB5ZXMKLS0tCgoKPGEgcmVsPSJsaWNlbnNlIiBocmVmPSJodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnktbmMtc2EvNC4wIj48aW1nIGFsdD0iQ3JlYXRpdmUgQ29tbW9ucyBMaWNlbnNlIiBzdHlsZT0iYm9yZGVyLXdpZHRoOjAiIHNyYz0iaHR0cHM6Ly9pLmNyZWF0aXZlY29tbW9ucy5vcmcvbC9ieS1uYy1zYS80LjAvODh4MzEucG5nIiAvPjwvYT4KCmBgYHtyLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgojIFB1cm9teWNpbiBkYXRhCgpEYXRhIG9uIHRoZSB2ZWxvY2l0eSBvZiBhbiBlbnp5bWF0aWMgcmVhY3Rpb24gd2VyZSBvYnRhaW5lZCBieSBUcmVsb2FyICgxOTc0KS4gIApUaGUgbnVtYmVyIG9mIGNvdW50cyBwZXIgbWludXRlIG9mIHJhZGlvYWN0aXZlIHByb2R1Y3QgZnJvbSB0aGUgcmVhY3Rpb24gd2FzIAptZWFzdXJlZCBhcyBhIGZ1bmN0aW9uIG9mIHN1YnN0cmF0ZSBjb25jZW50cmF0aW9uIGluIHBhcnRzIHBlciBtaWxsaW9uIChwcG0pIGFuZApmcm9tIHRoZXNlIGNvdW50cyB0aGUgaW5pdGlhbCByYXRlIChvciB2ZWxvY2l0eSkgb2YgdGhlIHJlYWN0aW9uIHdhcyBjYWxjdWxhdGVkIChjb3VudHMvbWluL21pbikuIFRoZSBleHBlcmltZW50IHdhcyBjb25kdWN0ZWQgb25jZSB3aXRoIHRoZSBlbnp5bWUgdHJlYXRlZAp3aXRoIFB1cm9teWNpbiwgYW5kIG9uY2Ugd2l0aCB0aGUgZW56eW1lIHVudHJlYXRlZC4KCkFzc2VzcyBpZiB0aGVyZSBpcyBhbiBhc3NvY2lhdGlvbiBiZXR3ZWVuIHRoZSBzdWJzdHJhdGUgY29uY2VudHJhdGlvbiBhbmQgcmF0ZSAKKipmb3IgYm90aCB0aGUgdHJlYXRlZCBhbmQgdW50cmVhdGVkIGVuenltZXMuKioKCiMgSW1wb3J0IGRhdGEKCmBgYHtyfQpkYXRhKFB1cm9teWNpbikKYGBgCgojIERhdGEgd3JhbmdsaW5nCgpGb3IgYSBjbGVhcmVyIGludGVycHJldGF0aW9uIG9mIHRoZSBtb2RlbCBwYXJhbWV0ZXJzIGxhdGVyIG9uLCB3ZSB3aWxsIG1ha2UKdGhlIHVudHJlYXRlZCBzdGF0ZSBlbnp5bWVzIHRoZSByZWZlcmVuY2UgY2F0ZWdvcnkuCgpgYGB7cn0KUHVyb215Y2luIDwtIFB1cm9teWNpbiAlPiUKICAgIG11dGF0ZShzdGF0ZSA9ZmN0X3JlbGV2ZWwoc3RhdGUsYygidW50cmVhdGVkIiwidHJlYXRlZCIpKSkKYGBgCgojIyBEYXRhIEV4cGxvcmF0aW9uCgpGaXJzdCwgd2UgdmlzdWFsaXplIHRoZSBhc3NvY2lhdGlvbiBiZXR3ZWVuIHRoZSBjb25jZW50cmF0aW9uIGFuZCB0aGUgZW56eW1lIApyYXRlLCBmb3IgYm90aCBvZiB0aGUgZW56eW1lIHN0YXRlcy4gCgpgYGB7cn0KUHVyb215Y2luICAlPiUKICBnZ3Bsb3QoYWVzKHg9Y29uYyx5PXJhdGUpKSArCiAgZ2VvbV9wb2ludCgpICsgCiAgc3RhdF9zbW9vdGgobWV0aG9kID0gImxvZXNzIixjb2w9InJlZCIpICsgIyBmaXQgZWVuIGtyb21tZSBkb29yIGRlIHB1bnRlbiAocm9kZSBsaWpuKQogIHN0YXRfc21vb3RoKG1ldGhvZD0nbG0nLGNvbD0iYmxhY2siKSArICMgZml0IGVlbiByZWNodGUgZG9vciBkZSBwdW50ZW4gYWFuIGRlIGhhbmQgdmFuIGRlIGtsZWluc3Rla3dhZHJhdGVubWV0aG9kZQogIHlsYWIoIlJlYWN0aW9uIHJhdGUgKGNvdW50cy9taW4pIikgKwogIHhsYWIoIlN1YnN0cmF0ZSBjb25jZW50cmF0aWUgKHBwbSkiKSArCiAgZmFjZXRfZ3JpZCh+c3RhdGUpCmBgYAoKVGhlIHBsb3Qgc2hvd3MgdGhhdCB0aGVyZSBpcyBhIHJlbGF0aW9uIGJldHdlZW4gdGhlIHZlbG9jaXR5IGFuZCB0aGUgCmNvbmNlbnRyYXRpb24sIGhvd2V2ZXIsIHRoZSByZWxhdGlvbiBkb2VzIG5vdCBzZWVtIHRvIGJlIGxpbmVhci4gCgpXZSB3aWxsIGFzc2VzcyB0aGUgaW1wYWN0IG9mIGxvZy10cmFuc2Zvcm1pbmcgdGhlIGNvbmNlbnRyYXRpb24uIEJlY2F1c2UgdGhlIApjb25jZW50cmF0aW9uIGlzIG1lYXN1cmVkIGluIHBwbSB3ZSB3aWxsIGxvZyRfezEwfSQgdHJhbnNmb3JtIHRoZSBkYXRhLiAKCmBgYHtyfQpQdXJvbXljaW4gICU+JQogIGdncGxvdChhZXMoeD1jb25jICU+JSBsb2cxMCx5PXJhdGUpKSArCiAgZ2VvbV9wb2ludCgpICsgCiAgc3RhdF9zbW9vdGgobWV0aG9kID0gImxvZXNzIixjb2w9InJlZCIpICsgCiAgc3RhdF9zbW9vdGgobWV0aG9kPSdsbScsY29sPSJibGFjayIpICsKICB5bGFiKCJSZWFjdGlvbiBSYXRlIChjb3VudHMvbWluKSIpICsKICB4bGFiKCJsb2cxMChTdWJzdHJhdGUgY29uY2VudHJhdGlvbikgKGxvZzEwIHBwbSkiKSArCiAgZmFjZXRfZ3JpZCh+c3RhdGUpCmBgYAoKVGhlIHJlbGF0aW9uIGJldHdlZW4gdGhlIHZlbG9jaXR5IGFuZCB0aGUgbG9nJF97MTB9JCB0cmFuc2Zvcm1lZCBjb25jZW50cmF0aW9uIApzZWVtcyB0byBiZSBsaW5lYXIuIAoKIyBMaW5lYXIgcmVncmVzc2lvbiAKCldlIHdpbGwgZml0IHRoZSBmb2xsb3dpbmcgbW9kZWwgdG8gdGhlIGRhdGEgCgokWV9pID0gXGJldGFfMCArIFxiZXRhX2MgbG9nX3sxMH0oeF9jKSsgXGJldGFfcyh4X3MpICsgK1xiZXRhX3tjOnN9eF97Y314X3tzfSArIFxlcHNpbG9uX2kkCgp3aXRoIAoKLSAkWV9pJCB0aGUgcmVhY3Rpb24gcmF0ZSwKCi0gJFxiZXRhXzAkIHRoZSBpbnRlcmNlcHQsCgotICRcYmV0YV97Y30kIHRoZSBtYWluIGVmZmVjdCBmb3IgbG9nMTAgY29uY2VudHJhdGlvbiwKCi0gJHhfYyQgdGhlIGFkb3B0ZWQgY29uY2VudHJhdGlvbiwKCi0gJFxiZXRhX3tzfSQgdGhlIG1haW4gZWZmZWN0IHRyZWF0bWVudCBzdGF0ZSwKCi0gJHhfcyQgYSBkdW1teSB2YXJpYWJsZSB0aGF0IGlzIDAgZm9yIHRoZSBlbnp5bWVzIHRoYXQgYXJlIHVudHJlYXRlZCBhbmQgMSBmb3IKdGhlIHRyZWF0ZWQgZW56eW1lcywKCi0gJFxiZXRhX3tjc30kIHRoZSBpbnRlcmFjdGlvbiBlZmZlY3QgYmV0d2VlbiBjb25jZW50cmF0aW9uIGFuZCB0cmVhdG1lbnQgc3RhdGUsCgotICRcZXBzaWxvbl9pJCBpLmkuZC4gbm9ybWFsbHkgZGlzdHJpYnV0ZWQgd2l0aCBtZWFuIDAgYW5kIHZhcmlhbmNlICRcc2lnbWFeMiQuCgpOb3RlLCB0aGF0IHdlIHdyaXRlIHRoZSBzdWJzdHJhdGUgY29uY2VudHJhdGlvbiB3aXRoIGEgc21hbGwgbGV0dGVyIGJlY2F1c2UgCnRoZSBwcmVkaWN0b3IgaXMgbm90IHJhbmRvbS4gVGhlIHJlc2VhcmNoZXJzIGhhdmUgY2hvc2VuIHRoZSBzdWJzdHJhdGUgCmNvbmNlbnRyYXRpb25zIGluIHRoZSBkZXNpZ24gcGhhc2UgYW5kIGl0IGlzIHRodXMgbm8gcmFuZG9tIHZhcmlhYmxlLgoKYGBge3J9Cm1vZDEgPC0gbG0ocmF0ZSB+IGNvbmMgJT4lIGxvZzEwICogc3RhdGUsIFB1cm9teWNpbikKc3VtbWFyeShtb2QxKQpgYGAKCkJlZm9yZSB3ZSBwZXJmb3JtIGluZmVyZW5jZSB3ZSB3aWxsIGZpcnN0IGFzc2VzcyB0aGUgYXNzdW1wdGlvbnMKCiMjIEFzc3VtcHRpb25zIAoKMS4gSW5kZXBlbmRlbmNlIAoyLiBMaW5lYXJpdHkKMy4gTm9ybWFsIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVzaWR1YWxzCjQuIEhvbW9zY2VkYXN0aWNpdHkgCgpXZSBhc3N1bWUgdGhhdCB0aGUgZXhwZXJpbWVudCB3YXMgd2VsbCBkZXNpZ25lZCBhbmQgdGhhdCB0aGUgZGlmZmVyZW50IHJlYWN0aW9ucyB0aGF0IHdlcmUgdXNlIGluIHRoZSBleHBlcmltZW50IGFyZSBpbmRlcGVuZGVudC4KCiMjIExpbmVhcml0eSAKCldlIGFzc2VzcyBsaW5lYXJpdHkgaW4gYSByZXNpZHVhbCBhbmFseXNpcyAKCmBgYHtyfQpwbG90KG1vZDEsIHdoaWNoPTEpCmBgYAoKVGhlIGFzc3VtcHRpb24gb2YgbGluZWFyaXR5IGlzIG1ldC4KCiMjIyBOb3JtYWxpdHkgCgpgYGB7cn0KcGxvdChtb2QxLHdoaWNoPTIpCmBgYAoKVGhlIFFRLXBsb3QgZG9lcyBub3Qgc2hvdyBsYXJnZSBkZXZpYXRpb25zIGZyb20gbm9ybWFsaXR5LiAKCiMjIyBIb21vc2NlZGFzdGljaXR5OiBlcXVhbGl0eSBvZiB0aGUgdmFyaWFuY2UKCldlIGNhbiBhZ2FpbiB1c2UgdGhlIHJlc2lkdWFsIHBsb3QgZm9yIGFzc2Vzc2luZyB0aGlzIGFzc3VtcHRpb24gb3IgdGhlIHBsb3QgCndlcmUgd2UgcGxvdCB0aGUgc3F1YXJlIHJvb3Qgb2YgdGhlIHN0YW5kYXJkaXplZCByZXNpZHVhbHMgaW4gZnVuY3Rpb24gb2YgCnRoZSBmaXQuIAoKYGBge3J9CnBsb3QobW9kMSwgd2hpY2g9MykKYGBgCgpXZSBzZWUgdGhhdCB0aGUgc3ByZWFkIG9mIHRoZSBtYWpvcml0eSBvZiB0aGUgcmVzaWR1YWxzIGlzIG1vcmUgb3IgbGVzcyBzaW1pbGFyLgpBcyBzdWNoLCB3ZSBtYXkgYXNzdW1lIGhvbW9zY2VkYXRpY2l0eSBvZiB0aGUgZGF0YS4KCiMjIEluZmVyZW5jZSAKCiMjIyBoeXBvdGhlc2VzIAoKV2Ugd2FudCB0byBhc3Nlc3MgaWYgdGhlcmUgaXMgYSBsaW5lYXIgYXNzb2NpYXRpb24gYmV0d2VlbiB0aGUgcmVhY3Rpb24gcmF0ZSBhbmQKdGhlIGxvZyRfezEwfSQgdHJhbnNmb3JtZWQgY29uY2VudHJhdGlvbi4gCgpTbyB3ZSB3aWxsIGFzc2VzcyAKCiRIXzAkOiAkXGJldGFfMSA9IDAkCiAKYWdhaW5zIAoKJEhfQSQ6ICRcYmV0YV8xIFxuZSAwJCAKCnVzaW5nIGEgdC10ZXN0IG9uIHRoZSBzbG9wZSBwYXJhbWV0ZXIuIAoKYGBge3J9CnN1bW1hcnkobW9kMSkKY29uZmludChtb2QxKQpgYGAKCgojIyMgQ29uY2x1c2lvbgoKVGhlcmUgaXMgYW4gZXh0cmVtZWx5IHNpZ25pZmljYW50IGxpbmVhciBhc3NvY2lhdGlvbiBiZXR3ZWVuIHRoZSBzdWJzdHJhdGUgY29uY2VudHJhdGlvbiBvbiB0aGUgbG9nLXNjYWxlIGFuZCB0aGUgcmVhY3Rpb24gcmF0ZSAocDw8MC4wMDEpLiAKQSByZWFjdGlvbiBhdCBhIHN1YnN0cmF0ZSBjb25jZW50cmF0aW9uIHRoYXQgaXMgMTAgdGltZXMgaGlnaGVyIHdpbGwgaGF2ZSBhIHJlYWN0aW9uIHNwZWVkIHRoYXQgaXMgb24gYXZlcmFnZSAgYHIgcm91bmQobW9kMSRjb2VmWzJdLDEpYCBjb3VudHMvbWluIGhpZ2hlciAoOTUlIENJIFtgciByb3VuZChjb25maW50KG1vZDEpWzIsXSwxKWBdIGNvdW50cy9taW4pLiAKCgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiOC4zLiBNdWx0aXBsZSByZWdyZXNzaW9uIHdpdGggaW50ZXJhY3Rpb246IHB1cm9teWNpbiBleGFtcGxlIC0gc29sdXRpb24iCmF1dGhvcjogIkxpZXZlbiBDbGVtZW50ICYgSmVyb2VuIEdpbGlzIgpkYXRlOiAic3RhdE9taWNzLCBHaGVudCBVbml2ZXJzaXR5IChodHRwczovL3N0YXRvbWljcy5naXRodWIuaW8pIgpvdXRwdXQ6CiAgaHRtbF9kb2N1bWVudDoKICAgIGNvZGVfZG93bmxvYWQ6IHllcwogICAgdGhlbWU6IGNvc21vCiAgICB0b2M6IHllcwogICAgdG9jX2Zsb2F0OiB5ZXMKICAgIGhpZ2hsaWdodDogdGFuZ28KICAgIG51bWJlcl9zZWN0aW9uczogeWVzCi0tLQoKPGEgcmVsPSJsaWNlbnNlIiBocmVmPSJodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnktbmMtc2EvNC4wIj48aW1nIGFsdD0iQ3JlYXRpdmUgQ29tbW9ucyBMaWNlbnNlIiBzdHlsZT0iYm9yZGVyLXdpZHRoOjAiIHNyYz0iaHR0cHM6Ly9pLmNyZWF0aXZlY29tbW9ucy5vcmcvbC9ieS1uYy1zYS80LjAvODh4MzEucG5nIiAvPjwvYT4KCmBgYHtyLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgojIFB1cm9teWNpbiBkYXRhCgpEYXRhIG9uIHRoZSB2ZWxvY2l0eSBvZiBhbiBlbnp5bWF0aWMgcmVhY3Rpb24gd2VyZSBvYnRhaW5lZCBieSBUcmVsb2FyICgxOTc0KS4gIApUaGUgbnVtYmVyIG9mIGNvdW50cyBwZXIgbWludXRlIG9mIHJhZGlvYWN0aXZlIHByb2R1Y3QgZnJvbSB0aGUgcmVhY3Rpb24gd2FzIAptZWFzdXJlZCBhcyBhIGZ1bmN0aW9uIG9mIHN1YnN0cmF0ZSBjb25jZW50cmF0aW9uIGluIHBhcnRzIHBlciBtaWxsaW9uIChwcG0pIGFuZApmcm9tIHRoZXNlIGNvdW50cyB0aGUgaW5pdGlhbCByYXRlIChvciB2ZWxvY2l0eSkgb2YgdGhlIHJlYWN0aW9uIHdhcyBjYWxjdWxhdGVkIChjb3VudHMvbWluL21pbikuIFRoZSBleHBlcmltZW50IHdhcyBjb25kdWN0ZWQgb25jZSB3aXRoIHRoZSBlbnp5bWUgdHJlYXRlZAp3aXRoIFB1cm9teWNpbiwgYW5kIG9uY2Ugd2l0aCB0aGUgZW56eW1lIHVudHJlYXRlZC4KCkFzc2VzcyBpZiB0aGVyZSBpcyBhbiBhc3NvY2lhdGlvbiBiZXR3ZWVuIHRoZSBzdWJzdHJhdGUgY29uY2VudHJhdGlvbiBhbmQgcmF0ZSAKKipmb3IgYm90aCB0aGUgdHJlYXRlZCBhbmQgdW50cmVhdGVkIGVuenltZXMuKioKCiMgSW1wb3J0IGRhdGEKCmBgYHtyfQpkYXRhKFB1cm9teWNpbikKYGBgCgojIERhdGEgd3JhbmdsaW5nCgpGb3IgYSBjbGVhcmVyIGludGVycHJldGF0aW9uIG9mIHRoZSBtb2RlbCBwYXJhbWV0ZXJzIGxhdGVyIG9uLCB3ZSB3aWxsIG1ha2UKdGhlIHVudHJlYXRlZCBzdGF0ZSBlbnp5bWVzIHRoZSByZWZlcmVuY2UgY2F0ZWdvcnkuCgpgYGB7cn0KUHVyb215Y2luIDwtIFB1cm9teWNpbiAlPiUKICAgIG11dGF0ZShzdGF0ZSA9ZmN0X3JlbGV2ZWwoc3RhdGUsYygidW50cmVhdGVkIiwidHJlYXRlZCIpKSkKYGBgCgojIyBEYXRhIEV4cGxvcmF0aW9uCgpGaXJzdCwgd2UgdmlzdWFsaXplIHRoZSBhc3NvY2lhdGlvbiBiZXR3ZWVuIHRoZSBjb25jZW50cmF0aW9uIGFuZCB0aGUgZW56eW1lIApyYXRlLCBmb3IgYm90aCBvZiB0aGUgZW56eW1lIHN0YXRlcy4gCgpgYGB7cn0KUHVyb215Y2luICAlPiUKICBnZ3Bsb3QoYWVzKHg9Y29uYyx5PXJhdGUpKSArCiAgZ2VvbV9wb2ludCgpICsgCiAgc3RhdF9zbW9vdGgobWV0aG9kID0gImxvZXNzIixjb2w9InJlZCIpICsgIyBmaXQgZWVuIGtyb21tZSBkb29yIGRlIHB1bnRlbiAocm9kZSBsaWpuKQogIHN0YXRfc21vb3RoKG1ldGhvZD0nbG0nLGNvbD0iYmxhY2siKSArICMgZml0IGVlbiByZWNodGUgZG9vciBkZSBwdW50ZW4gYWFuIGRlIGhhbmQgdmFuIGRlIGtsZWluc3Rla3dhZHJhdGVubWV0aG9kZQogIHlsYWIoIlJlYWN0aW9uIHJhdGUgKGNvdW50cy9taW4pIikgKwogIHhsYWIoIlN1YnN0cmF0ZSBjb25jZW50cmF0aWUgKHBwbSkiKSArCiAgZmFjZXRfZ3JpZCh+c3RhdGUpCmBgYAoKVGhlIHBsb3Qgc2hvd3MgdGhhdCB0aGVyZSBpcyBhIHJlbGF0aW9uIGJldHdlZW4gdGhlIHZlbG9jaXR5IGFuZCB0aGUgCmNvbmNlbnRyYXRpb24sIGhvd2V2ZXIsIHRoZSByZWxhdGlvbiBkb2VzIG5vdCBzZWVtIHRvIGJlIGxpbmVhci4gCgpXZSB3aWxsIGFzc2VzcyB0aGUgaW1wYWN0IG9mIGxvZy10cmFuc2Zvcm1pbmcgdGhlIGNvbmNlbnRyYXRpb24uIEJlY2F1c2UgdGhlIApjb25jZW50cmF0aW9uIGlzIG1lYXN1cmVkIGluIHBwbSB3ZSB3aWxsIGxvZyRfezEwfSQgdHJhbnNmb3JtIHRoZSBkYXRhLiAKCmBgYHtyfQpQdXJvbXljaW4gICU+JQogIGdncGxvdChhZXMoeD1jb25jICU+JSBsb2cxMCx5PXJhdGUpKSArCiAgZ2VvbV9wb2ludCgpICsgCiAgc3RhdF9zbW9vdGgobWV0aG9kID0gImxvZXNzIixjb2w9InJlZCIpICsgCiAgc3RhdF9zbW9vdGgobWV0aG9kPSdsbScsY29sPSJibGFjayIpICsKICB5bGFiKCJSZWFjdGlvbiBSYXRlIChjb3VudHMvbWluKSIpICsKICB4bGFiKCJsb2cxMChTdWJzdHJhdGUgY29uY2VudHJhdGlvbikgKGxvZzEwIHBwbSkiKSArCiAgZmFjZXRfZ3JpZCh+c3RhdGUpCmBgYAoKVGhlIHJlbGF0aW9uIGJldHdlZW4gdGhlIHZlbG9jaXR5IGFuZCB0aGUgbG9nJF97MTB9JCB0cmFuc2Zvcm1lZCBjb25jZW50cmF0aW9uIApzZWVtcyB0byBiZSBsaW5lYXIuIAoKIyBMaW5lYXIgcmVncmVzc2lvbiAKCldlIHdpbGwgZml0IHRoZSBmb2xsb3dpbmcgbW9kZWwgdG8gdGhlIGRhdGEgCgokWV9pID0gXGJldGFfMCArIFxiZXRhX2MgeF9jKyBcYmV0YV9zIHhfcyArXGJldGFfe2M6c314X3tjfXhfe3N9ICsgXGVwc2lsb25faSQKCndpdGggCgotICRZX2kkIHRoZSByZWFjdGlvbiByYXRlLAoKLSAkXGJldGFfMCQgdGhlIGludGVyY2VwdCwKCi0gJFxiZXRhX3tjfSQgdGhlIG1haW4gZWZmZWN0IGZvciBsb2cxMCBjb25jZW50cmF0aW9uLAoKLSAkeF9jJCB0aGUgbG9nMTAgY29uY2VudHJhdGlvbiwKCi0gJFxiZXRhX3twfSQgdGhlIG1haW4gZWZmZWN0IGZvciB0cmVhdG1lbnQgLAoKLSAkeF9wJCBhIGR1bW15IHZhcmlhYmxlIHRoYXQgaXMgMCBmb3IgdGhlIGVuenltZXMgdGhhdCBhcmUgdW50cmVhdGVkIGFuZCAxIGZvcgp0aGUgdHJlYXRlZCBlbnp5bWVzLAoKLSAkXGJldGFfe2M6c30kIHRoZSBpbnRlcmFjdGlvbiBlZmZlY3QgYmV0d2VlbiBjb25jZW50cmF0aW9uIGFuZCB0cmVhdG1lbnQgc3RhdGUsCgotICRcZXBzaWxvbl9pJCBpLmkuZC4gbm9ybWFsbHkgZGlzdHJpYnV0ZWQgd2l0aCBtZWFuIDAgYW5kIHZhcmlhbmNlICRcc2lnbWFeMiQuCgpOb3RlLCB0aGF0IHdlIHdyaXRlIHRoZSBzdWJzdHJhdGUgY29uY2VudHJhdGlvbiB3aXRoIGEgc21hbGwgbGV0dGVyIGJlY2F1c2UgCnRoZSBwcmVkaWN0b3IgaXMgbm90IHJhbmRvbS4gVGhlIHJlc2VhcmNoZXJzIGhhdmUgY2hvc2VuIHRoZSBzdWJzdHJhdGUgCmNvbmNlbnRyYXRpb25zIGluIHRoZSBkZXNpZ24gcGhhc2UgYW5kIGl0IGlzIHRodXMgbm8gcmFuZG9tIHZhcmlhYmxlLgoKVGhlIG1vZGVsIGltcGxpZXMgdG8gZGlmZmVyZW50IHJlZ3Jlc3Npb24gbGluZXMKCi0gbm8gdHJlYXRtZW50ICgkeF9zID0gMCQpIAokJApZX2kgPSBcYmV0YV8wICsgXGJldGFfYyB4X2MgKyBcZXBzaWxvbiAgCiQkCi0gdHJlYXRtZW50ICh4X3MgPSAxKQoKJCQKWV9pID0gKFxiZXRhXzAgKyBcYmV0YV90KSAgKyAoXGJldGFfYytcYmV0YV97YzpzfSkgeF9jICsgXGVwc2lsb24gIAokJAoKU28gdGhlIG1haW4gZWZmZWN0IGZvciB0cmVhdG1lbnQgaGFzIHRoZSBpbnRlcnByZXRhdGlvbiBhcyB0aGUgY2hhbmdlIGluIGludGVyY2VwdCBiZXR3ZWVuIHRyZWF0ZWQgYW5kIHVudHJlYXRlZCBzYW1wbGVzLiAKClRoZSBpbnRlcmFjdGlvbiB0ZXJtIGhhcyB0aGUgaW50ZXJwcmV0YXRpb24gYXMgdGhlIGNoYW5nZSBpbiBzbG9wZSBiZXR3ZWVuIHRyZWF0ZWQgYW5kIHVudHJlYXRlZCBzYW1wbGVzLiAKCmBgYHtyfQpQdXJvbXljaW4gPC1QdXJvbXljaW4gJT4lIAogIG11dGF0ZShsb2cxMGNvbmMgPSBjb25jICU+JSBsb2cxMCkKbW9kMSA8LSBsbShyYXRlIH4gbG9nMTBjb25jICogc3RhdGUsIFB1cm9teWNpbikKc3VtbWFyeShtb2QxKQpgYGAKCkJlZm9yZSB3ZSBwZXJmb3JtIGluZmVyZW5jZSB3ZSB3aWxsIGZpcnN0IGFzc2VzcyB0aGUgYXNzdW1wdGlvbnMKCiMjIEFzc3VtcHRpb25zIAoKMS4gSW5kZXBlbmRlbmNlIAoyLiBMaW5lYXJpdHkKMy4gTm9ybWFsIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVzaWR1YWxzCjQuIEhvbW9zY2VkYXN0aWNpdHkgCgpXZSBhc3N1bWUgdGhhdCB0aGUgZXhwZXJpbWVudCB3YXMgd2VsbCBkZXNpZ25lZCBhbmQgdGhhdCB0aGUgZGlmZmVyZW50IHJlYWN0aW9ucyB0aGF0IHdlcmUgdXNlIGluIHRoZSBleHBlcmltZW50IGFyZSBpbmRlcGVuZGVudC4KCiMjIExpbmVhcml0eSAKCldlIGFzc2VzcyBsaW5lYXJpdHkgaW4gYSByZXNpZHVhbCBhbmFseXNpcyAKCmBgYHtyfQpwbG90KG1vZDEsIHdoaWNoPTEpCmBgYAoKVGhlIGFzc3VtcHRpb24gb2YgbGluZWFyaXR5IGlzIG1ldC4KCiMjIyBOb3JtYWxpdHkgCgpgYGB7cn0KcGxvdChtb2QxLHdoaWNoPTIpCmBgYAoKVGhlIFFRLXBsb3QgZG9lcyBub3Qgc2hvdyBsYXJnZSBkZXZpYXRpb25zIGZyb20gbm9ybWFsaXR5LiAKCiMjIyBIb21vc2NlZGFzdGljaXR5OiBlcXVhbGl0eSBvZiB0aGUgdmFyaWFuY2UKCldlIGNhbiBhZ2FpbiB1c2UgdGhlIHJlc2lkdWFsIHBsb3QgZm9yIGFzc2Vzc2luZyB0aGlzIGFzc3VtcHRpb24gb3IgdGhlIHBsb3QgCndlcmUgd2UgcGxvdCB0aGUgc3F1YXJlIHJvb3Qgb2YgdGhlIHN0YW5kYXJkaXplZCByZXNpZHVhbHMgaW4gZnVuY3Rpb24gb2YgCnRoZSBmaXQuIAoKYGBge3J9CnBsb3QobW9kMSwgd2hpY2g9MykKYGBgCgpXZSBzZWUgdGhhdCB0aGUgc3ByZWFkIG9mIHRoZSBtYWpvcml0eSBvZiB0aGUgcmVzaWR1YWxzIGlzIG1vcmUgb3IgbGVzcyBzaW1pbGFyLgpBcyBzdWNoLCB3ZSBtYXkgYXNzdW1lIGhvbW9zY2VkYXN0aWNpdHkgb2YgdGhlIGRhdGEuCgojIyBJbmZlcmVuY2UgCgojIyMgaHlwb3RoZXNlcyAKCldlIHdhbnQgY2FuIGZpcnN0IGRvIGFuIG9tbmlidXMgdGVzdCB0byBhc3Nlc3MgaXMgdGhlcmUgaXMgYW4gZWZmZWN0IG9mIHRoZSBsb2cxMCBjb25jZW50cmF0aW9uIG9uIHRoZSB2ZWxvY2l0eS4gCgpgYGB7cn0KbW9kMCA8LSBsbShyYXRlIH4gc3RhdGUsIGRhdGEgPSBQdXJvbXljaW4pCmFub3ZhKG1vZDAsbW9kMSkKYGBgCmBgYHtyfQpjYXI6OkFub3ZhKG1vZDEpCmBgYAoKV2Ugc2VlIHRoYXQgd2UgY2Fubm90IHJlbW92ZSB0aGUgaW50ZXJhY3Rpb24gb2YgdGhlIG1vZGVsLiAKV2UgYXJlIG5vdyBpbnRlcmVzdGVkIGluIGFzc2Vzc2luZyBpZiAKCjEuIHRoZSBhc3NvY2lhdGlvbiBiZXR3ZWVuIHZlbG9jaXR5IGFuZCB0aGUgY29uY2VudHJhdGlvbiBpcyBzaWduaWZpY2FudCBpbiB0aGUgdW50cmVhdGVkIGdyb3VwIAoKJEhfMDogXGJldGFfYyA9IDAkIHZzICRIXzE6IFxiZXRhX2MgXG5lcSAwJAoKMi4gdGhlIGFzc29jaWF0aW9uIGJldHdlZW4gdmVsb2NpdHkgYW5kIHRoZSBjb25jZW50cmF0aW9uIGlzIHNpZ25pZmljYW50IGluIHRoZSB0cmVhdGVkIGdyb3VwCgokSF8wOiBcYmV0YV9jICsgXGJldGFfe2M6c309IDAkIHZzICRIXzE6IFxiZXRhX2MgKyBcYmV0YV97YzpzfVxuZXEgMCQKCjMuIHRoZSBhc3NvY2lhdGlvbiBiZXR3ZWVuIHZlbG9jaXR5IGFuZCB0aGUgY29uY2VudHJhdGlvbiBpcyBkaWZmZXJlbnQgYmV0d2VlbiB0cmVhdGVkIGFuZCB1bnRyZWF0ZWQgZ3JvdXAgCgokSF8wOiBcYmV0YV97YzpzfT0gMCQgdnMgJEhfMTogXGJldGFfe2M6c31cbmVxIDAkCgpXZSBjYW4gYXNzZXNzIGFsbCB0aGVzZSBoeXBvdGhlc2VzIHVzaW5nIG11bHRjb21wIHdoaWxlIGNvcnJlY3RpbmcgZm9yIG11bHRpcGxlIHRlc3RpbmcuIAoKYGBge3J9CmxpYnJhcnkobXVsdGNvbXApCm1jcDEgPC0gZ2xodChtb2QxLCBsaW5mY3QgPSBjKCJsb2cxMGNvbmMgPSAwIiwgImxvZzEwY29uYyArIGxvZzEwY29uYzpzdGF0ZXRyZWF0ZWQgPSAwIiwgImxvZzEwY29uYzpzdGF0ZXRyZWF0ZWQgPSAwIikpCnN1bW1hcnkobWNwMSkKY29uZmludChtY3AxKQpgYGAKCgojIyMgQ29uY2x1c2lvbgoKVGhlcmUgaXMgYW4gZXh0cmVtZWx5IHNpZ25pZmljYW50IGVmZmVjdCBvZiB0aGUgc3Vic3RyYXRlIGNvbmNlbnRyYXRpb24gYW5kIHRoZSByZWFjdGlvbiByYXRlIChwPDwwLjAwMSkuIApUaGUgZWZmZWN0IG9mIHRoZSBzdWJzdHJhdGUgY29uY2VudHJhdGlvbiBvbiB0aGUgcmVhY3Rpb24gcmF0ZSBpcyBleHRyZW1lbHkgc2lnbmlmaWNhbnQgZm9yIHJlYWN0aW9ucyBjYXRhbHlzZWQgd2l0aCB1bnRyZWF0ZWQgZW56eW1lcy4gQSByZWFjdGlvbiBhdCBhIHN1YnN0cmF0ZSBjb25jZW50cmF0aW9uIHRoYXQgaXMgMTAgdGltZXMgaGlnaGVyIHdpbGwgaGF2ZSBhIHJlYWN0aW9uIHNwZWVkIHRoYXQgaXMgb24gYXZlcmFnZSAgYHIgcm91bmQoY29uZmludChtY3AxKSRjb25maW50WzEsMV0sMSlgIGNvdW50cy9taW4gaGlnaGVyICg5NSUgQ0kgW2ByIHJvdW5kKGNvbmZpbnQobWNwMSkkY29uZmludFsxLC0xXSwxKWBdIGNvdW50cy9taW4pIChwIDw8IDAuMDAxKS4gClRoZSBlZmZlY3Qgb2YgdGhlIHN1YnN0cmF0ZSBjb25jZW50cmF0aW9uIG9uIHRoZSByZWFjdGlvbiByYXRlIGlzIGV4dHJlbWVseSBzaWduaWZpY2FudCBmb3IgcmVhY3Rpb25zIGNhdGFseXNlZCBwdXJvbXljaW4gdHJlYXRlZCBlbnp5bWVzICAocCA8PCAwLjAwMSkuIEEgcmVhY3Rpb24gYXQgYSBzdWJzdHJhdGUgY29uY2VudHJhdGlvbiB0aGF0IGlzIDEwIHRpbWVzIGhpZ2hlciB3aWxsIGhhdmUgYSByZWFjdGlvbiBzcGVlZCB0aGF0IGlzIG9uIGF2ZXJhZ2UgIGByIHJvdW5kKGNvbmZpbnQobWNwMSkkY29uZmludFsyLDFdLDEpYCBjb3VudHMvbWluIGhpZ2hlciAoOTUlIENJIFtgciByb3VuZChjb25maW50KG1jcDEpJGNvbmZpbnRbMiwtMV0sMSlgXSBjb3VudHMvbWluKS4KVGhlIGVmZmVjdCBvZiB0aGUgc3Vic3RyYXRlIGNvbmNlbnRyYXRpb24gb24gdGhlIHJlYWN0aW9uIHJhdGUgaXMgdmVyeSBzaWduaWZpY2FudGx5IGhpZ2hlciBmb3IgcmVhY3Rpb25zIGNhdGFseXNlZCB3aXRoIFB1cm9teWNpbiB0cmVhdGVkIGVuenltZXMgdGhhbiB3aGVuIGNhdGFseXNlZCB3aXRoIG5vbi10cmVhdGVkIGVuenltZXMgIChwID0gYHIgcm91bmQoc3VtbWFyeShtY3AxKSR0ZXN0JHB2YWx1ZVszXSwzKWApLiBBIHJlYWN0aW9uIGF0IGEgc3Vic3RyYXRlIGNvbmNlbnRyYXRpb24gdGhhdCBpcyAxMCB0aW1lcyBoaWdoZXIgd2lsbCBoYXZlIGEgcmVhY3Rpb24gc3BlZWQgdGhhdCBpcyBvbiBhdmVyYWdlIGByIHJvdW5kKGNvbmZpbnQobWNwMSkkY29uZmludFszLDFdLDEpYCBjb3VudHMvbWluIGhpZ2hlciBmb3IgcmVhY3Rpb25zIHRoYXQgYXJlIGNhdGFseXNlZCB3aXRoIFB1cm9teWNpbiB0cmVhdGVkIGVuenltZXMgdGhhbiB3aXRoIHVudHJlYXRlZCBlbnp5bWVzICg5NSUgQ0kgW2ByIHJvdW5kKGNvbmZpbnQobWNwMSkkY29uZmludFszLC0xXSwxKWBdIGNvdW50cy9taW4pLiAKCgoKCgo=</div>
 <div class="footer">
     <hr>
     This work is licensed under the <a href= "https://creativecommons.org/licenses/by-nc-sa/4.0">
@@ -753,7 +814,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("08_x_puromycin_sol.Rmd");
+  window.initializeSourceEmbed("08_3_puromycin_sol.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

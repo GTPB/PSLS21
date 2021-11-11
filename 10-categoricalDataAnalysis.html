@@ -508,6 +508,9 @@ div.tocify {
       <a href="07_exercises.html">7. ANOVA</a>
     </li>
     <li>
+      <a href="08_exercises.html">8. Multiple linear regression</a>
+    </li>
+    <li>
       <a href="09_exercises.html">9. Non-parametric statistics</a>
     </li>
   </ul>
@@ -1488,15 +1491,15 @@ Multiple Comparisons of Means: Tukey Contrasts
 
 Fit: glm(formula = cancer ~ variant, family = binomial, data = brca)
 
-Quantile = 2.3258
+Quantile = 2.3239
 95% family-wise confidence level
  
 
 Linear Hypotheses:
                        Estimate lwr      upr     
-leu/leu - pro/pro == 0  0.21197 -0.22795  0.65189
-pro/leu - pro/pro == 0  0.13802 -0.13115  0.40719
-pro/leu - leu/leu == 0 -0.07395 -0.51403  0.36614</code></pre>
+leu/leu - pro/pro == 0  0.21197 -0.22759  0.65153
+pro/leu - pro/pro == 0  0.13802 -0.13092  0.40697
+pro/leu - leu/leu == 0 -0.07395 -0.51367  0.36577</code></pre>
 <ul>
 <li>With the <code>confint</code> function CI are obtained on the log-odds ratios corrected for multiple testing.</li>
 </ul>
@@ -1507,13 +1510,13 @@ pro/leu - leu/leu == 0 -0.07395 -0.51403  0.36614</code></pre>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a>OR &lt;-<span class="st"> </span><span class="kw">exp</span>(posthocCI<span class="op">$</span>confint)</span>
 <span id="cb48-2"><a href="#cb48-2"></a>OR</span></code></pre></div>
 <pre><code>                   Estimate       lwr      upr
-leu/leu - pro/pro 1.2361111 0.7961627 1.919169
-pro/leu - pro/pro 1.1480000 0.8770897 1.502588
-pro/leu - leu/leu 0.9287191 0.5980776 1.442153
+leu/leu - pro/pro 1.2361111 0.7964510 1.918474
+pro/leu - pro/pro 1.1480000 0.8772840 1.502255
+pro/leu - leu/leu 0.9287191 0.5982942 1.441630
 attr(,&quot;conf.level&quot;)
 [1] 0.95
 attr(,&quot;calpha&quot;)
-[1] 2.325825</code></pre>
+[1] 2.32391</code></pre>
 <ul>
 <li><p>De odds ratios that we obtain is exactly equal to the one we calculated based on the contingency table:</p></li>
 <li><p>e.g <span class="math inline">\(\text{OR}_\text{Leu/Leu-Pro/Pro}=89\times 266/(56\times 342)=\)</span> 1.236.</p></li>
