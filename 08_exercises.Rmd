@@ -38,6 +38,7 @@ weight
 
 - Exercise: [Exercise1](./08_1_poison1.html)
 - Data path: "https://raw.githubusercontent.com/statOmics/PSLS21/data/poison.csv"
+- Solution1: [Solution1](./08_1_poison1_sol.html)
 
 ---
 
@@ -49,6 +50,7 @@ weight of the fish, **and including an interaction between dose and weight.**
 
 - Exercise: [Exercise2](./08_2_poison2.html)
 - Data path: "https://raw.githubusercontent.com/statOmics/PSLS21/data/poison.csv"
+- Solution2: [Solution2](./08_2_poison1_sol.html)
 
 ---
 
