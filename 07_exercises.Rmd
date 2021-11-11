@@ -16,26 +16,32 @@ On the third day of the "Practical Statistics for the Life Sciences (2021)"
 course, we will have three tutorials on ANOVA, based on different datasets:
 
 
-# Fish tank dataset
+# The lettuce freshweight dataset
 
-In this experiment, 96 fish (dojofish, goldfish and zebrafish)
-were placed separately in a tank with two liters of water and
-a certain dose (in mg) of the poison EI-43,064. The resistance
-of the fish against the poison was measured as the amount of
-minutes the fish survived after being exposed to the poison (`Surv_time`, in
-minutes). Additionally, the weight of each fish was measured.
+In agriculture, it is important to have a high yield of crops. One way to 
+increase the number of leaves (or better, total leaf weight) is by using a 
+fertilizer.  
 
-In this tutorial session we will focus on Dojofish, and we will model the 
-survival time in function of the poison dose while correcting for the weight of 
-the fish. 
+Here, we consider three types of fertilizers:
 
-1. We will first analyse the survival data by only considering the dose as an
-explanatory variable for survival time
+  - biochar
+  - compost
+  - cobc (combination of biochar and compost)
 
-2. Next we will model the survival data with and **additive model** for dose and 
-weight
+The researchers want to find out if either of these fertilizers have a positive 
+influence on the growth of lettuce plants. To this end, they grew up lettuce 
+plants in a greenhouse. The pots were filled with one of four soil types;
 
-- Exercise: [Exercise1](./08_1_poison1.html)
+  - Soil only (control)
+  - Soil supplemented with biochar (refoak)
+  - Soil supplemented with compost (compost)
+  - Soil supplemented with both biochar and compost (cobc)
+
+The dataset `freshweight_lettuce.txt` contains the freshweight for 28 lettuce 
+plants. The researchers want to test if there is an effect of one or more of
+the treatments on the growth of lettuce plants.
+
+- Exercise: [Exercise1](./07_1_lettuce.html)
 - Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/freshweight_lettuce.txt
 
 ---
@@ -56,8 +62,9 @@ The cuckoo dataset contains information on 120 Cuckoo eggs, obtained from
 randomly selected "foster" nests. The researchers want to test if the type of 
 foster parent has an effect on the average length of the cuckoo eggs.
 
-- Exercise: [Exercise3](./07_2_cuckoo.html)
+- Exercise: [Exercise2](./07_2_cuckoo.html)
 - Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/Cuckoo.txt
+- Solution: [Solution2](./07_2_cuckoo_sol.html)
 
 ---
 

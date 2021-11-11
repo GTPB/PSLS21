@@ -65,77 +65,33 @@ diet <- diet %>%
 
 # Data exploration
 
-Boxplot of the weight gain against protein source.
+Boxplot of the weight gain against protein source and protein level
 
 ```{r}
 diet %>% 
-  ggplot(aes(x=protSource, y=weightGain, fill=protSource)) + 
+  ggplot(aes(x=protLevel, y=weightGain)) + 
     scale_fill_brewer(palette="RdGy") +
     theme_bw() +
     geom_boxplot(outlier.shape=NA) + 
-    geom_jitter(width = 0.2) +
+    geom_jitter(aes(color=block)) +
     ggtitle("Weight gain dependence on protein source") +
     ylab("Weigth gain (g)") + 
-    stat_summary(fun = mean, geom="point", shape=5, size=3, color="black", fill="black")
+    #stat_summary(fun = mean, geom="point", shape=5, size=3, color="black", fill="black") +
+    facet_wrap(.~protSource)
 ```
 
 The increase in the weight of the rats seems to depend on the protein source
 received in the diet.
 
-Boxplot of the weight gain against protein level.
-
-```{r}
-diet %>% 
-  ggplot(aes(x=protLevel, y=weightGain, fill=protLevel)) + 
-    scale_fill_brewer(palette="RdGy") +
-    theme_bw() +
-    geom_boxplot(outlier.shape=NA) + 
-    geom_jitter(width = 0.2) +
-    ggtitle("Weight gain dependence on protein level") +
-    ylab("Weigth gain (g)") + 
-    stat_summary(fun = mean, geom="point", shape=5, size=3, color="black", fill="black")
-```
-
 The increase in the weight of the rats seems to depend on the level of protein
 received in the diet
-
-Boxplot of the weight gain against a factor that combines protein source and
-protein level.
-
-```{r}
-diet %>% 
-  mutate(combination = protSource:protLevel) %>%
-  ggplot(aes(x=combination, y=weightGain, fill=combination)) + 
-    scale_fill_brewer(palette="RdGy") +
-    theme_bw() +
-    geom_boxplot(outlier.shape=NA) + 
-    geom_jitter(width = 0.2) +
-    ggtitle("Weight gain dependence on protein source and protein level") +
-    ylab("Weigth gain (g)") + 
-    stat_summary(fun = mean, geom="point", shape=5, size=3, color="black", fill="black")
-```
 
 There also seems to be an interaction effect between the protein level and the
 protein source on the gain in weight of the rats. For the beef and the pork 
 diets the effect of high protein levels in the data seems to be much stronger
 than in the chicken diet.
 
-There is one extra layer of info in the data. Prior to the experiment,
-the rats were divided in 10 homogeneous groups of 6 rats based on 
-characteristics such as initial weight, appetite, etc. As such, rats coming
-from the same `block` can be expected to be more similar than other rats.
-
-```{r}
-diet %>% 
-  mutate(combination = protSource:protLevel) %>%
-  ggplot(aes(x=combination, y=weightGain, col=combination)) + 
-    scale_fill_brewer(palette="RdGy") +
-    theme_bw() +
-    geom_point(size=2) + 
-    geom_line(aes(group = block),col="black") +
-    ggtitle("Weight gain dependence on protein source and protein level") +
-    ylab("weigth gain (g)")
-```
+There is also an effect of the block. As the blocking implies a randomisation restriction we will have to include the block effect anyway. 
 
 # Multivariate linear regression analysis
 
@@ -165,7 +121,6 @@ We here fit a linear model with a blocking factor for `block` and main and
 interaction effects for protein source and protein level.
 
 ```{r}
-lm1 <- lm(weightGain ~ block + protSource*protLevel, data=diet)
 summary(lm1)
 ```
 
