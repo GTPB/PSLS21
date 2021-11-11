@@ -49,6 +49,8 @@ navbar:
         href: 06_exercises.html
       - text: "7. ANOVA"
         href: 07_exercises.html
+      - text: "8. Multiple linear regression"
+        href: 08_exercises.html      
       - text: "9. Non-parametric statistics"
         href: 09_exercises.html
 
