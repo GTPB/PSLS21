@@ -450,16 +450,25 @@ div.tocify {
 
 
 <p>On the third day of the “Practical Statistics for the Life Sciences (2021)” course, we will have three tutorials on ANOVA, based on different datasets:</p>
-<div id="fish-tank-dataset" class="section level1">
-<h1><span class="header-section-number">1</span> Fish tank dataset</h1>
-<p>In this experiment, 96 fish (dojofish, goldfish and zebrafish) were placed separately in a tank with two liters of water and a certain dose (in mg) of the poison EI-43,064. The resistance of the fish against the poison was measured as the amount of minutes the fish survived after being exposed to the poison (<code>Surv_time</code>, in minutes). Additionally, the weight of each fish was measured.</p>
-<p>In this tutorial session we will focus on Dojofish, and we will model the survival time in function of the poison dose while correcting for the weight of the fish.</p>
-<ol style="list-style-type: decimal">
-<li><p>We will first analyse the survival data by only considering the dose as an explanatory variable for survival time</p></li>
-<li><p>Next we will model the survival data with and <strong>additive model</strong> for dose and weight</p></li>
-</ol>
+<div id="the-lettuce-freshweight-dataset" class="section level1">
+<h1><span class="header-section-number">2</span> The lettuce freshweight dataset</h1>
+<p>In agriculture, it is important to have a high yield of crops. One way to increase the number of leaves (or better, total leaf weight) is by using a fertilizer.</p>
+<p>Here, we consider three types of fertilizers:</p>
 <ul>
-<li>Exercise: <a href="./08_1_poison1.html">Exercise1</a></li>
+<li>biochar</li>
+<li>compost</li>
+<li>cobc (combination of biochar and compost)</li>
+</ul>
+<p>The researchers want to find out if either of these fertilizers have a positive influence on the growth of lettuce plants. To this end, they grew up lettuce plants in a greenhouse. The pots were filled with one of four soil types;</p>
+<ul>
+<li>Soil only (control)</li>
+<li>Soil supplemented with biochar (refoak)</li>
+<li>Soil supplemented with compost (compost)</li>
+<li>Soil supplemented with both biochar and compost (cobc)</li>
+</ul>
+<p>The dataset <code>freshweight_lettuce.txt</code> contains the freshweight for 28 lettuce plants. The researchers want to test if there is an effect of one or more of the treatments on the growth of lettuce plants.</p>
+<ul>
+<li>Exercise: <a href="./09_2_lettuce.html">Exercise2</a></li>
 <li>Data path: <a href="https://raw.githubusercontent.com/statOmics/PSLS21/data/freshweight_lettuce.txt" class="uri">https://raw.githubusercontent.com/statOmics/PSLS21/data/freshweight_lettuce.txt</a></li>
 </ul>
 <hr />
