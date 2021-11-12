@@ -97,7 +97,7 @@ lm1 <- lm(weight ~ group, rodents)
 summary(lm1)
 ```
 
-With the current study and under when we assume that the assumptions of the model hold, we conclude that the amount of apples that rodents on average consume does not differ significantly between the group that was fed with sterile apples and the group that was fed with infected apples. 
+With the current study and when we assume that the assumptions of the model hold, we conclude that the amount of apples that rodents on average consume does not differ significantly between the group that was fed with sterile apples and the group that was fed with infected apples. 
 
 # Power of the test to detect the same effect size as observed in our dataset with our experimental design? 
 
