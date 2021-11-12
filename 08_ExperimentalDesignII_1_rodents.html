@@ -589,14 +589,67 @@ div.tocify {
 </div>
 <div id="data-exploration" class="section level2">
 <h2><span class="header-section-number">2.1</span> Data exploration</h2>
-<p>Make visualizations: boxplot and QQ-plot.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>rodents <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>group,<span class="dt">y=</span>weight)) <span class="op">+</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">outlier.shape =</span> <span class="ot">NA</span>) <span class="op">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="st">  </span><span class="kw">geom_jitter</span>()</span></code></pre></div>
+<p><img src="08_ExperimentalDesignII_1_rodents_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>rodents <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">sample =</span> weight)) <span class="op">+</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw">geom_qq</span>() <span class="op">+</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span><span class="kw">geom_qq_line</span>() <span class="op">+</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>group)</span></code></pre></div>
+<p><img src="08_ExperimentalDesignII_1_rodents_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 <p>In the data exploration we do not have enough data to evaluate the assumptions.</p>
 <p>Suppose that the assumptions are valid and that standard deviation in the population would be equal to the ones you observed in the experiment.</p>
+<ol style="list-style-type: decimal">
+<li>What is the power of the experiment if the effect size and standard deviation in the population would be equal to the ones you observed in the experiment</li>
+<li>What would the power by if number of rodents would balanced in both groups</li>
+<li>How many observations would you need to pick up the treatment effect with a power of 90%?</li>
+<li>How many observations would you need to pick up the treatment effect of 60 g/kg with a power of 90%?</li>
+</ol>
 </div>
 </div>
-<div id="assess-the-effect-of-fungal-infection-on-apple-consumption" class="section level1">
-<h1><span class="header-section-number">3</span> Assess the effect of fungal infection on apple consumption</h1>
-<p>We will model the data using a linear model with one dummy variable. Test the relevant model parameter.</p>
+<div id="analysis" class="section level1">
+<h1><span class="header-section-number">3</span> Analysis</h1>
+<p>We will model the data using a linear model with one dummy variable.</p>
+<p><span class="math display">\[
+y_i = \beta_0 + \beta_1 x_{t,i} + 
+\epsilon_i
+\]</span> with <span class="math inline">\(x_{p,i} = 0\)</span> if the rodent is subjected the control treatment with sterile apples and <span class="math inline">\(x_{t,i} = 1\)</span> if rodent receives the treatment with infected apples.</p>
+<ul>
+<li>Estimated effect size?</li>
+</ul>
+<p>The average difference in relative abundance of Staphylococcus of patients of the transplant and the placebo group.</p>
+<p><span class="math display">\[
+\hat \beta_1 = \bar y_t - \bar y_c
+\]</span></p>
+<ul>
+<li><span class="math inline">\(H_0\)</span>: rodents eat consume on average the same amount of apples per kg body weight when they are fed with sterile or with infected apples.<br />
+</li>
+<li><span class="math inline">\(H_1\)</span>: the average amount of apples in g/kg body weight is different when rodents are fed with sterile then as when they are fed with infected apples.</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(weight <span class="op">~</span><span class="st"> </span>group, rodents)</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="kw">summary</span>(lm1)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = weight ~ group, data = rodents)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -102.500  -55.625  -41.438    1.531  279.625 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)   182.50      57.03   3.200  0.00949 **
+## grouptreat    -93.12      69.85  -1.333  0.21204   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 114.1 on 10 degrees of freedom
+## Multiple R-squared:  0.1509, Adjusted R-squared:  0.06601 
+## F-statistic: 1.777 on 1 and 10 DF,  p-value: 0.212</code></pre>
+<p>With the current study and when we assume that the assumptions of the model hold, we conclude that the amount of apples that rodents on average consume does not differ significantly between the group that was fed with sterile apples and the group that was fed with infected apples.</p>
 </div>
 <div id="power-analyses" class="section level1">
 <h1><span class="header-section-number">4</span> Power analyses</h1>
@@ -607,25 +660,25 @@ div.tocify {
 <div id="simulation-function" class="section level2">
 <h2><span class="header-section-number">4.2</span> Simulation function</h2>
 <p>We provide you with a function to simulate data similar to that of our experiment under our model assumptions.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>simFast &lt;-<span class="st"> </span><span class="cf">function</span>(form, data, betas, sd, contrasts, <span class="dt">alpha =</span> <span class="fl">.05</span>, <span class="dt">nSim =</span> <span class="dv">10000</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a>{</span>
-<span id="cb6-3"><a href="#cb6-3"></a>    ySim &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="kw">nrow</span>(data)<span class="op">*</span>nSim,<span class="dt">sd=</span>sd)</span>
-<span id="cb6-4"><a href="#cb6-4"></a>    <span class="kw">dim</span>(ySim) &lt;-<span class="kw">c</span>(<span class="kw">nrow</span>(data),nSim)</span>
-<span id="cb6-5"><a href="#cb6-5"></a>    design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(form, data)</span>
-<span id="cb6-6"><a href="#cb6-6"></a>    ySim &lt;-<span class="st"> </span>ySim <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(design <span class="op">%*%</span>betas)</span>
-<span id="cb6-7"><a href="#cb6-7"></a>    ySim &lt;-<span class="st"> </span><span class="kw">t</span>(ySim)</span>
-<span id="cb6-8"><a href="#cb6-8"></a>  </span>
-<span id="cb6-9"><a href="#cb6-9"></a>    <span class="co">### Fitting</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a>    fitAll &lt;-<span class="st"> </span>limma<span class="op">::</span><span class="kw">lmFit</span>(ySim,design)</span>
-<span id="cb6-11"><a href="#cb6-11"></a>  </span>
-<span id="cb6-12"><a href="#cb6-12"></a>    <span class="co">### Inference</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a>    varUnscaled &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">t</span>(contrasts)<span class="op">%*%</span>fitAll<span class="op">$</span>cov.coefficients<span class="op">%*%</span>contrasts)</span>
-<span id="cb6-14"><a href="#cb6-14"></a>    contrasts &lt;-<span class="st"> </span>fitAll<span class="op">$</span>coefficients <span class="op">%*%</span>contrasts</span>
-<span id="cb6-15"><a href="#cb6-15"></a>    seContrasts &lt;-<span class="st"> </span>varUnscaled<span class="op">^</span>.<span class="dv">5</span><span class="op">*</span>fitAll<span class="op">$</span>sigma</span>
-<span id="cb6-16"><a href="#cb6-16"></a>    tstats &lt;-<span class="st"> </span>contrasts<span class="op">/</span>seContrasts</span>
-<span id="cb6-17"><a href="#cb6-17"></a>    pvals &lt;-<span class="st"> </span><span class="kw">pt</span>(<span class="kw">abs</span>(tstats),fitAll<span class="op">$</span>df.residual,<span class="dt">lower.tail =</span> <span class="ot">FALSE</span>)<span class="op">*</span><span class="dv">2</span></span>
-<span id="cb6-18"><a href="#cb6-18"></a>    <span class="kw">return</span>(<span class="kw">mean</span>(pvals <span class="op">&lt;</span><span class="st"> </span>alpha))</span>
-<span id="cb6-19"><a href="#cb6-19"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>simFast &lt;-<span class="st"> </span><span class="cf">function</span>(form, data, betas, sd, contrasts, <span class="dt">alpha =</span> <span class="fl">.05</span>, <span class="dt">nSim =</span> <span class="dv">10000</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a>{</span>
+<span id="cb10-3"><a href="#cb10-3"></a>    ySim &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="kw">nrow</span>(data)<span class="op">*</span>nSim,<span class="dt">sd=</span>sd)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>    <span class="kw">dim</span>(ySim) &lt;-<span class="kw">c</span>(<span class="kw">nrow</span>(data),nSim)</span>
+<span id="cb10-5"><a href="#cb10-5"></a>    design &lt;-<span class="st"> </span><span class="kw">model.matrix</span>(form, data)</span>
+<span id="cb10-6"><a href="#cb10-6"></a>    ySim &lt;-<span class="st"> </span>ySim <span class="op">+</span><span class="st"> </span><span class="kw">c</span>(design <span class="op">%*%</span>betas)</span>
+<span id="cb10-7"><a href="#cb10-7"></a>    ySim &lt;-<span class="st"> </span><span class="kw">t</span>(ySim)</span>
+<span id="cb10-8"><a href="#cb10-8"></a>  </span>
+<span id="cb10-9"><a href="#cb10-9"></a>    <span class="co">### Fitting</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a>    fitAll &lt;-<span class="st"> </span>limma<span class="op">::</span><span class="kw">lmFit</span>(ySim,design)</span>
+<span id="cb10-11"><a href="#cb10-11"></a>  </span>
+<span id="cb10-12"><a href="#cb10-12"></a>    <span class="co">### Inference</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a>    varUnscaled &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">t</span>(contrasts)<span class="op">%*%</span>fitAll<span class="op">$</span>cov.coefficients<span class="op">%*%</span>contrasts)</span>
+<span id="cb10-14"><a href="#cb10-14"></a>    contrasts &lt;-<span class="st"> </span>fitAll<span class="op">$</span>coefficients <span class="op">%*%</span>contrasts</span>
+<span id="cb10-15"><a href="#cb10-15"></a>    seContrasts &lt;-<span class="st"> </span>varUnscaled<span class="op">^</span>.<span class="dv">5</span><span class="op">*</span>fitAll<span class="op">$</span>sigma</span>
+<span id="cb10-16"><a href="#cb10-16"></a>    tstats &lt;-<span class="st"> </span>contrasts<span class="op">/</span>seContrasts</span>
+<span id="cb10-17"><a href="#cb10-17"></a>    pvals &lt;-<span class="st"> </span><span class="kw">pt</span>(<span class="kw">abs</span>(tstats),fitAll<span class="op">$</span>df.residual,<span class="dt">lower.tail =</span> <span class="ot">FALSE</span>)<span class="op">*</span><span class="dv">2</span></span>
+<span id="cb10-18"><a href="#cb10-18"></a>    <span class="kw">return</span>(<span class="kw">mean</span>(pvals <span class="op">&lt;</span><span class="st"> </span>alpha))</span>
+<span id="cb10-19"><a href="#cb10-19"></a>}</span></code></pre></div>
 <p>Without going into the full code details, this function allows us to simulate data similar to that of our experiment under our model assumptions, given the following inputs:</p>
 <ul>
 <li><code>form</code>: model formula for the experiment we want to simulate</li>
@@ -638,27 +691,27 @@ div.tocify {
 </ul>
 <p>To simulate new data based on our target dataset <code>ç</code>, we will need to fill in all the arguments to the <code>simFast</code> function.</p>
 <p><strong>Hint: for the betas and sd, we will need to fit a linear model first!</strong></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>power1 &lt;-<span class="st"> </span><span class="kw">simFast</span>(<span class="dt">form =</span> ..., </span>
-<span id="cb7-2"><a href="#cb7-2"></a>                  <span class="dt">data =</span> ..., </span>
-<span id="cb7-3"><a href="#cb7-3"></a>                  <span class="dt">betas =</span> ..., </span>
-<span id="cb7-4"><a href="#cb7-4"></a>                  <span class="dt">sd =</span> ..., </span>
-<span id="cb7-5"><a href="#cb7-5"></a>                  <span class="dt">contrasts =</span> ..., </span>
-<span id="cb7-6"><a href="#cb7-6"></a>                  <span class="dt">alpha =</span> ..., </span>
-<span id="cb7-7"><a href="#cb7-7"></a>                  <span class="dt">nSim =</span> ...)</span>
-<span id="cb7-8"><a href="#cb7-8"></a>power1</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>power1 &lt;-<span class="st"> </span><span class="kw">simFast</span>(<span class="dt">form =</span> ..., </span>
+<span id="cb11-2"><a href="#cb11-2"></a>                  <span class="dt">data =</span> ..., </span>
+<span id="cb11-3"><a href="#cb11-3"></a>                  <span class="dt">betas =</span> ..., </span>
+<span id="cb11-4"><a href="#cb11-4"></a>                  <span class="dt">sd =</span> ..., </span>
+<span id="cb11-5"><a href="#cb11-5"></a>                  <span class="dt">contrasts =</span> ..., </span>
+<span id="cb11-6"><a href="#cb11-6"></a>                  <span class="dt">alpha =</span> ..., </span>
+<span id="cb11-7"><a href="#cb11-7"></a>                  <span class="dt">nSim =</span> ...)</span>
+<span id="cb11-8"><a href="#cb11-8"></a>power1</span></code></pre></div>
 <p>Interpret the outcome.</p>
 </div>
 <div id="question-2" class="section level2">
 <h2><span class="header-section-number">4.3</span> Question 2</h2>
 <p>What would the power by if number of rodents would balanced in both groups? Again, we simulate a large number of new experiments. Adjust one more more of the inputs to the <code>simFast</code> to allow for addressing this question.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>power2 &lt;-<span class="st"> </span><span class="kw">simFast</span>(<span class="dt">form =</span> ..., </span>
-<span id="cb8-2"><a href="#cb8-2"></a>                  <span class="dt">data =</span> ..., </span>
-<span id="cb8-3"><a href="#cb8-3"></a>                  <span class="dt">betas =</span> ..., </span>
-<span id="cb8-4"><a href="#cb8-4"></a>                  <span class="dt">sd =</span> ..., </span>
-<span id="cb8-5"><a href="#cb8-5"></a>                  <span class="dt">contrasts =</span> ..., </span>
-<span id="cb8-6"><a href="#cb8-6"></a>                  <span class="dt">alpha =</span> ..., </span>
-<span id="cb8-7"><a href="#cb8-7"></a>                  <span class="dt">nSim =</span> ...)</span>
-<span id="cb8-8"><a href="#cb8-8"></a>power2</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>power2 &lt;-<span class="st"> </span><span class="kw">simFast</span>(<span class="dt">form =</span> ..., </span>
+<span id="cb12-2"><a href="#cb12-2"></a>                  <span class="dt">data =</span> ..., </span>
+<span id="cb12-3"><a href="#cb12-3"></a>                  <span class="dt">betas =</span> ..., </span>
+<span id="cb12-4"><a href="#cb12-4"></a>                  <span class="dt">sd =</span> ..., </span>
+<span id="cb12-5"><a href="#cb12-5"></a>                  <span class="dt">contrasts =</span> ..., </span>
+<span id="cb12-6"><a href="#cb12-6"></a>                  <span class="dt">alpha =</span> ..., </span>
+<span id="cb12-7"><a href="#cb12-7"></a>                  <span class="dt">nSim =</span> ...)</span>
+<span id="cb12-8"><a href="#cb12-8"></a>power2</span></code></pre></div>
 </div>
 <div id="question-3" class="section level2">
 <h2><span class="header-section-number">4.4</span> Question 3</h2>
@@ -676,7 +729,7 @@ div.tocify {
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhwZXJpbWVudGFsIERlc2lnbiBJSTogcmVwbGljYXRpb24gYW5kIHBvd2VyIGV4ZXJjaXNlIDEiCmF1dGhvcjogIkxpZXZlbiBDbGVtZW50ICYgQWxleGFuZHJlIFNlZ2VycyIKZGF0ZTogInN0YXRPbWljcywgR2hlbnQgVW5pdmVyc2l0eSAoaHR0cHM6Ly9zdGF0b21pY3MuZ2l0aHViLmlvKSIKb3V0cHV0OgogIGh0bWxfZG9jdW1lbnQ6CiAgICBjb2RlX2Rvd25sb2FkOiB5ZXMKICAgIHRoZW1lOiBjb3NtbwogICAgdG9jOiB5ZXMKICAgIHRvY19mbG9hdDogeWVzCiAgICBoaWdobGlnaHQ6IHRhbmdvCiAgICBudW1iZXJfc2VjdGlvbnM6IHllcwotLS0KCgo8YSByZWw9ImxpY2Vuc2UiIGhyZWY9Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS1uYy1zYS80LjAiPjxpbWcgYWx0PSJDcmVhdGl2ZSBDb21tb25zIExpY2Vuc2UiIHN0eWxlPSJib3JkZXItd2lkdGg6MCIgc3JjPSJodHRwczovL2kuY3JlYXRpdmVjb21tb25zLm9yZy9sL2J5LW5jLXNhLzQuMC84OHgzMS5wbmciIC8+PC9hPgoKYGBge3J9CmxpYnJhcnkodGlkeXZlcnNlKQpgYGAKCiMgUG93ZXIKClRoZSBwb3dlciBvZiBhIHRlc3QgaXMgZGVmaW5lZCBhczoKCiQkUChwIDwgClxhbHBoYSB8IEhfMSkkJApUaGlzIGlzIHRoZSBwcm9iYWJpbGl0eSB0byByZWplY3QgdGhlIG51bGh5cG90aGVzaXMgYXQgdGhlIHNpZ25pZmljYW5jZSBsZXZlbCAkXGFscGhhJCBnaXZlbiB0aGF0IHRoZSBhbHRlcm5hdGl2ZSBoeXBvdGhlc2lzIGlzIHRydWUuIAoKVGhlIHBvd2VyIGRlcGVuZHMgb246CgotIHRoZSByZWFsIGVmZmVjdCBzaXplIGluIHRoZSBwb3B1bGF0aW9uICRcbWF0aGJme0x9XlRcYm9sZHN5bWJvbHtcYmV0YX0kLgotIHRoZSBudW1iZXIgb2Ygb2JzZXJ2YXRpb25zOiBTRSBhbmQgZGYuCi0gQ2hvaWNlIG9mIGRlc2lnbnBvaW50cyAKLSBDaG9pY2Ugb2Ygc2lnbmlmaWNhbmNlLWxldmVsICRcYWxwaGEkLiAKCldlIHdpbGwgZXZhbHVhdGUgdGhlIHBvd2VyIHVzaW5nIHNpbXVsYXRpb24uCgojIFJvZGVudHMKCkEgYmlvbG9naXN0IGV4YW1pbmVkIHRoZSBlZmZlY3Qgb2YgYSBmdW5nYWwgaW5mZWN0aW9uIG9uIHRoZSBlYXRpbmcgYmVoYXZpb3Igb2Ygcm9kZW50cy4gCkluZmVjdGVkIGFwcGxlcyB3ZXJlIG9mZmVyZWQgdG8gYSBncm91cCBvZiBlaWdodCByb2RlbnRzLCBhbmQgc3RlcmlsZSBhcHBsZXMgd2VyZSBvZmZlcmVkIHRvIGEgZ3JvdXAgb2YgNCByb2RlbnRzLiBUaGUgYW1vdW50IG9mIGdyYW1zIG9mIGFwcGxlcyBjb25zdW1lZCBwZXIga2cgYm9keSB3ZWlnaHQgYXJlIGdpdmVuIGluIHRoZSBkYXRhc2V0IGJlbG93LiAKCmBgYHtyfQpyb2RlbnRzIDwtIGRhdGEuZnJhbWUod2VpZ2h0ID0gYygxMSwzMyw0OCwzNCwxMTIsMzY5LDY0LDQ0LDE3Nyw4MCwxNDEsMzMyKSwKICAgICAgICAgICAgICAgICAgICAgIGdyb3VwID0gYXMuZmFjdG9yKGMocmVwKCJ0cmVhdCIsOCksIHJlcCgiY3RybCIsNCkpKSkKcm9kZW50cyAKYGBgCgojIyBEYXRhIGV4cGxvcmF0aW9uCgpNYWtlIHZpc3VhbGl6YXRpb25zOiBib3hwbG90IGFuZCBRUS1wbG90LgoKYGBge3J9CgpgYGAKCkluIHRoZSBkYXRhIGV4cGxvcmF0aW9uIHdlIGRvIG5vdCBoYXZlIGVub3VnaCBkYXRhIHRvIGV2YWx1YXRlIHRoZSBhc3N1bXB0aW9ucy4KClN1cHBvc2UgdGhhdCB0aGUgYXNzdW1wdGlvbnMgYXJlIHZhbGlkIGFuZCB0aGF0IHN0YW5kYXJkIGRldmlhdGlvbiBpbiB0aGUKcG9wdWxhdGlvbiB3b3VsZCBiZSBlcXVhbCB0byB0aGUgb25lcyB5b3Ugb2JzZXJ2ZWQgaW4gdGhlIGV4cGVyaW1lbnQuCgojIEFzc2VzcyB0aGUgZWZmZWN0IG9mIGZ1bmdhbCBpbmZlY3Rpb24gb24gYXBwbGUgY29uc3VtcHRpb24KCldlIHdpbGwgbW9kZWwgdGhlIGRhdGEgdXNpbmcgYSBsaW5lYXIgbW9kZWwgd2l0aCBvbmUgZHVtbXkgdmFyaWFibGUuIFRlc3QgdGhlCnJlbGV2YW50IG1vZGVsIHBhcmFtZXRlci4KCmBgYHtyfQoKYGBgCgojIFBvd2VyIGFuYWx5c2VzCgojIyBRdWVzdGlvbiAxCgpXaGF0IGlzIHRoZSBwb3dlciBvZiB0aGUgZXhwZXJpbWVudCBpZiB0aGUgZWZmZWN0IHNpemUgYW5kIHN0YW5kYXJkIGRldmlhdGlvbiAKaW4gdGhlIHBvcHVsYXRpb24gd291bGQgYmUgZXF1YWwgdG8gdGhlIG9uZXMgeW91IG9ic2VydmVkIGluIHRoZSBleHBlcmltZW50PwoKIyMgU2ltdWxhdGlvbiBmdW5jdGlvbgoKV2UgcHJvdmlkZSB5b3Ugd2l0aCBhIGZ1bmN0aW9uIHRvIHNpbXVsYXRlIGRhdGEgc2ltaWxhciB0byB0aGF0IG9mIG91ciAKZXhwZXJpbWVudCB1bmRlciBvdXIgbW9kZWwgYXNzdW1wdGlvbnMuIAoKYGBge3J9CnNpbUZhc3QgPC0gZnVuY3Rpb24oZm9ybSwgZGF0YSwgYmV0YXMsIHNkLCBjb250cmFzdHMsIGFscGhhID0gLjA1LCBuU2ltID0gMTAwMDApCnsKICAgIHlTaW0gPC0gcm5vcm0obnJvdyhkYXRhKSpuU2ltLHNkPXNkKQogICAgZGltKHlTaW0pIDwtYyhucm93KGRhdGEpLG5TaW0pCiAgICBkZXNpZ24gPC0gbW9kZWwubWF0cml4KGZvcm0sIGRhdGEpCiAgICB5U2ltIDwtIHlTaW0gKyBjKGRlc2lnbiAlKiViZXRhcykKICAgIHlTaW0gPC0gdCh5U2ltKQogIAogICAgIyMjIEZpdHRpbmcKICAgIGZpdEFsbCA8LSBsaW1tYTo6bG1GaXQoeVNpbSxkZXNpZ24pCiAgCiAgICAjIyMgSW5mZXJlbmNlCiAgICB2YXJVbnNjYWxlZCA8LSBjKHQoY29udHJhc3RzKSUqJWZpdEFsbCRjb3YuY29lZmZpY2llbnRzJSolY29udHJhc3RzKQogICAgY29udHJhc3RzIDwtIGZpdEFsbCRjb2VmZmljaWVudHMgJSolY29udHJhc3RzCiAgICBzZUNvbnRyYXN0cyA8LSB2YXJVbnNjYWxlZF4uNSpmaXRBbGwkc2lnbWEKICAgIHRzdGF0cyA8LSBjb250cmFzdHMvc2VDb250cmFzdHMKICAgIHB2YWxzIDwtIHB0KGFicyh0c3RhdHMpLGZpdEFsbCRkZi5yZXNpZHVhbCxsb3dlci50YWlsID0gRkFMU0UpKjIKICAgIHJldHVybihtZWFuKHB2YWxzIDwgYWxwaGEpKQp9CmBgYAoKV2l0aG91dCBnb2luZyBpbnRvIHRoZSBmdWxsIGNvZGUgZGV0YWlscywgdGhpcyBmdW5jdGlvbiBhbGxvd3MgdXMgdG8gc2ltdWxhdGUgCmRhdGEgc2ltaWxhciB0byB0aGF0IG9mIG91ciBleHBlcmltZW50IHVuZGVyIG91ciBtb2RlbCBhc3N1bXB0aW9ucywgZ2l2ZW4gdGhlIApmb2xsb3dpbmcgaW5wdXRzOgoKLSBgZm9ybWA6IG1vZGVsIGZvcm11bGEgZm9yIHRoZSBleHBlcmltZW50IHdlIHdhbnQgdG8gc2ltdWxhdGUKLSBgZGF0YWA6IHRoZSB0YXJnZXQgZGF0YXNldCBvbiB3aGljaCB3ZSB3YW50IHRvIGJhc2Ugb3VyIHNpbXVsYXRpb25zIG9uCi0gYGJldGFzYDogdGhlIGxpbmVhciByZWdyZXNzaW9uIGNvZWZmaWNpZW50cyBmb3IgdGhlIHRhcmdldCBkYXRhc2V0Ci0gYHNkYDogdGhlIHJlc2lkdWFsIHN0YW5kYXJkIGVycm9ycyBmcm9tIHRoZSBsaW5lYXIgcmVncmVzc2lvbiBtb2RlbCBmaXQgb24gCnRoZSB0YXJnZXQgZGF0YXNldAotIGBjb250cmFzdHNgOiBjb21wYXJpc29uIG9mIGludGVyZXN0LCBpLmUuIHdoaWNoIChjb21iaW5hdGlvbiBvZikgbW9kZWwgCnBhcmFtZXRlcnMgd2Ugd291bGQgbGlrZSB0byBhc3Nlc3MKLSBgYWxwaGFgOiBhbHBoYS1sZXZlbCBhdCB3aGljaCB0byBjb25kdWN0IHRoZSBoeXBvdGhlc2lzIHRlc3RpbmcKLSBgblNpbWA6IG51bWJlciBvZiBkYXRhc2V0cyB3ZSB3b3VsZCBsaWtlIHRvIHNpbXVsYXRlCgpUbyBzaW11bGF0ZSBuZXcgZGF0YSBiYXNlZCBvbiBvdXIgdGFyZ2V0IGRhdGFzZXQgYMOnYCwgd2Ugd2lsbCBuZWVkIHRvIApmaWxsIGluIGFsbCB0aGUgYXJndW1lbnRzIHRvIHRoZSBgc2ltRmFzdGAgZnVuY3Rpb24uCgoqKkhpbnQ6IGZvciB0aGUgYmV0YXMgYW5kIHNkLCB3ZSB3aWxsIG5lZWQgdG8gZml0IGEgbGluZWFyIG1vZGVsIGZpcnN0ISoqCgpgYGB7ciwgZXZhbD1GQUxTRX0KcG93ZXIxIDwtIHNpbUZhc3QoZm9ybSA9IC4uLiwgCiAgICAgICAgICAgICAgICAgIGRhdGEgPSAuLi4sIAogICAgICAgICAgICAgICAgICBiZXRhcyA9IC4uLiwgCiAgICAgICAgICAgICAgICAgIHNkID0gLi4uLCAKICAgICAgICAgICAgICAgICAgY29udHJhc3RzID0gLi4uLCAKICAgICAgICAgICAgICAgICAgYWxwaGEgPSAuLi4sIAogICAgICAgICAgICAgICAgICBuU2ltID0gLi4uKQpwb3dlcjEKYGBgCgpJbnRlcnByZXQgdGhlIG91dGNvbWUuCgojIyBRdWVzdGlvbiAyCgpXaGF0IHdvdWxkIHRoZSBwb3dlciBieSBpZiBudW1iZXIgb2Ygcm9kZW50cyB3b3VsZCAgYmFsYW5jZWQgaW4gYm90aCBncm91cHM/CkFnYWluLCB3ZSBzaW11bGF0ZSBhIGxhcmdlIG51bWJlciBvZiBuZXcgZXhwZXJpbWVudHMuIEFkanVzdCBvbmUgbW9yZSBtb3JlCm9mIHRoZSBpbnB1dHMgdG8gdGhlIGBzaW1GYXN0YCB0byBhbGxvdyBmb3IgYWRkcmVzc2luZyB0aGlzIHF1ZXN0aW9uLgoKYGBge3IsIGV2YWw9RkFMU0V9CnBvd2VyMiA8LSBzaW1GYXN0KGZvcm0gPSAuLi4sIAogICAgICAgICAgICAgICAgICBkYXRhID0gLi4uLCAKICAgICAgICAgICAgICAgICAgYmV0YXMgPSAuLi4sIAogICAgICAgICAgICAgICAgICBzZCA9IC4uLiwgCiAgICAgICAgICAgICAgICAgIGNvbnRyYXN0cyA9IC4uLiwgCiAgICAgICAgICAgICAgICAgIGFscGhhID0gLi4uLCAKICAgICAgICAgICAgICAgICAgblNpbSA9IC4uLikKcG93ZXIyCmBgYAoKIyMgUXVlc3Rpb24gMwoKSG93IG1hbnkgb2JzZXJ2YXRpb25zIHdvdWxkIHlvdSBuZWVkIHRvIHBpY2sgdXAgdGhlIHRyZWF0bWVudCBlZmZlY3Qgd2l0aCAKYSBwb3dlciBvZiA5MCU/CgpUaGlzIHdpbGwgcmVxdWlyZSB1cyB0byBlc3RhYmxpc2ggYSByZWxhdGlvbnNoaXAgYmV0d2VlbiBzYW1wbGUgc2l6ZSBhbmQgcG93ZXIuCkluIHR1cm4sIHRoaXMgd2lsbCByZXF1aXJlIHVzIHRvIHBlcmZvcm0gYSAicGFyYW1ldGVyIHN3ZWVwIiBvdmVyIGRpZmZlcmVudAp2YWx1ZXMgb2Ygc2FtcGxlIHNpemUgYW5kIGNvbXB1dGUgdGhlIHBvd2VyIGZvciBlYWNoIG9mIHRoZW0uCgpgYGB7cn0KCmBgYAoKIyMgUXVlc3Rpb24gNAoKU3VwcG9zZSB0aGF0IHdlIHdvdWxkIGxpa2UgdG8gcGljayB1cCBhbiBlZmZlY3Qgc2l6ZSBvZiAkXGJldGFfMSA9IDYwIGcva2ckLiAKSG93IG1hbnkgc2FtcGxlcyB3b3VsZCBiZSByZXF1aXJlZCBpbiBlYWNoIGdyb3VwIHRvIG9idGFpbiBhIHBvd2VyIG9mIDkwJT8KCk5vdGUsIHRoYXQgCgotIHdlIGRvIGEgdHdvLXNpZGVkIHRlc3Qgc28gdGhlIHNpZ24gb2YgdGhlIGVmZmVjdCBzaXplIGlzIGFyYml0cmFyeS4gCi0gdGhlIGludGVyY2VwdCBpbiB0aGUgcG93ZXIgYW5hbHlzaXMgaXMgYWxzbyBhcmJpdHJhcnkgc28gd2UgY291bGQgYWxzbyBzZXQgaXQgYXQgMC4gCgpgYGB7cn0KCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRXhwZXJpbWVudGFsIERlc2lnbiBJSTogcmVwbGljYXRpb24gYW5kIHBvd2VyIGV4ZXJjaXNlIDEiCmF1dGhvcjogIkxpZXZlbiBDbGVtZW50ICYgQWxleGFuZHJlIFNlZ2VycyIKZGF0ZTogInN0YXRPbWljcywgR2hlbnQgVW5pdmVyc2l0eSAoaHR0cHM6Ly9zdGF0b21pY3MuZ2l0aHViLmlvKSIKb3V0cHV0OgogIGh0bWxfZG9jdW1lbnQ6CiAgICBjb2RlX2Rvd25sb2FkOiB5ZXMKICAgIHRoZW1lOiBjb3NtbwogICAgdG9jOiB5ZXMKICAgIHRvY19mbG9hdDogeWVzCiAgICBoaWdobGlnaHQ6IHRhbmdvCiAgICBudW1iZXJfc2VjdGlvbnM6IHllcwotLS0KCgo8YSByZWw9ImxpY2Vuc2UiIGhyZWY9Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS1uYy1zYS80LjAiPjxpbWcgYWx0PSJDcmVhdGl2ZSBDb21tb25zIExpY2Vuc2UiIHN0eWxlPSJib3JkZXItd2lkdGg6MCIgc3JjPSJodHRwczovL2kuY3JlYXRpdmVjb21tb25zLm9yZy9sL2J5LW5jLXNhLzQuMC84OHgzMS5wbmciIC8+PC9hPgoKYGBge3J9CmxpYnJhcnkodGlkeXZlcnNlKQpgYGAKCiMgUG93ZXIKClRoZSBwb3dlciBvZiBhIHRlc3QgaXMgZGVmaW5lZCBhczoKCiQkUChwIDwgClxhbHBoYSB8IEhfMSkkJApUaGlzIGlzIHRoZSBwcm9iYWJpbGl0eSB0byByZWplY3QgdGhlIG51bGh5cG90aGVzaXMgYXQgdGhlIHNpZ25pZmljYW5jZSBsZXZlbCAkXGFscGhhJCBnaXZlbiB0aGF0IHRoZSBhbHRlcm5hdGl2ZSBoeXBvdGhlc2lzIGlzIHRydWUuIAoKVGhlIHBvd2VyIGRlcGVuZHMgb246CgotIHRoZSByZWFsIGVmZmVjdCBzaXplIGluIHRoZSBwb3B1bGF0aW9uICRcbWF0aGJme0x9XlRcYm9sZHN5bWJvbHtcYmV0YX0kLgotIHRoZSBudW1iZXIgb2Ygb2JzZXJ2YXRpb25zOiBTRSBhbmQgZGYuCi0gQ2hvaWNlIG9mIGRlc2lnbnBvaW50cyAKLSBDaG9pY2Ugb2Ygc2lnbmlmaWNhbmNlLWxldmVsICRcYWxwaGEkLiAKCldlIHdpbGwgZXZhbHVhdGUgdGhlIHBvd2VyIHVzaW5nIHNpbXVsYXRpb24uCgojIFJvZGVudHMKCkEgYmlvbG9naXN0IGV4YW1pbmVkIHRoZSBlZmZlY3Qgb2YgYSBmdW5nYWwgaW5mZWN0aW9uIG9uIHRoZSBlYXRpbmcgYmVoYXZpb3Igb2Ygcm9kZW50cy4gCkluZmVjdGVkIGFwcGxlcyB3ZXJlIG9mZmVyZWQgdG8gYSBncm91cCBvZiBlaWdodCByb2RlbnRzLCBhbmQgc3RlcmlsZSBhcHBsZXMgd2VyZSBvZmZlcmVkIHRvIGEgZ3JvdXAgb2YgNCByb2RlbnRzLiBUaGUgYW1vdW50IG9mIGdyYW1zIG9mIGFwcGxlcyBjb25zdW1lZCBwZXIga2cgYm9keSB3ZWlnaHQgYXJlIGdpdmVuIGluIHRoZSBkYXRhc2V0IGJlbG93LiAKCmBgYHtyfQpyb2RlbnRzIDwtIGRhdGEuZnJhbWUod2VpZ2h0ID0gYygxMSwzMyw0OCwzNCwxMTIsMzY5LDY0LDQ0LDE3Nyw4MCwxNDEsMzMyKSwKICAgICAgICAgICAgICAgICAgICAgIGdyb3VwID0gYXMuZmFjdG9yKGMocmVwKCJ0cmVhdCIsOCksIHJlcCgiY3RybCIsNCkpKSkKcm9kZW50cyAKYGBgCgoKIyMgRGF0YSBleHBsb3JhdGlvbgoKYGBge3J9CnJvZGVudHMgJT4lIAogIGdncGxvdChhZXMoeD1ncm91cCx5PXdlaWdodCkpICsKICBnZW9tX2JveHBsb3Qob3V0bGllci5zaGFwZSA9IE5BKSArCiAgZ2VvbV9qaXR0ZXIoKQoKcm9kZW50cyAlPiUgCiAgZ2dwbG90KGFlcyhzYW1wbGUgPSB3ZWlnaHQpKSArCiAgZ2VvbV9xcSgpICsKICBnZW9tX3FxX2xpbmUoKSArCiAgZmFjZXRfd3JhcCh+IGdyb3VwKQpgYGAKCkluIHRoZSBkYXRhIGV4cGxvcmF0aW9uIHdlIGRvIG5vdCBoYXZlIGVub3VnaCBkYXRhIHRvIGV2YWx1YXRlIHRoZSBhc3N1bXB0aW9ucy4KClN1cHBvc2UgdGhhdCB0aGUgYXNzdW1wdGlvbnMgYXJlIHZhbGlkIGFuZCB0aGF0IHN0YW5kYXJkIGRldmlhdGlvbiBpbiB0aGUgcG9wdWxhdGlvbiB3b3VsZCBiZSBlcXVhbCB0byB0aGUgb25lcyB5b3Ugb2JzZXJ2ZWQgaW4gdGhlIGV4cGVyaW1lbnQuCgoxLiBXaGF0IGlzIHRoZSBwb3dlciBvZiB0aGUgZXhwZXJpbWVudCBpZiB0aGUgZWZmZWN0IHNpemUgYW5kIHN0YW5kYXJkIGRldmlhdGlvbiBpbiB0aGUgcG9wdWxhdGlvbiB3b3VsZCBiZSBlcXVhbCB0byB0aGUgb25lcyB5b3Ugb2JzZXJ2ZWQgaW4gdGhlIGV4cGVyaW1lbnQKMi4gV2hhdCB3b3VsZCB0aGUgcG93ZXIgYnkgaWYgbnVtYmVyIG9mIHJvZGVudHMgd291bGQgIGJhbGFuY2VkIGluIGJvdGggZ3JvdXBzCjMuIEhvdyBtYW55IG9ic2VydmF0aW9ucyB3b3VsZCB5b3UgbmVlZCB0byBwaWNrIHVwIHRoZSB0cmVhdG1lbnQgZWZmZWN0IHdpdGggYSBwb3dlciBvZiA5MCU/CjQuIEhvdyBtYW55IG9ic2VydmF0aW9ucyB3b3VsZCB5b3UgbmVlZCB0byBwaWNrIHVwIHRoZSB0cmVhdG1lbnQgZWZmZWN0IG9mIDYwIGcva2cgd2l0aCBhIHBvd2VyIG9mIDkwJT8KCiMgQW5hbHlzaXMKCldlIHdpbGwgbW9kZWwgdGhlIGRhdGEgdXNpbmcgYSBsaW5lYXIgbW9kZWwgd2l0aCBvbmUgZHVtbXkgdmFyaWFibGUuIAoKJCQKeV9pID0gXGJldGFfMCArIFxiZXRhXzEgeF97dCxpfSArIApcZXBzaWxvbl9pCiQkCndpdGggJHhfe3AsaX0gPSAwJCBpZiB0aGUgcm9kZW50IGlzIHN1YmplY3RlZCB0aGUgY29udHJvbCB0cmVhdG1lbnQgd2l0aCBzdGVyaWxlIGFwcGxlcyBhbmQgJHhfe3QsaX0gPSAxJCBpZiByb2RlbnQgcmVjZWl2ZXMgdGhlIHRyZWF0bWVudCB3aXRoIGluZmVjdGVkIGFwcGxlcy4gCgotIEVzdGltYXRlZCBlZmZlY3Qgc2l6ZT8KClRoZSBhdmVyYWdlIGRpZmZlcmVuY2UgaW4gcmVsYXRpdmUgYWJ1bmRhbmNlIG9mIFN0YXBoeWxvY29jY3VzIG9mIHBhdGllbnRzIApvZiB0aGUgdHJhbnNwbGFudCBhbmQgdGhlIHBsYWNlYm8gZ3JvdXAuIAoKJCQKXGhhdCBcYmV0YV8xID0gXGJhciB5X3QgLSBcYmFyIHlfYwokJAoKLSAkSF8wJDogcm9kZW50cyBlYXQgY29uc3VtZSBvbiBhdmVyYWdlIHRoZSBzYW1lIGFtb3VudCBvZiBhcHBsZXMgcGVyIGtnIGJvZHkgd2VpZ2h0IHdoZW4gdGhleSBhcmUgZmVkIHdpdGggc3RlcmlsZSBvciB3aXRoIGluZmVjdGVkIGFwcGxlcy4gIAotICRIXzEkOiB0aGUgYXZlcmFnZSBhbW91bnQgb2YgYXBwbGVzIGluIGcva2cgYm9keSB3ZWlnaHQgaXMgZGlmZmVyZW50IHdoZW4gcm9kZW50cyBhcmUgZmVkIHdpdGggc3RlcmlsZSB0aGVuIGFzIHdoZW4gdGhleSBhcmUgZmVkIHdpdGggaW5mZWN0ZWQgYXBwbGVzLgoKYGBge3J9CmxtMSA8LSBsbSh3ZWlnaHQgfiBncm91cCwgcm9kZW50cykKc3VtbWFyeShsbTEpCmBgYAoKV2l0aCB0aGUgY3VycmVudCBzdHVkeSBhbmQgd2hlbiB3ZSBhc3N1bWUgdGhhdCB0aGUgYXNzdW1wdGlvbnMgb2YgdGhlIG1vZGVsIGhvbGQsIHdlIGNvbmNsdWRlIHRoYXQgdGhlIGFtb3VudCBvZiBhcHBsZXMgdGhhdCByb2RlbnRzIG9uIGF2ZXJhZ2UgY29uc3VtZSBkb2VzIG5vdCBkaWZmZXIgc2lnbmlmaWNhbnRseSBiZXR3ZWVuIHRoZSBncm91cCB0aGF0IHdhcyBmZWQgd2l0aCBzdGVyaWxlIGFwcGxlcyBhbmQgdGhlIGdyb3VwIHRoYXQgd2FzIGZlZCB3aXRoIGluZmVjdGVkIGFwcGxlcy4gCgojIFBvd2VyIGFuYWx5c2VzCgojIyBRdWVzdGlvbiAxCgpXaGF0IGlzIHRoZSBwb3dlciBvZiB0aGUgZXhwZXJpbWVudCBpZiB0aGUgZWZmZWN0IHNpemUgYW5kIHN0YW5kYXJkIGRldmlhdGlvbiAKaW4gdGhlIHBvcHVsYXRpb24gd291bGQgYmUgZXF1YWwgdG8gdGhlIG9uZXMgeW91IG9ic2VydmVkIGluIHRoZSBleHBlcmltZW50PwoKIyMgU2ltdWxhdGlvbiBmdW5jdGlvbgoKV2UgcHJvdmlkZSB5b3Ugd2l0aCBhIGZ1bmN0aW9uIHRvIHNpbXVsYXRlIGRhdGEgc2ltaWxhciB0byB0aGF0IG9mIG91ciAKZXhwZXJpbWVudCB1bmRlciBvdXIgbW9kZWwgYXNzdW1wdGlvbnMuIAoKYGBge3J9CnNpbUZhc3QgPC0gZnVuY3Rpb24oZm9ybSwgZGF0YSwgYmV0YXMsIHNkLCBjb250cmFzdHMsIGFscGhhID0gLjA1LCBuU2ltID0gMTAwMDApCnsKICAgIHlTaW0gPC0gcm5vcm0obnJvdyhkYXRhKSpuU2ltLHNkPXNkKQogICAgZGltKHlTaW0pIDwtYyhucm93KGRhdGEpLG5TaW0pCiAgICBkZXNpZ24gPC0gbW9kZWwubWF0cml4KGZvcm0sIGRhdGEpCiAgICB5U2ltIDwtIHlTaW0gKyBjKGRlc2lnbiAlKiViZXRhcykKICAgIHlTaW0gPC0gdCh5U2ltKQogIAogICAgIyMjIEZpdHRpbmcKICAgIGZpdEFsbCA8LSBsaW1tYTo6bG1GaXQoeVNpbSxkZXNpZ24pCiAgCiAgICAjIyMgSW5mZXJlbmNlCiAgICB2YXJVbnNjYWxlZCA8LSBjKHQoY29udHJhc3RzKSUqJWZpdEFsbCRjb3YuY29lZmZpY2llbnRzJSolY29udHJhc3RzKQogICAgY29udHJhc3RzIDwtIGZpdEFsbCRjb2VmZmljaWVudHMgJSolY29udHJhc3RzCiAgICBzZUNvbnRyYXN0cyA8LSB2YXJVbnNjYWxlZF4uNSpmaXRBbGwkc2lnbWEKICAgIHRzdGF0cyA8LSBjb250cmFzdHMvc2VDb250cmFzdHMKICAgIHB2YWxzIDwtIHB0KGFicyh0c3RhdHMpLGZpdEFsbCRkZi5yZXNpZHVhbCxsb3dlci50YWlsID0gRkFMU0UpKjIKICAgIHJldHVybihtZWFuKHB2YWxzIDwgYWxwaGEpKQp9CmBgYAoKV2l0aG91dCBnb2luZyBpbnRvIHRoZSBmdWxsIGNvZGUgZGV0YWlscywgdGhpcyBmdW5jdGlvbiBhbGxvd3MgdXMgdG8gc2ltdWxhdGUgCmRhdGEgc2ltaWxhciB0byB0aGF0IG9mIG91ciBleHBlcmltZW50IHVuZGVyIG91ciBtb2RlbCBhc3N1bXB0aW9ucywgZ2l2ZW4gdGhlIApmb2xsb3dpbmcgaW5wdXRzOgoKLSBgZm9ybWA6IG1vZGVsIGZvcm11bGEgZm9yIHRoZSBleHBlcmltZW50IHdlIHdhbnQgdG8gc2ltdWxhdGUKLSBgZGF0YWA6IHRoZSB0YXJnZXQgZGF0YXNldCBvbiB3aGljaCB3ZSB3YW50IHRvIGJhc2Ugb3VyIHNpbXVsYXRpb25zIG9uCi0gYGJldGFzYDogdGhlIGxpbmVhciByZWdyZXNzaW9uIGNvZWZmaWNpZW50cyBmb3IgdGhlIHRhcmdldCBkYXRhc2V0Ci0gYHNkYDogdGhlIHJlc2lkdWFsIHN0YW5kYXJkIGVycm9ycyBmcm9tIHRoZSBsaW5lYXIgcmVncmVzc2lvbiBtb2RlbCBmaXQgb24gCnRoZSB0YXJnZXQgZGF0YXNldAotIGBjb250cmFzdHNgOiBjb21wYXJpc29uIG9mIGludGVyZXN0LCBpLmUuIHdoaWNoIChjb21iaW5hdGlvbiBvZikgbW9kZWwgCnBhcmFtZXRlcnMgd2Ugd291bGQgbGlrZSB0byBhc3Nlc3MKLSBgYWxwaGFgOiBhbHBoYS1sZXZlbCBhdCB3aGljaCB0byBjb25kdWN0IHRoZSBoeXBvdGhlc2lzIHRlc3RpbmcKLSBgblNpbWA6IG51bWJlciBvZiBkYXRhc2V0cyB3ZSB3b3VsZCBsaWtlIHRvIHNpbXVsYXRlCgpUbyBzaW11bGF0ZSBuZXcgZGF0YSBiYXNlZCBvbiBvdXIgdGFyZ2V0IGRhdGFzZXQgYMOnYCwgd2Ugd2lsbCBuZWVkIHRvIApmaWxsIGluIGFsbCB0aGUgYXJndW1lbnRzIHRvIHRoZSBgc2ltRmFzdGAgZnVuY3Rpb24uCgoqKkhpbnQ6IGZvciB0aGUgYmV0YXMgYW5kIHNkLCB3ZSB3aWxsIG5lZWQgdG8gZml0IGEgbGluZWFyIG1vZGVsIGZpcnN0ISoqCgpgYGB7ciwgZXZhbD1GQUxTRX0KcG93ZXIxIDwtIHNpbUZhc3QoZm9ybSA9IC4uLiwgCiAgICAgICAgICAgICAgICAgIGRhdGEgPSAuLi4sIAogICAgICAgICAgICAgICAgICBiZXRhcyA9IC4uLiwgCiAgICAgICAgICAgICAgICAgIHNkID0gLi4uLCAKICAgICAgICAgICAgICAgICAgY29udHJhc3RzID0gLi4uLCAKICAgICAgICAgICAgICAgICAgYWxwaGEgPSAuLi4sIAogICAgICAgICAgICAgICAgICBuU2ltID0gLi4uKQpwb3dlcjEKYGBgCgpJbnRlcnByZXQgdGhlIG91dGNvbWUuCgojIyBRdWVzdGlvbiAyCgpXaGF0IHdvdWxkIHRoZSBwb3dlciBieSBpZiBudW1iZXIgb2Ygcm9kZW50cyB3b3VsZCAgYmFsYW5jZWQgaW4gYm90aCBncm91cHM/CkFnYWluLCB3ZSBzaW11bGF0ZSBhIGxhcmdlIG51bWJlciBvZiBuZXcgZXhwZXJpbWVudHMuIEFkanVzdCBvbmUgbW9yZSBtb3JlCm9mIHRoZSBpbnB1dHMgdG8gdGhlIGBzaW1GYXN0YCB0byBhbGxvdyBmb3IgYWRkcmVzc2luZyB0aGlzIHF1ZXN0aW9uLgoKYGBge3IsIGV2YWw9RkFMU0V9CnBvd2VyMiA8LSBzaW1GYXN0KGZvcm0gPSAuLi4sIAogICAgICAgICAgICAgICAgICBkYXRhID0gLi4uLCAKICAgICAgICAgICAgICAgICAgYmV0YXMgPSAuLi4sIAogICAgICAgICAgICAgICAgICBzZCA9IC4uLiwgCiAgICAgICAgICAgICAgICAgIGNvbnRyYXN0cyA9IC4uLiwgCiAgICAgICAgICAgICAgICAgIGFscGhhID0gLi4uLCAKICAgICAgICAgICAgICAgICAgblNpbSA9IC4uLikKcG93ZXIyCmBgYAoKIyMgUXVlc3Rpb24gMwoKSG93IG1hbnkgb2JzZXJ2YXRpb25zIHdvdWxkIHlvdSBuZWVkIHRvIHBpY2sgdXAgdGhlIHRyZWF0bWVudCBlZmZlY3Qgd2l0aCAKYSBwb3dlciBvZiA5MCU/CgpUaGlzIHdpbGwgcmVxdWlyZSB1cyB0byBlc3RhYmxpc2ggYSByZWxhdGlvbnNoaXAgYmV0d2VlbiBzYW1wbGUgc2l6ZSBhbmQgcG93ZXIuCkluIHR1cm4sIHRoaXMgd2lsbCByZXF1aXJlIHVzIHRvIHBlcmZvcm0gYSAicGFyYW1ldGVyIHN3ZWVwIiBvdmVyIGRpZmZlcmVudAp2YWx1ZXMgb2Ygc2FtcGxlIHNpemUgYW5kIGNvbXB1dGUgdGhlIHBvd2VyIGZvciBlYWNoIG9mIHRoZW0uCgpgYGB7cn0KCmBgYAoKIyMgUXVlc3Rpb24gNAoKU3VwcG9zZSB0aGF0IHdlIHdvdWxkIGxpa2UgdG8gcGljayB1cCBhbiBlZmZlY3Qgc2l6ZSBvZiAkXGJldGFfMSA9IDYwIGcva2ckLiAKSG93IG1hbnkgc2FtcGxlcyB3b3VsZCBiZSByZXF1aXJlZCBpbiBlYWNoIGdyb3VwIHRvIG9idGFpbiBhIHBvd2VyIG9mIDkwJT8KCk5vdGUsIHRoYXQgCgotIHdlIGRvIGEgdHdvLXNpZGVkIHRlc3Qgc28gdGhlIHNpZ24gb2YgdGhlIGVmZmVjdCBzaXplIGlzIGFyYml0cmFyeS4gCi0gdGhlIGludGVyY2VwdCBpbiB0aGUgcG93ZXIgYW5hbHlzaXMgaXMgYWxzbyBhcmJpdHJhcnkgc28gd2UgY291bGQgYWxzbyBzZXQgaXQgYXQgMC4gCgpgYGB7cn0KCmBgYAoK</div>
 <div class="footer">
     <hr>
     This work is licensed under the <a href= "https://creativecommons.org/licenses/by-nc-sa/4.0">
