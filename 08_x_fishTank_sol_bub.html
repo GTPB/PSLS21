@@ -684,15 +684,15 @@ div.tocify {
 ## (Adjusted p values reported -- single-step method)</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>confDiet &lt;-<span class="st"> </span><span class="kw">confint</span>(multComp)</span>
 <span id="cb12-2"><a href="#cb12-2"></a>confDiet<span class="op">$</span>confint[<span class="dv">1</span>,<span class="dv">2</span>]</span></code></pre></div>
-<pre><code>## [1] 12.79909</code></pre>
+<pre><code>## [1] 12.80436</code></pre>
 </div>
 <div id="conclusion" class="section level2">
 <h2><span class="header-section-number">6.5</span> Conclusion</h2>
 <p>The mean average weight gain is significantly different between all the different diet treatments. The effect sizes and significance levels are as follows:</p>
 <ul>
-<li><p>Higher weight gain in diet 2 than in diet 1 (mean difference = 20.33, adjusted p-value = 7.144e-05, 95% CI [12.8, 27.87])</p></li>
-<li><p>Higher weight gain in diet 3 than in diet 1 (mean difference = 44, adjusted p-value = 2.645e-09, 95% CI [36.47, 51.53])</p></li>
-<li><p>Higher weight gain in diet 3 than in diet 2 (mean difference = 23.67, adjusted p-value = 2.087e-05, 95% CI [16.13, 31.2])</p></li>
+<li><p>Higher weight gain in diet 2 than in diet 1 (mean difference = 20.33, adjusted p-value = 4.901e-05, 95% CI [12.8, 27.86])</p></li>
+<li><p>Higher weight gain in diet 3 than in diet 1 (mean difference = 44, adjusted p-value = 2.523e-07, 95% CI [36.47, 51.53])</p></li>
+<li><p>Higher weight gain in diet 3 than in diet 2 (mean difference = 23.67, adjusted p-value = 3.047e-06, 95% CI [16.14, 31.2])</p></li>
 </ul>
 <p><strong>Note, however, that the assumptions of test are violated,</strong> i.e. larger variability in Diet 2 and/or additional tank/batch effects in Diet 2. The tanks seem to cluster per two tanks, which may suggest a hidden level of dependence between the tanks of this second diet treatment level. <strong>We therefore have to be very careful with the interpretation of the results.</strong></p>
 </div>
