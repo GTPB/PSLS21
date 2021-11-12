@@ -1,5 +1,5 @@
 ---
-title: "Experimenteel Design II: replicatie en power - KPNA2"
+title: "Experimenteel Design II: replication en power - KPNA2"
 author: "Lieven Clement & Alexandre Segers"
 date: "statOmics, Ghent University (https://statomics.github.io)"
 output:
@@ -35,7 +35,7 @@ The lymph nodes were not affected (0) or chirugically removed (1).
 - Redo data analysis (you can copy the results of the tutorial on multiple linear regression)
 - What is the power to pick up each of the contrasts when their real effect sizes would be equal to the effect sizes we observed in the study? 
 - How does the power evolves if we have 2 upto 10 repeats for each factor combination of grade and node when their real effect sizes would be equal to the ones we observed in the study? 
-- What is the power to pick up each of the contrasts when the FC for grade for patients with unaffected lymf nodes equals 1.5 ($\beta_g = log2(1.5)$)? 
+- What is the power to pick up each of the contrasts when the FC for grade for patients with unaffected lymph nodes equals 1.5 ($\beta_g = log2(1.5)$)? 
 
 
 # Data analysis

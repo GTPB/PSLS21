@@ -185,3 +185,36 @@ increase in the substrate concentration ($\beta_1=10$).
 - Exercise: [Exercise8](./08_ExperimentalDesignII_1_puromycin.html)
 - Data path: Not required
 
+---
+
+
+# Power analysis: he KPNA2 dataset
+
+Histologic grade in breast cancer provides clinically important prognostic 
+information. Researchers examined whether histologic grade was associated with
+gene expression profiles of breast cancers and whether such profiles could be
+used to improve histologic grading. 
+
+In this tutorial we will assess the association between histologic grade and 
+the expression of the KPNA2 gene that is known to be associated with poor breast
+cancer prognosis. The patients, however, do not only differ in the histologic 
+grade, but also on their lymph node status. The lymph nodes were
+not affected (0) or surgically removed (1).
+
+We will answer three research questions:
+
+- What is the power to pick up each of the contrasts when their real effect 
+sizes would be equal to the effect sizes we observed in the study? 
+
+- How does the power evolves if we have 2 upto 10 repeats for each factor 
+combination of grade and node when their real effect sizes would be equal to 
+the ones we observed in the study? 
+
+- What is the power to pick up each of the contrasts when the FC for grade for patients with unaffected lymph nodes equals 1.5 ($\beta_g = log2(1.5)$)? 
+
+- Data path: "https://raw.githubusercontent.com/statOmics/SGA21/master/data/kpna2.txt"
+- Solution: [Solution9](./08_ExperimentalDesignII_3_kpna2_sol.Rmd.html)
+
+
+
+
