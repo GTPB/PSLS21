@@ -1,0 +1,181 @@
+---
+title: "Experimental Design II: replication and power exercise 1"
+author: "Lieven Clement & Alexandre Segers"
+date: "statOmics, Ghent University (https://statomics.github.io)"
+output:
+  html_document:
+    code_download: yes
+    theme: cosmo
+    toc: yes
+    toc_float: yes
+    highlight: tango
+    number_sections: yes
+---
+
+
+<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
+
+```{r}
+library(tidyverse)
+```
+
+# Power
+
+The power of a test is defined as:
+
+$$P(p < 
+\alpha | H_1)$$
+This is the probability to reject the nulhypothesis at the significance level $\alpha$ given that the alternative hypothesis is true. 
+
+The power depends on:
+
+- the real effect size in the population $\mathbf{L}^T\boldsymbol{\beta}$.
+- the number of observations: SE and df.
+- Choice of designpoints 
+- Choice of significance-level $\alpha$. 
+
+We will evaluate the power using simulation.
+
+# Rodents
+
+A biologist examined the effect of a fungal infection on the eating behavior of rodents. 
+Infected apples were offered to a group of eight rodents, and sterile apples were offered to a group of 4 rodents. The amount of grams of apples consumed per kg body weight are given in the dataset below. 
+
+```{r}
+rodents <- data.frame(weight = c(11,33,48,34,112,369,64,44,177,80,141,332),
+                      group = as.factor(c(rep("treat",8), rep("ctrl",4))))
+rodents 
+```
+
+## Data exploration
+
+Make visualizations: boxplot and QQ-plot.
+
+```{r}
+
+```
+
+In the data exploration we do not have enough data to evaluate the assumptions.
+
+Suppose that the assumptions are valid and that standard deviation in the
+population would be equal to the ones you observed in the experiment.
+
+# Assess the effect of fungal infection on apple consumption
+
+We will model the data using a linear model with one dummy variable. Test the
+relevant model parameter.
+
+```{r}
+
+```
+
+# Power analyses
+
+## Question 1
+
+What is the power of the experiment if the effect size and standard deviation 
+in the population would be equal to the ones you observed in the experiment?
+
+## Simulation function
+
+We provide you with a function to simulate data similar to that of our 
+experiment under our model assumptions. 
+
+```{r}
+simFast <- function(form, data, betas, sd, contrasts, alpha = .05, nSim = 10000)
+{
+    ySim <- rnorm(nrow(data)*nSim,sd=sd)
+    dim(ySim) <-c(nrow(data),nSim)
+    design <- model.matrix(form, data)
+    ySim <- ySim + c(design %*%betas)
+    ySim <- t(ySim)
+  
+    ### Fitting
+    fitAll <- limma::lmFit(ySim,design)
+  
+    ### Inference
+    varUnscaled <- c(t(contrasts)%*%fitAll$cov.coefficients%*%contrasts)
+    contrasts <- fitAll$coefficients %*%contrasts
+    seContrasts <- varUnscaled^.5*fitAll$sigma
+    tstats <- contrasts/seContrasts
+    pvals <- pt(abs(tstats),fitAll$df.residual,lower.tail = FALSE)*2
+    return(mean(pvals < alpha))
+}
+```
+
+Without going into the full code details, this function allows us to simulate 
+data similar to that of our experiment under our model assumptions, given the 
+following inputs:
+
+- `form`: model formula for the experiment we want to simulate
+- `data`: the target dataset on which we want to base our simulations on
+- `betas`: the linear regression coefficients for the target dataset
+- `sd`: the residual standard errors from the linear regression model fit on 
+the target dataset
+- `contrasts`: comparison of interest, i.e. which (combination of) model 
+parameters we would like to assess
+- `alpha`: alpha-level at which to conduct the hypothesis testing
+- `nSim`: number of datasets we would like to simulate
+
+To simulate new data based on our target dataset `ç`, we will need to 
+fill in all the arguments to the `simFast` function.
+
+**Hint: for the betas and sd, we will need to fit a linear model first!**
+
+```{r, eval=FALSE}
+power1 <- simFast(form = ..., 
+                  data = ..., 
+                  betas = ..., 
+                  sd = ..., 
+                  contrasts = ..., 
+                  alpha = ..., 
+                  nSim = ...)
+power1
+```
+
+Interpret the outcome.
+
+## Question 2
+
+What would the power by if number of rodents would  balanced in both groups?
+Again, we simulate a large number of new experiments. Adjust one more more
+of the inputs to the `simFast` to allow for addressing this question.
+
+```{r, eval=FALSE}
+power2 <- simFast(form = ..., 
+                  data = ..., 
+                  betas = ..., 
+                  sd = ..., 
+                  contrasts = ..., 
+                  alpha = ..., 
+                  nSim = ...)
+power2
+```
+
+## Question 3
+
+How many observations would you need to pick up the treatment effect with 
+a power of 90%?
+
+This will require us to establish a relationship between sample size and power.
+In turn, this will require us to perform a "parameter sweep" over different
+values of sample size and compute the power for each of them.
+
+```{r}
+
+```
+
+## Question 4
+
+Suppose that we would like to pick up an effect size of $\beta_1 = 60 g/kg$. 
+How many samples would be required in each group to obtain a power of 90%?
+
+Note, that 
+
+- we do a two-sided test so the sign of the effect size is arbitrary. 
+- the intercept in the power analysis is also arbitrary so we could also set it at 0. 
+
+```{r}
+
+```
+

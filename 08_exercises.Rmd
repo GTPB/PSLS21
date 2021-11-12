@@ -69,6 +69,7 @@ an interaction term between these two variables.
 
 - Exercise: [Exercise3](./08_3_puromycin.html)
 - Data path: Not required
+- Solution: [Solution3](./08_3_puromycin_sol.html)
 
 ---
 
@@ -87,4 +88,100 @@ not affected (0) or surgically removed (1).
 
 - Exercise: [Exercise4](./08_4_kpna2.html)
 - Data path: "https://raw.githubusercontent.com/statOmics/SGA21/master/data/kpna2.txt"
+- Solution: [Solution4](./08_4_kpna2_sol.html)
+
+---
+
+# Blocking: the rats dataset (1)
+
+Researchers are studying the impact of protein sources and protein levels in 
+the diet on the weight of rats. They feed the rats with diets of beef, cereal 
+and pork and use a low and high protein level for each diet type. 
+The researchers can include 60 rats in the experiment. Prior to the experiment,
+the rats were divided in 10 homogeneous groups of 6 rats based on 
+characteristics such as initial weight, appetite, etc.
+
+Within each group a rat is randomly assigned to a diet. The rats are fed during 
+a month and the weight gain in grams is recorded for each rat. 
+
+The researchers want to assess the effect of the type of diet and the protein 
+level on the weight of the rats. 
+
+In this exercise we will perform the data exploration using all diets, but, 
+to keep the data analysis simple we will only assess the beef and cereal diets.
+
+- Exercise: [Exercise5](./08_5_rats.html)
+- Data path: "https://raw.githubusercontent.com/statOmics/PSLS21/data/dietRats.txt"
+
+---
+
+# Blocking: the rats dataset (2)
+
+Again, we make use of the *rats* dataset defined above. In contrast to the 
+previous exercise, we perform the analysis for all three diets in the dataset.
+
+- Exercise: [Exercise6](./08_6_rats.html)
+- Data path: "https://raw.githubusercontent.com/statOmics/PSLS21/data/dietRats.txt"
+
+
+---
+
+# Power analysis: the rodents dataset
+
+A biologist examined the effect of a fungal infection on the eating behavior 
+of rodents. Infected apples were offered to a group of eight rodents, 
+and sterile apples were offered to a group of 4 rodents. The amount of grams 
+of apples consumed per kg body weight are given in the dataset.
+
+We will answer four research questions:
+
+- What is the power of the experiment if the effect size and standard deviation 
+in the population would be equal to the ones you observed in the experiment?
+
+- What would the power by if number of rodents would  balanced in both groups?
+
+- How many observations would you need to pick up the treatment effect with 
+a power of 90%?
+
+- Suppose that we would like to pick up an effect size of $\beta_1 = 60 g/kg$. 
+How many samples would be required in each group to obtain a power of 90%?
+
+- Exercise: [Exercise7](./08_ExperimentalDesignII_1_rodents.html)
+- Data path: Not required
+
+---
+
+# Power analysis: the Puromycin dataset
+
+Data on the velocity of an enzymatic reaction were obtained by Treloar (1974).  
+The number of counts per minute of radioactive product from the reaction was 
+measured as a function of substrate concentration in parts per million (ppm) 
+and from these counts the initial rate (or velocity) of the reaction was c
+alculated (counts/min/min). The experiment was conducted once with 
+the enzyme treated with Puromycin, and once with the enzyme untreated.
+
+We will answer four research questions:
+
+- Use the data to calculate the power to pick up an association that is as 
+least as strong as the association you observed in the dataset when using 
+an experiment with the same design. 
+
+- Use the data to calculate the power to pick up an association where 
+the reaction rate increases on average with 10 counts/min when the substrate 
+concentration is 10 times higher ($\beta_1=10$).
+
+- Use the data to calculate the number of repeats you need for each 
+concentration to pick up an association where the reaction rate increases 
+on average with 10 counts/min when the substrate concentration is 10 times 
+higher with a power of at least 90%. ($\beta_1=10$)
+
+- Suppose that you would setup an experiment with a design similar with the 
+same concentrations as in the puromycin dataset and you have the following 
+restriction: you need to use each concentration at least once and can setup 
+at most 12 reactions, how would you choose your design points? Calculate 
+the power for this design when the effect size is 10 counts/min per 10 times 
+increase in the substrate concentration ($\beta_1=10$).
+
+- Exercise: [Exercise8](./08_ExperimentalDesignII_1_puromycin.html)
+- Data path: Not required
 

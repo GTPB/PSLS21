@@ -1,5 +1,5 @@
 ---
-title: "Experimental Design II: replication and power exercise 1"
+title: "Experimental Design II: replication and power exercise 1 - solution"
 author: "Lieven Clement & Alexandre Segers"
 date: "statOmics, Ghent University (https://statomics.github.io)"
 output:
@@ -46,12 +46,9 @@ rodents <- data.frame(weight=c(11,33,48,34,112,369,64,44,177,80,141,332),group=a
 rodents 
 ```
 
-
-## Data exploratie
-
+## Data exploration
 
 ```{r}
-
 rodents %>% 
   ggplot(aes(x=group,y=weight)) +
   geom_boxplot(outlier.shape = NA) +
@@ -70,10 +67,10 @@ Suppose that the assumptions are valid and that standard deviation in the popula
 
 1. What is the power of the experiment if the effect size and standard deviation in the population would be equal to the ones you observed in the experiment
 2. What would the power by if number of rodents would  balanced in both groups
-3. How many observations would you need to pick up the treatment effect with a power of 80%?
-4. How many observations would you need to pick up the treatment effect of 60 g/kg with a power of 80%?
+3. How many observations would you need to pick up the treatment effect with a power of 90%?
+4. How many observations would you need to pick up the treatment effect of 60 g/kg with a power of 90%?
 
-# Analyse of the data 
+# Analysis
 
 We will model the data using a linear model with one dummy variable. 
 
@@ -85,7 +82,8 @@ with $x_{p,i} = 0$ if the rodent is subjected the control treatment with sterile
 
 - Estimated effect size?
 
-The average difference in relative abundance of Staphylococcus of patients of the transplant and the placebo group. 
+The average difference in relative abundance of Staphylococcus of patients 
+of the transplant and the placebo group. 
 
 $$
 \hat \beta_1 = \bar y_t - \bar y_c
@@ -259,5 +257,7 @@ power = .9
 power.t.test(d = b1, sd = sigma(lm1), type='two.sample',power = power)
 ```
 
-Note, that we would require a much larger sample size. This is because the desired effect size that we would like to pick up is smal compared to the variability (standard deviation) in the population. 
+Note, that we would require a much larger sample size. This is because the 
+desired effect size that we would like to pick up is small compared to the 
+variability (standard deviation) in the population. 
 

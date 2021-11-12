@@ -103,8 +103,8 @@ simFast <- function(form, data, betas, sd, contrasts, alpha = .05, nSim = 10000)
 }
 ```
 
-With going into the full code details, this function allows us to simulate data 
-similar to that of our experiment under our model assumptions, given the 
+Without going into the full code details, this function allows us to simulate 
+data similar to that of our experiment under our model assumptions, given the 
 following inputs:
 
 - `form`: model formula for the experiment we want to simulate

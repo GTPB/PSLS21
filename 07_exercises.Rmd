@@ -43,6 +43,7 @@ the treatments on the growth of lettuce plants.
 
 - Exercise: [Exercise1](./07_1_lettuce.html)
 - Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/freshweight_lettuce.txt
+- Solution: [Solution1](./07_1_lettuce_sol.html)
 
 ---
 
@@ -82,5 +83,6 @@ categories. To this end, we will use an ANOVA analysis.
 
 - Exercise: [Exercise3](./07_3_NHANES.html)
 - Data path: https://raw.githubusercontent.com/statOmics/PSLS21/data/NHANES.csv
+- Solution: [Solution3](./07_3_NHANES_sol.html)
 
 
