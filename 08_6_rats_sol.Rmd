@@ -80,6 +80,18 @@ diet %>%
     facet_wrap(.~protSource)
 ```
 
+```{r}
+diet %>% 
+  ggplot(aes(x=protLevel, y=weightGain)) + 
+    scale_fill_brewer(palette="RdGy") +
+    theme_bw() +
+    geom_line(aes(group=block, color=block)) +
+    geom_point(aes(color=block))+
+    ggtitle("Weight gain dependence on protein source") +
+    ylab("Weigth gain (g)") + 
+    #stat_summary(fun = mean, geom="point", shape=5, size=3, color="black", fill="black") +
+    facet_wrap(.~protSource)
+```
 - An increase in the weight of the rats seems to depend on the protein source
 received in the diet.
 
