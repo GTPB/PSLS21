@@ -1,5 +1,5 @@
 ---
-title: "Exercise 8.x: Blocking on the rat diet dataset - solution"   
+title: "Exercise 8.6: Blocking on the rat diet dataset - solution"   
 author: "Lieven Clement and Jeroen Gilis"
 date: "statOmics, Ghent University (https://statomics.github.io)"  
 output:
