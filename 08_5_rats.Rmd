@@ -71,13 +71,19 @@ diet <- diet %>%
 
 # Data exploration
 
-Boxplot of the weight gain against protein source and protein level
+- Boxplot of the weight gain against protein source, protein level with coloring according to block
 
 ```{r}
 
 ```
 
-Interpret the boxplots.
+- Lineplot of the weight gain against protein source, protein level with coloring and grouping according to block
+
+```{r}
+
+```
+
+- Interpret the plots
 
 # Data filtering
 

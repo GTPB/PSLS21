@@ -112,6 +112,7 @@ to keep the data analysis simple we will only assess the beef and cereal diets.
 
 - Exercise: [Exercise5](./08_5_rats.html)
 - Data path: "https://raw.githubusercontent.com/statOmics/PSLS21/data/dietRats.txt"
+- Exercise: [Solution5](./08_5_rats_solution.html)
 
 ---
 
@@ -122,6 +123,7 @@ previous exercise, we perform the analysis for all three diets in the dataset.
 
 - Exercise: [Exercise6](./08_6_rats.html)
 - Data path: "https://raw.githubusercontent.com/statOmics/PSLS21/data/dietRats.txt"
+- Exercise: [Solution6](./08_6_rats_solution.html)
 
 
 ---
@@ -148,6 +150,7 @@ How many samples would be required in each group to obtain a power of 90%?
 
 - Exercise: [Exercise7](./08_ExperimentalDesignII_1_rodents.html)
 - Data path: Not required
+- Solution: [Solution7](./08_ExperimentalDesignII_1_rodents_sol.html)
 
 ---
 
@@ -184,6 +187,7 @@ increase in the substrate concentration ($\beta_1=10$).
 
 - Exercise: [Exercise8](./08_ExperimentalDesignII_1_puromycin.html)
 - Data path: Not required
+- Solution: [Solution8](./08_ExperimentalDesignII_1_puromycin_sol.html)
 
 ---
 

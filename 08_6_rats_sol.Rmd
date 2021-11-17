@@ -65,7 +65,7 @@ diet <- diet %>%
 
 # Data exploration
 
-Boxplot of the weight gain against protein source and protein level
+- Boxplot of the weight gain against protein source, protein level with coloring according to block
 
 ```{r}
 diet %>% 
@@ -80,18 +80,20 @@ diet %>%
     facet_wrap(.~protSource)
 ```
 
+- Lineplot of the weight gain against protein source, protein level with coloring and grouping according to block
+
 ```{r}
 diet %>% 
-  ggplot(aes(x=protLevel, y=weightGain)) + 
+  ggplot(aes(x=protSource:protLevel, y=weightGain)) + 
     scale_fill_brewer(palette="RdGy") +
     theme_bw() +
     geom_line(aes(group=block, color=block)) +
     geom_point(aes(color=block))+
     ggtitle("Weight gain dependence on protein source") +
-    ylab("Weigth gain (g)") + 
-    #stat_summary(fun = mean, geom="point", shape=5, size=3, color="black", fill="black") +
-    facet_wrap(.~protSource)
+    ylab("Weigth gain (g)") 
+    #stat_summary(fun = mean, geom="point", shape=5, size=3, color="black", fill="black")
 ```
+
 - An increase in the weight of the rats seems to depend on the protein source
 received in the diet.
 
@@ -101,9 +103,10 @@ received in the diet
 - There also seems to be an interaction effect between the protein level and the
 protein source on the gain in weight of the rats. For the beef and the pork 
 diets the effect of high protein levels in the data seems to be much stronger
-than in the chicken diet.
+than in the cereal diet.
 
-- There is also a strong effect of the block. Blocking implies a randomisation restriction, hence, we will have to include the block effect anyway. 
+- There is also a strong effect of the block. Blocking implies a randomisation 
+restriction, hence, we will have to include the block effect anyway. 
 
 # Multivariate linear regression analysis
 
@@ -241,7 +244,7 @@ interaction) on the weight gain of rats (p << 0.001).
 
 ```{r, message=FALSE, warning=FALSE}
 library(car)
-Anova(lm1, type=3)
+Anova(lm1, type="III")
 ```
 
 There is a very significant interaction between the protein source and 
